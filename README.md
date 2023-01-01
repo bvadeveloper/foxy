@@ -8,5 +8,12 @@ Small high scalable Telegram bot for RHT (Red Hat Teams) for gathering and analy
 
 ```bash
 cd foxy/
-./make up_locally
+make up_locally
+```
+
+## Local cleanup
+
+```bash
+cd foxy/
+make cleanup_all_locally
 ```
