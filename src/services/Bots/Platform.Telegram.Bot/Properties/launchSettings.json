@@ -1,0 +1,23 @@
+{
+  "profiles": {
+    "Platform.Telegram.Bot": {
+      "commandName": "Project",
+      "environmentVariables": {
+
+        "Bus:Host": "localhost",
+        "Bus:Port": "5672",
+        "Bus:UserName": "rmquser",
+        "Bus:Password": "rmquser",
+        "Bus:VirtualHost": "/",
+        "Bus:PrefetchCount": "1",
+        "Bus:Timeout": "60",
+
+        "Telegram:ApiKey": "key",
+
+        "Logging:LogLevel:Microsoft": "Debug",
+        "Logging:LogLevel:System": "Debug",
+        "Logging:LogLevel:Default": "Debug"
+      }
+    }
+  }
+}

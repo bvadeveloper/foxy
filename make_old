@@ -1,0 +1,30 @@
+#!/bin/bash
+
+ver=0.1
+
+function build_toolkit_image() {
+  docker build -f toolkit.Dockerfile -t vsp/toolkit:$ver .
+}
+
+function up_locally() {
+  build_toolkit_image
+  docker compose build
+  docker compose up
+}
+
+function down_locally() {
+  docker compose down
+}
+
+function cleanup_locally() {
+  docker rmi vsp/telegram-bot:$ver vsp/reporter:$ver vsp/collector:$ver vsp/collector:$ver vsp/scanner:$ver
+}
+
+function cleanup_all_locally() {
+  down_locally
+  docker rmi vsp/telegram-bot:$ver vsp/reporter:$ver vsp/collector:$ver vsp/collector:$ver vsp/scanner:$ver
+  docker rmi vsp/toolkit:$ver
+  docker rmi rabbitmq:3.8-management
+}
+
+"$@"

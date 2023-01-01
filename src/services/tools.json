@@ -1,0 +1,29 @@
+{
+  "Tools": [
+    {
+      "name": "nmap",
+      "commandLine": "nmap --open -F -Pn {0}",
+      "versionCommandLine": "nmap -V",
+      "timeout": "10000"
+    },
+    {
+      "name": "nmap",
+      "serviceTags": [ "ftp", "ssh", "jabber", "vnc" ],
+      "portTags": [ 21, 22, 80, 443, 8080, 8081 ],
+      "frameworkTags": "",
+      "hostTags": [ "windows", "linux", "ubuntu", "centos" ],
+      "serverTags": [ "nginx", "iis", "apache" ],
+      "commandLine": "nmap --script nmap-vulners -sV -Pn {0}",
+      "versionCommandLine": "nmap -V",
+      "timeout": "10000"
+    },
+    {
+      "name": "wpscan",
+      "portTags": [ 80, 443, 8080, 8081 ],
+      "frameworkTags": [ "wordpress", "wp" ],
+      "commandLine": "wpscan --detection-mode aggressive --url {0}",
+      "versionCommandLine": "wpscan --version",
+      "timeout": "10000"
+    }
+  ]
+}

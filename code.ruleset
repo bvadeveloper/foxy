@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Rules for RegistrarEngine" Description="Code analysis rules for RegistrarEngine solution." ToolsVersion="14.0">
+  <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
+   <Rule Id="SA0001" Action="None" />
+   <Rule Id="SA1009" Action="None" />
+   <Rule Id="SA1012" Action="None" />
+   <Rule Id="SA1013" Action="None" />
+   <Rule Id="SA1026" Action="None" />
+   <Rule Id="SA1101" Action="None" />
+   <Rule Id="SA1101" Action="None" />
+   <Rule Id="SA1124" Action="None" />
+   <Rule Id="SA1133" Action="None" />
+   <Rule Id="SA1134" Action="None" />
+   <Rule Id="SA1135" Action="None" />
+   <Rule Id="SA1200" Action="None" />
+   <Rule Id="SA1309" Action="None" />
+   <Rule Id="SA1312" Action="None" />
+   <Rule Id="SA1400" Action="None" />
+   <Rule Id="SA1407" Action="None" />
+   <Rule Id="SA1500" Action="None" />
+   <Rule Id="SA1502" Action="None" />
+   <Rule Id="SA1503" Action="None" />
+   <Rule Id="SA1509" Action="None" />
+   <Rule Id="SA1512" Action="None" />
+   <Rule Id="SA1515" Action="None" />
+   <Rule Id="SA1519" Action="None" />
+   <Rule Id="SA1600" Action="None" />
+   <Rule Id="SA1611" Action="None" />
+   <Rule Id="SA1615" Action="None" />
+   <Rule Id="SA1618" Action="None" />
+   <Rule Id="SA1623" Action="None" />
+   <Rule Id="SA1633" Action="None" />
+
+   <Rule Id="CS1591" Action="None" />
+  </Rules>
+</RuleSet>
