@@ -6,22 +6,22 @@ function build_toolkit_image() {
   docker build -f toolkit.Dockerfile -t vsp/toolkit:$ver .
 }
 
-function up_locally() {
+function up_local() {
   build_toolkit_image
   docker compose build
   docker compose up
-}
+} 
 
-function down_locally() {
+function down_local() {
   docker compose down
 }
 
-function cleanup_locally() {
+function clean_local() {
   docker rmi vsp/telegram-bot:$ver vsp/reporter:$ver vsp/collector:$ver vsp/collector:$ver vsp/scanner:$ver
 }
 
-function cleanup_all_locally() {
-  down_locally
+function clean_all_local() {
+  down_local
   docker rmi vsp/telegram-bot:$ver vsp/reporter:$ver vsp/collector:$ver vsp/collector:$ver vsp/scanner:$ver
   docker rmi vsp/toolkit:$ver
   docker rmi rabbitmq:3.8-management
