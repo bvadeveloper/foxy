@@ -13,8 +13,8 @@ services:
     networks:
       - bot_network
     environment:
-      - RABBITMQ_DEFAULT_USER=rmquser
-      - RABBITMQ_DEFAULT_PASS=rmquser
+      - RABBITMQ_DEFAULT_USER=${RMQ_USER:?error}
+      - RABBITMQ_DEFAULT_PASS=${RMQ_PASS:?error}
   bot:
     build:
       context: ./src
@@ -27,10 +27,10 @@ services:
     networks:
       - bot_network
     environment:
-      - Telegram__ApiKey=<key>
+      - Telegram__ApiKey=${API_KEY:?error}
       - Bus__Host=rabbitmq
-      - Bus__UserName=rmquser
-      - Bus__Password=rmquser
+      - Bus__UserName=${RMQ_USER:?error}
+      - Bus__Password=${RMQ_PASS:?error}
     depends_on:
       - rabbitmq
     links:
@@ -48,8 +48,8 @@ services:
       - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=rmquser
-      - Bus__Password=rmquser
+      - Bus__UserName=${RMQ_USER:?error}
+      - Bus__Password=${RMQ_PASS:?error}
     depends_on:
       - rabbitmq
       - bot
@@ -68,8 +68,8 @@ services:
       - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=rmquser
-      - Bus__Password=rmquser
+      - Bus__UserName=${RMQ_USER:?error}
+      - Bus__Password=${RMQ_PASS:?error}
     depends_on:
       - rabbitmq
       - bot
@@ -88,8 +88,8 @@ services:
       - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=rmquser
-      - Bus__Password=rmquser
+      - Bus__UserName=${RMQ_USER:?error}
+      - Bus__Password=${RMQ_PASS:?error}
     depends_on:
       - rabbitmq
       - bot

@@ -190,7 +190,6 @@ FakesAssemblies/
 
 ### MonoDevelop ###
 
-*.pidb
 *.userprefs
 
 ### Windows ###
@@ -287,3 +286,4 @@ cross/rootfs/*
 .terraform
 terraform.tfstate
 terraform.tfstate.backup
+/.env

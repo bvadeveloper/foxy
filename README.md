@@ -5,6 +5,12 @@ Small high scalable Telegram bot for RHT (Red Hat Teams) for gathering and analy
 ## Local run
 
 ```bash
+Set environment variables:
+
+API_KEY=<key>
+RMQ_USER=<user>>
+RMQ_PASS=<pass>
+
 cd foxy/
 make up_locally
 ```
