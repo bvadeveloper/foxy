@@ -7,6 +7,6 @@ Small high scalable Telegram bot for RHT (Red Hat Teams) for gathering and analy
 ## Local run
 
 ```bash
-cd falcon/
+cd foxy/
 ./make up_locally
 ```
