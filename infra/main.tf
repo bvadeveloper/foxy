@@ -2,6 +2,12 @@ resource "aws_ecs_cluster" "main" {
   name = "foxy-cluster"
 }
 
+# create repository for docker images
+resource "aws_ecr_repository" "foxy-repo" {
+  name = "foxy-images"
+}
+
+# ---------> BOT <--------- #
 resource "aws_ecs_task_definition" "foxy-bot" {
   family                   = "foxy-bot"
   network_mode             = "awsvpc"
@@ -12,7 +18,7 @@ resource "aws_ecs_task_definition" "foxy-bot" {
   container_definitions = <<DEFINITION
 [
   {
-    "image": "<path to ECR image>", // todo set image path
+    "image": "<path to ECR image>",
     "cpu": 254,
     "memory": 512,
     "name": "foxy-bot",

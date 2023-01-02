@@ -76,13 +76,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Bus.Subscriber", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infra", "infra", "{57437F5E-E066-43D4-AB35-4BE8EF136BA9}"
 	ProjectSection(SolutionItems) = preProject
-		infra\versions.tf = infra\versions.tf
 		infra\variables.tf = infra\variables.tf
 		infra\main.tf = infra\main.tf
 		infra\data.tf = infra\data.tf
 		infra\network.tf = infra\network.tf
 		infra\alb.tf = infra\alb.tf
 		infra\outputs.tf = infra\outputs.tf
+		infra\provider.tf = infra\provider.tf
 	EndProjectSection
 EndProject
 Global
