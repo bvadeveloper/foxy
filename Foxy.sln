@@ -8,7 +8,6 @@ ProjectSection(SolutionItems) = preProject
 	src\services\tools.json = src\services\tools.json
 	docker-compose.yml = docker-compose.yml
 	Makefile = Makefile
-	startup = startup
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D170892B-9BBB-4E43-AD65-34C765256436}"
@@ -74,6 +73,17 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Bus.Publisher", "src\packages\Bus\Platform.Bus.Publisher\Platform.Bus.Publisher.csproj", "{CD35B567-CD07-484F-B889-AE2C9EF58C70}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Bus.Subscriber", "src\packages\Bus\Platform.Bus.Subscriber\Platform.Bus.Subscriber.csproj", "{A9B560EB-1764-4DFD-BC50-89A325D93034}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infra", "infra", "{57437F5E-E066-43D4-AB35-4BE8EF136BA9}"
+	ProjectSection(SolutionItems) = preProject
+		infra\versions.tf = infra\versions.tf
+		infra\variables.tf = infra\variables.tf
+		infra\main.tf = infra\main.tf
+		infra\data.tf = infra\data.tf
+		infra\network.tf = infra\network.tf
+		infra\alb.tf = infra\alb.tf
+		infra\outputs.tf = infra\outputs.tf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
