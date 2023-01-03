@@ -11,14 +11,14 @@ RMQ_USER=<user>>
 RMQ_PASS=<pass>
 
 cd foxy/
-make up_locally
+make up
 ```
 
 ### Local cleanup
 
 ```bash
 cd foxy/
-make cleanup_all_locally
+make cleanup_all
 ```
 
 ### Deployment to AWS ECS
