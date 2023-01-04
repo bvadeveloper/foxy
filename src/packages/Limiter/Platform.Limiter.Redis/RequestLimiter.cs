@@ -32,7 +32,7 @@ public class RequestLimiter : IRequestLimiter
 
         if (_limiterModels.Any(m => m.Hash == hash && m.Type == UserType.Admin))
         {
-            return true;
+            return false;
         }
 
         if (_limiterModels.Any(m => m.Hash == hash && m.Type == UserType.Advanced))
