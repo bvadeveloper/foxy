@@ -6,17 +6,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Platform.Contract;
+using Platform.Contract.Abstractions;
 using Platform.Primitive;
 using Platform.Telegram.Bot.Configuration;
 using Platform.Telegram.Bot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
+using Telegram.Bot.Types;
 
 namespace Platform.Telegram.Bot.Extensions
 {
-    public static class MessengerExtensions
+    public static class MessageExtensions
     {
-        public static IServiceCollection AddTelegramBot(this IServiceCollection services, IConfiguration configuration)
+        internal static IServiceCollection AddTelegramBot(this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.Configure<BotConfiguration>(options =>
                 configuration.GetSection("Telegram").Bind(options));
@@ -31,7 +34,7 @@ namespace Platform.Telegram.Bot.Extensions
                 {
                     var receiverOptions = new ReceiverOptions
                     {
-                        AllowedUpdates = {} // receive all update types
+                        AllowedUpdates = { } // receive all update types
                     };
                     var botClient = provider.GetRequiredService<ITelegramBotClient>();
                     return new QueuedUpdateReceiver(botClient, receiverOptions);
@@ -44,7 +47,7 @@ namespace Platform.Telegram.Bot.Extensions
         /// <summary>
         /// Split string by chunk length
         /// </summary>
-        public static IEnumerable<string> SplitBy(this string message, int chunkLength)
+        internal static IEnumerable<string> SplitBy(this string message, int chunkLength)
         {
             if (string.IsNullOrEmpty(message))
             {
@@ -67,14 +70,14 @@ namespace Platform.Telegram.Bot.Extensions
             }
         }
 
-        public static TraceContext FillSession(this TraceContext context, long id)
+        internal static TraceContext FillSession(this TraceContext context, long id)
         {
             context.ChatId = id;
 
             return context;
         }
 
-        public static TargetModel ToTarget(this string message) =>
+        internal static TargetModel ToTarget(this string message) =>
             new()
             {
                 Targets = message
@@ -89,13 +92,20 @@ namespace Platform.Telegram.Bot.Extensions
                     .ToArray()
             };
 
-        public static TargetModel Validate(this TargetModel model)
+        internal static TargetModel Validate(this TargetModel model)
         {
             var validator = new TargetModelValidator();
             var result = validator.Validate(model);
             return result.IsValid
                 ? model
-                : throw new ArgumentException("validation not passed, please use only valid domain names or IPv4 addresses");
+                : throw new ArgumentException(
+                    "validation not passed, please use only valid domain names or IPv4 addresses");
         }
+
+        internal static string MakeInput(User? user) => $"{user.FirstName}:{user.Id}";
+        
+        internal static IEnumerable<TProfile> MakeProfiles<TProfile>(this TargetModel targetModel, TraceContext sessionContext)
+            where TProfile : ITargetProfile, IToolProfile, new() =>
+            targetModel.Targets.Select(target => new TProfile { Target = target, TraceContext = sessionContext, Tools = Array.Empty<string>() });
     }
 }

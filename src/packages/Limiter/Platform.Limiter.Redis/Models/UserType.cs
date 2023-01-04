@@ -1,4 +1,4 @@
-namespace Platform.Limiter.Redis;
+namespace Platform.Limiter.Redis.Models;
 
 /// <summary>
 /// User types for rate limiting

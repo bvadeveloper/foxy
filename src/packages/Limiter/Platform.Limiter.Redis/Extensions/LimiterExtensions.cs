@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using StackExchange.Redis;
 
-namespace Platform.Limiter.Redis
+namespace Platform.Limiter.Redis.Extensions
 {
     public static class LimiterExtensions
     {

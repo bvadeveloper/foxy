@@ -1,4 +1,4 @@
-namespace Platform.Limiter.Redis;
+namespace Platform.Limiter.Redis.Models;
 
 public record LimiterModel
 {

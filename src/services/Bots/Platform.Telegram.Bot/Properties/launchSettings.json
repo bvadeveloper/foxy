@@ -14,6 +14,8 @@
 
         "Telegram:ApiKey": "key",
 
+        "RedisConnectionString": "localhost:6379",
+
         "Logging:LogLevel:Microsoft": "Debug",
         "Logging:LogLevel:System": "Debug",
         "Logging:LogLevel:Default": "Debug"

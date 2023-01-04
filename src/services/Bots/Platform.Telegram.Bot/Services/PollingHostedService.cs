@@ -6,12 +6,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Publisher.Abstractions;
 using Platform.Contract.Collector;
+using Platform.Limiter.Redis.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Primitive;
 using Platform.Telegram.Bot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
 
 namespace Platform.Telegram.Bot.Services
 {
@@ -20,17 +20,20 @@ namespace Platform.Telegram.Bot.Services
         private readonly IServiceProvider _serviceProvider;
         private readonly QueuedUpdateReceiver _updateReceiver;
         private readonly ITelegramBotClient _botClient;
+        private readonly IRequestLimiter _requestLimiter;
         private readonly ILogger _logger;
 
         public PollingHostedService(
             IServiceProvider serviceProvider,
             QueuedUpdateReceiver updateReceiver,
             ITelegramBotClient botClient,
+            IRequestLimiter requestLimiter,
             ILogger<PollingHostedService> logger)
         {
             _serviceProvider = serviceProvider;
             _updateReceiver = updateReceiver;
             _botClient = botClient;
+            _requestLimiter = requestLimiter;
             _logger = logger;
         }
 
@@ -41,30 +44,49 @@ namespace Platform.Telegram.Bot.Services
                 await foreach (var update in _updateReceiver.WithCancellation(cancellationToken))
                 {
                     if (update.Message is not { } message) continue;
+
                     try
                     {
-                        // todo: workaround for resolving scoped service from singleton lifetime scope 
-                        using var scope = _serviceProvider.CreateScope();
+                        if (message.From is { IsBot: true })
+                        {
+                            await _botClient.SendTextMessageAsync(message.Chat,
+                                "Messages from the bots are not currently supported",
+                                cancellationToken: cancellationToken);
+                        }
 
-                        var messageContext = scope.ServiceProvider.GetRequiredService<TraceContext>();
-                        var publishClient = scope.ServiceProvider.GetRequiredService<IPublishClient>();
+                        if (await _requestLimiter.Acquire(MessageExtensions.MakeInput(message.From)))
+                        {
+                            // todo: workaround for resolving scoped service from singleton lifetime scope 
+                            using var scope = _serviceProvider.CreateScope();
 
-                        var profiles = message.Text
-                            .ToTarget()
-                            .Validate()
-                            .MakeProfiles<DomainCollectorProfile>(messageContext
-                                .FillSession(message.Chat.Id));
+                            var messageContext = scope.ServiceProvider.GetRequiredService<TraceContext>();
+                            var publishClient = scope.ServiceProvider.GetRequiredService<IPublishClient>();
 
-                        var confirmations = await publishClient.Publish(profiles).Extract();
+                            var profiles = message.Text
+                                .ToTarget()
+                                .Validate()
+                                .MakeProfiles<DomainCollectorProfile>(messageContext
+                                    .FillSession(message.Chat.Id));
 
-                        await _botClient.SendTextMessageAsync(
-                            message.Chat, string.Join(Environment.NewLine, confirmations), cancellationToken: cancellationToken);
+                            var confirmations = await publishClient.Publish(profiles).Extract();
+
+                            await _botClient.SendTextMessageAsync(
+                                message.Chat, string.Join(Environment.NewLine, confirmations),
+                                cancellationToken: cancellationToken);
+                        }
+                        else
+                        {
+                            await _botClient.SendTextMessageAsync(
+                                message.Chat, "Sorry, request limit reached, try after a couple of minutes...",
+                                cancellationToken: cancellationToken);
+                        }
                     }
                     catch (Exception e)
                     {
                         await _botClient.SendTextMessageAsync(
                             message.Chat,
-                            $"sorry, input not recognized, {e.Message.ToLower()}", cancellationToken: cancellationToken);
+                            $"sorry, input not recognized, {e.Message.ToLower()}",
+                            cancellationToken: cancellationToken);
                     }
                 }
             }
