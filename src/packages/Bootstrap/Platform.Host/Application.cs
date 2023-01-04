@@ -39,6 +39,7 @@ namespace Platform.Host
                                 configurationBuilder
                                     .SetBasePath(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName)
                                     .AddJsonFile("tools.json", optional: true, reloadOnChange: true)
+                                    .AddJsonFile("limiter.json", optional: true, reloadOnChange: true)
                                     .AddEnvironmentVariables();
                             });
                         builder.UseCompositeStartup(DefaultStartups.Concat(startups).ToArray());

@@ -1,0 +1,16 @@
+{
+  "Limiter": [
+    {
+      "hash": "0000001",
+      "nickname": "foxy",
+      "description": "owner",
+      "type": "admin"
+    },
+    {
+      "hash": "0000002",
+      "name": "chuck berry",
+      "description": "advanced user",
+      "type": "advanced"
+    }
+  ]
+}

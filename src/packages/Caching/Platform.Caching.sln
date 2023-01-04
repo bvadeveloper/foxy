@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED69B3E8-DB61-46F3-87CE-0607E6428722}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+		stylecop.json = stylecop.json
+		stylecop.ruleset = stylecop.ruleset
+		docker-compose.deps.yaml = docker-compose.deps.yaml
+		Makefile = Makefile
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{719578A3-11D4-4078-8EB5-21C83B6FC917}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{310633E1-95B4-454A-BE24-4B5683DD3796}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Caching.Abstractions", "src\Shared.Caching.Abstractions\Shared.Caching.Abstractions.csproj", "{790F0F3C-37DF-449E-994F-AFAE72FBB559}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Caching.IntegrationTests", "tests\Shared.Caching.IntegrationTests\Shared.Caching.IntegrationTests.csproj", "{D131018C-5452-4BA5-8BA8-B208E6BE0A84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Caching.UnitTests", "tests\Shared.Caching.UnitTests\Shared.Caching.UnitTests.csproj", "{AFB7B66B-A9FF-41E3-A211-F95CF8DD23F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Caching.Redis", "src\Shared.Caching.Redis\Shared.Caching.Redis.csproj", "{CEF159E9-33CB-4977-961C-F559E623DCA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{790F0F3C-37DF-449E-994F-AFAE72FBB559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{790F0F3C-37DF-449E-994F-AFAE72FBB559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{790F0F3C-37DF-449E-994F-AFAE72FBB559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{790F0F3C-37DF-449E-994F-AFAE72FBB559}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D131018C-5452-4BA5-8BA8-B208E6BE0A84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D131018C-5452-4BA5-8BA8-B208E6BE0A84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D131018C-5452-4BA5-8BA8-B208E6BE0A84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D131018C-5452-4BA5-8BA8-B208E6BE0A84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFB7B66B-A9FF-41E3-A211-F95CF8DD23F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFB7B66B-A9FF-41E3-A211-F95CF8DD23F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFB7B66B-A9FF-41E3-A211-F95CF8DD23F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFB7B66B-A9FF-41E3-A211-F95CF8DD23F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEF159E9-33CB-4977-961C-F559E623DCA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEF159E9-33CB-4977-961C-F559E623DCA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEF159E9-33CB-4977-961C-F559E623DCA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEF159E9-33CB-4977-961C-F559E623DCA5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{790F0F3C-37DF-449E-994F-AFAE72FBB559} = {719578A3-11D4-4078-8EB5-21C83B6FC917}
+		{D131018C-5452-4BA5-8BA8-B208E6BE0A84} = {310633E1-95B4-454A-BE24-4B5683DD3796}
+		{AFB7B66B-A9FF-41E3-A211-F95CF8DD23F3} = {310633E1-95B4-454A-BE24-4B5683DD3796}
+		{CEF159E9-33CB-4977-961C-F559E623DCA5} = {719578A3-11D4-4078-8EB5-21C83B6FC917}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {80D158F0-6FBF-4E3C-8E1B-C6A50506D28F}
+	EndGlobalSection
+EndGlobal

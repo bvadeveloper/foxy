@@ -8,6 +8,7 @@ ProjectSection(SolutionItems) = preProject
 	src\services\tools.json = src\services\tools.json
 	docker-compose.yml = docker-compose.yml
 	Makefile = Makefile
+	src\services\limiter.json = src\services\limiter.json
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D170892B-9BBB-4E43-AD65-34C765256436}"
@@ -84,6 +85,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infra", "infra", "{57437F5E
 		infra\outputs.tf = infra\outputs.tf
 		infra\provider.tf = infra\provider.tf
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{AD43C259-F8D6-4701-8E8E-2B192A6EBC99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Caching.Abstractions", "src\packages\Caching\src\Platform.Caching.Abstractions\Platform.Caching.Abstractions.csproj", "{275F2C91-0CF6-4D52-A3B5-DF770F4B4C7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Caching.Redis", "src\packages\Caching\src\Platform.Caching.Redis\Platform.Caching.Redis.csproj", "{8257CA74-F70A-40A5-9880-91D87C984417}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Limiter", "Limiter", "{BDFFF958-2675-471A-A409-344870F35FEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Limiter.Redis", "src\packages\Limiter\Platform.Limiter.Redis\Platform.Limiter.Redis.csproj", "{73BAC263-65D6-4CAA-B3CA-CB56D274AB1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -171,6 +182,18 @@ Global
 		{A9B560EB-1764-4DFD-BC50-89A325D93034}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9B560EB-1764-4DFD-BC50-89A325D93034}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9B560EB-1764-4DFD-BC50-89A325D93034}.Release|Any CPU.Build.0 = Release|Any CPU
+		{275F2C91-0CF6-4D52-A3B5-DF770F4B4C7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{275F2C91-0CF6-4D52-A3B5-DF770F4B4C7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{275F2C91-0CF6-4D52-A3B5-DF770F4B4C7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{275F2C91-0CF6-4D52-A3B5-DF770F4B4C7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8257CA74-F70A-40A5-9880-91D87C984417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8257CA74-F70A-40A5-9880-91D87C984417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8257CA74-F70A-40A5-9880-91D87C984417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8257CA74-F70A-40A5-9880-91D87C984417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73BAC263-65D6-4CAA-B3CA-CB56D274AB1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73BAC263-65D6-4CAA-B3CA-CB56D274AB1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73BAC263-65D6-4CAA-B3CA-CB56D274AB1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73BAC263-65D6-4CAA-B3CA-CB56D274AB1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{06AB5CCD-BDE9-44CC-8DE6-EFEAB92D4A48} = {D170892B-9BBB-4E43-AD65-34C765256436}
@@ -204,5 +227,10 @@ Global
 		{F057DAF0-700C-4A3D-B9FF-5B0038B9C3EB} = {037EA4A1-18EA-4FC0-90BF-73DAF6351637}
 		{CD35B567-CD07-484F-B889-AE2C9EF58C70} = {B559AB1A-F320-41EE-990D-C2467C0C3B5D}
 		{A9B560EB-1764-4DFD-BC50-89A325D93034} = {B559AB1A-F320-41EE-990D-C2467C0C3B5D}
+		{AD43C259-F8D6-4701-8E8E-2B192A6EBC99} = {BDBDCECF-6856-49A3-A19A-BEC931D1093E}
+		{275F2C91-0CF6-4D52-A3B5-DF770F4B4C7C} = {AD43C259-F8D6-4701-8E8E-2B192A6EBC99}
+		{8257CA74-F70A-40A5-9880-91D87C984417} = {AD43C259-F8D6-4701-8E8E-2B192A6EBC99}
+		{BDFFF958-2675-471A-A409-344870F35FEE} = {BDBDCECF-6856-49A3-A19A-BEC931D1093E}
+		{73BAC263-65D6-4CAA-B3CA-CB56D274AB1D} = {BDFFF958-2675-471A-A409-344870F35FEE}
 	EndGlobalSection
 EndGlobal
