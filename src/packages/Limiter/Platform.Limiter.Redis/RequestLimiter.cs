@@ -15,7 +15,7 @@ public class RequestLimiter : IRequestLimiter
     /// <summary>
     /// Default time frame 1 min
     /// </summary>
-    private const int DefaultTimeFrame = 1;
+    private const int DefaultTimeFrame = 60;
 
     private readonly IRedisConnection _redisConnection;
     private readonly IEnumerable<LimiterModel> _limiterModels;
@@ -40,8 +40,7 @@ public class RequestLimiter : IRequestLimiter
             return await HasLimit(hash, DefaultTimeFrame, 10);
         }
 
-        // count of requests for a new user is 1 rpm
-        return await HasLimit(hash, DefaultTimeFrame, 1);
+        return await HasLimit(hash, DefaultTimeFrame, 2);
     }
 
     private async Task<bool> HasLimit(string input, int timeFrame, int permitCount) =>

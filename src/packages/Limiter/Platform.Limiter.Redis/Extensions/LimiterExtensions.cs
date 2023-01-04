@@ -26,7 +26,8 @@ namespace Platform.Limiter.Redis.Extensions
                 redis.call('EXPIRE', @key, @timeFrame)
                 return 0
             end
-            return 1";
+            return 1
+            ";
 
         /// <summary>
         /// Make hash by string

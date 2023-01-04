@@ -52,37 +52,40 @@ namespace Platform.Telegram.Bot.Services
                             await _botClient.SendTextMessageAsync(message.Chat,
                                 "Messages from the bots are not currently supported",
                                 cancellationToken: cancellationToken);
+
+                            continue;
                         }
 
                         if (await _requestLimiter.Acquire(MessageExtensions.MakeInput(message.From)))
                         {
-                            // todo: workaround for resolving scoped service from singleton lifetime scope 
-                            using var scope = _serviceProvider.CreateScope();
-
-                            var messageContext = scope.ServiceProvider.GetRequiredService<TraceContext>();
-                            var publishClient = scope.ServiceProvider.GetRequiredService<IPublishClient>();
-
-                            var profiles = message.Text
-                                .ToTarget()
-                                .Validate()
-                                .MakeProfiles<DomainCollectorProfile>(messageContext
-                                    .FillSession(message.Chat.Id));
-
-                            var confirmations = await publishClient.Publish(profiles).Extract();
-
-                            await _botClient.SendTextMessageAsync(
-                                message.Chat, string.Join(Environment.NewLine, confirmations),
-                                cancellationToken: cancellationToken);
-                        }
-                        else
-                        {
                             await _botClient.SendTextMessageAsync(
                                 message.Chat, "Sorry, request limit reached, try after a couple of minutes...",
                                 cancellationToken: cancellationToken);
+
+                            continue;
                         }
+
+                        // todo: workaround for resolving scoped service from singleton lifetime scope 
+                        using var scope = _serviceProvider.CreateScope();
+
+                        var messageContext = scope.ServiceProvider.GetRequiredService<TraceContext>();
+                        var publishClient = scope.ServiceProvider.GetRequiredService<IPublishClient>();
+
+                        var profiles = message.Text
+                            .ToTarget()
+                            .Validate()
+                            .MakeProfiles<DomainCollectorProfile>(messageContext
+                                .FillSession(message.Chat.Id));
+
+                        var confirmations = await publishClient.Publish(profiles).Extract();
+
+                        await _botClient.SendTextMessageAsync(
+                            message.Chat, string.Join(Environment.NewLine, confirmations),
+                            cancellationToken: cancellationToken);
                     }
                     catch (Exception e)
                     {
+                        _logger.Error($"An error was thrown while message processing. '{e.Message}'", e);
                         await _botClient.SendTextMessageAsync(
                             message.Chat,
                             $"sorry, input not recognized, {e.Message.ToLower()}",
