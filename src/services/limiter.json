@@ -4,13 +4,29 @@
       "hash": "UO0Zp7YTTSh2dIr1k6T367IdDuW8ErDNOSP+KVFV47aBDKqPsReXVoN3BJMC9tDrDsAU9uSoUg/p/k83B6e6BA==",
       "nickname": "foxy",
       "description": "owner",
-      "type": "admin"
+      "type": "admin",
+      "requestRate": "100"
     },
     {
       "hash": "0000002",
-      "name": "chuck berry",
+      "name": "alice",
       "description": "advanced user",
-      "type": "advanced"
+      "type": "advanced",
+      "requestRate": "10"
+    },
+    {
+      "hash": "0000003",
+      "name": "bob",
+      "description": "new user",
+      "type": "newcomer",
+      "requestRate": "5"
+    },
+    {
+      "hash": "default",
+      "name": "default",
+      "description": "new user",
+      "type": "default",
+      "requestRate": "2"
     }
   ]
 }

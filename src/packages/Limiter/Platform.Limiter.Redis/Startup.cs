@@ -14,7 +14,8 @@ namespace Platform.Limiter.Redis
 
         public void ConfigureServices(IServiceCollection services) =>
             services
-                .Configure<List<LimiterModel>>(options => Configuration.GetSection("Limiter").Bind(options))
-                .AddSingleton<IRequestLimiter, RequestLimiter>();
+                .Configure<List<PermissionModel>>(options => Configuration.GetSection("Limiter").Bind(options))
+                .AddSingleton<IRequestLimiter, RequestLimiter>()
+                .AddSingleton<IPermissionRepository, PermissionRepository>();
     }
 }

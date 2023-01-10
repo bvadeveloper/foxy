@@ -1,11 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using Platform.Caching.Redis.Internal;
 using Platform.Limiter.Redis.Abstractions;
 using Platform.Limiter.Redis.Extensions;
-using Platform.Limiter.Redis.Models;
 using StackExchange.Redis;
 
 namespace Platform.Limiter.Redis;
@@ -18,29 +14,20 @@ public class RequestLimiter : IRequestLimiter
     private const int DefaultTimeFrame = 60;
 
     private readonly IRedisConnection _redisConnection;
-    private readonly IEnumerable<LimiterModel> _limiterModels;
+    private readonly IPermissionRepository _permissionRepository;
 
-    public RequestLimiter(IRedisConnection redisConnection, IOptions<List<LimiterModel>> options)
+    public RequestLimiter(IRedisConnection redisConnection, IPermissionRepository permissionRepository)
     {
         _redisConnection = redisConnection;
-        _limiterModels = options.Value;
+        _permissionRepository = permissionRepository;
     }
 
     public async Task<bool> Acquire(string input)
     {
         var hash = input.MakeHash();
+        var permissionModel = _permissionRepository.FindPermission(hash);
 
-        if (_limiterModels.Any(m => m.Hash == hash && m.Type == UserType.Admin))
-        {
-            return false;
-        }
-
-        if (_limiterModels.Any(m => m.Hash == hash && m.Type == UserType.Advanced))
-        {
-            return await HasLimit(hash, DefaultTimeFrame, 10);
-        }
-
-        return await HasLimit(hash, DefaultTimeFrame, 2);
+        return await HasLimit(hash, DefaultTimeFrame, permissionModel.RequestRate);
     }
 
     private async Task<bool> HasLimit(string input, int timeFrame, int permitCount) =>
