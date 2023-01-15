@@ -1,10 +1,9 @@
-using System.Net;
 using Platform.Contract.Abstractions;
 using Platform.Primitive;
 
-namespace Platform.Contract.Scanner
+namespace Platform.Contract
 {
-    public abstract class ScanProfile : ITarget, IToolProfile
+    public class DomainTarget : ITarget, IToolProfile
     {
         public string Target { get; set; }
 

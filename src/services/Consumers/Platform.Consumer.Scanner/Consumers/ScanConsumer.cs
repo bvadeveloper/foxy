@@ -39,7 +39,7 @@ namespace Platform.Consumer.Scanner.Consumers
             await PublishReportProfile(profile, outputs);
         }
 
-        private async Task PublishReportProfile(ITargetProfile profile, IEnumerable<OutputModel> outputs)
+        private async Task PublishReportProfile(ITarget profile, IEnumerable<OutputModel> outputs)
         {
             var reports = outputs
                 .Where(model => model.Successful)
@@ -53,7 +53,7 @@ namespace Platform.Consumer.Scanner.Consumers
 
             await _publishClient.Publish(new ReportProfile
             {
-                TraceContext = profile.TraceContext,
+                SessionContext = profile.SessionContext,
                 Target = profile.Target,
                 Reports = reports
             });

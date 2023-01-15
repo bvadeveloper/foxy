@@ -12,6 +12,7 @@ namespace Platform.Telegram.Bot
                 typeof(Platform.Bus.Subscriber.Startup),
                 typeof(Platform.Caching.Redis.Startup),
                 typeof(Platform.Limiter.Redis.Startup),
+                typeof(Platform.Validation.Fluent.Startup),
                 typeof(Startup),
             };
 

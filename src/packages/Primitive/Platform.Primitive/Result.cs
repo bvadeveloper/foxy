@@ -46,7 +46,7 @@ namespace Platform.Primitive
             return this;
         }
 
-        public Result<TValue> Context(TraceContext context)
+        public Result<TValue> Context(SessionContext context)
         {
             TraceId = context.TraceId;
             return this;
@@ -57,5 +57,7 @@ namespace Platform.Primitive
     {
         public static async Task<IEnumerable<T>> Extract<T>(this Task<Result<T>[]> task) =>
             (await task).Select(result => result.Value);
+
+        public static async Task<T> Extract<T>(this Task<Result<T>> task) => (await task).Value;
     }
 }

@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
-using Platform.Validation.Fluent;
+using System.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -39,7 +40,7 @@ namespace Platform.Telegram.Bot.Extensions
                     var botClient = provider.GetRequiredService<ITelegramBotClient>();
                     return new QueuedUpdateReceiver(botClient, receiverOptions);
                 })
-                .AddHostedService<PollingHostedService>();
+                .AddHostedService<PollingMessageService>();
 
             return services;
         }
@@ -70,42 +71,26 @@ namespace Platform.Telegram.Bot.Extensions
             }
         }
 
-        internal static TraceContext FillSession(this TraceContext context, long id)
+        internal static SessionContext FillSession(this SessionContext context, long id)
         {
             context.ChatId = id;
-
             return context;
         }
 
-        internal static TargetModel ToTarget(this string message) =>
-            new()
-            {
-                Targets = message
-                    .Split(Environment.NewLine)
-                    .AsParallel()
-                    .Where(t => !string.IsNullOrWhiteSpace(t))
-                    .Select(t =>
-                        t.Trim()
-                            .TrimEnd('/')
-                            .Replace("http://", "")
-                            .Replace("https://", ""))
-                    .ToArray()
-            };
-
-        internal static TargetModel Validate(this TargetModel model)
-        {
-            var validator = new TargetModelValidator();
-            var result = validator.Validate(model);
-            return result.IsValid
-                ? model
-                : throw new ArgumentException(
-                    "validation not passed, please use only valid domain names or IPv4 addresses");
-        }
+        internal static IImmutableList<ITarget> ToTargets(this string message, SessionContext sessionContext) =>
+            message
+                .Split(Environment.NewLine)
+                .Where(t => !string.IsNullOrWhiteSpace(t))
+                .Select(t =>
+                    t.Trim()
+                        .TrimEnd('/')
+                        .Replace("http://", "")
+                        .Replace("https://", ""))
+                .Select<string, ITarget>(target => IPAddress.TryParse(target, out var ipAddress)
+                    ? new IpTarget { Target = ipAddress.ToString(), SessionContext = sessionContext }
+                    : new DomainTarget { Target = target, SessionContext = sessionContext })
+                .ToImmutableList();
 
         internal static string MakeInput(User? user) => $"{user.FirstName}:{user.Id}";
-        
-        internal static IEnumerable<TProfile> MakeProfiles<TProfile>(this TargetModel targetModel, TraceContext sessionContext)
-            where TProfile : ITargetProfile, IToolProfile, new() =>
-            targetModel.Targets.Select(target => new TProfile { Target = target, TraceContext = sessionContext, Tools = Array.Empty<string>() });
     }
 }

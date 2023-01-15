@@ -1,4 +1,5 @@
-﻿using Platform.Contract.Reporter;
+﻿using System.Net;
+using Platform.Contract.Reporter;
 using Platform.Contract.Reporter.Abstractions;
 using Platform.Primitive;
 
@@ -6,7 +7,7 @@ namespace Platform.Contract.Telegram
 {
     public class TelegramProfile : IReportProfile
     {
-        public TraceContext TraceContext { get; set; }
+        public SessionContext SessionContext { get; set; }
 
         public string Target { get; set; }
 

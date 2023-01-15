@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyNetQ.AutoSubscribe;
-using Platform.Contract.Collector;
 using Platform.Contract.Reporter;
 using Platform.Contract.Scanner;
 using Platform.Tools;
@@ -12,12 +11,13 @@ using Platform.Tools.Abstractions;
 using Platform.Tools.Models;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Publisher.Abstractions;
+using Platform.Contract;
 using Platform.Contract.Abstractions;
 using Platform.Contract.Enums;
 
 namespace Platform.Consumer.Collector.Consumers
 {
-    public class CollectorConsumer : IConsumeAsync<DomainCollectorProfile>
+    public class CollectorConsumer : IConsumeAsync<DomainTarget>
     {
         private readonly IToolsHolder _toolsHolder;
         private readonly IPublishClient _publishClient;
@@ -33,7 +33,7 @@ namespace Platform.Consumer.Collector.Consumers
             _logger = logger;
         }
 
-        public async Task ConsumeAsync(DomainCollectorProfile profile, CancellationToken cancellationToken = new())
+        public async Task ConsumeAsync(DomainTarget profile, CancellationToken cancellationToken = new())
         {
             // todo: move to common area
 
@@ -67,18 +67,18 @@ namespace Platform.Consumer.Collector.Consumers
             }
         }
 
-        private async Task PublishScanProfile(DomainCollectorProfile profile, Dictionary<TargetType, List<string>> tags = default)
+        private async Task PublishScanProfile(DomainTarget profile, Dictionary<TargetType, List<string>> tags = default)
         {
             await _publishClient.Publish(new DomainScanProfile
             {
-                TraceContext = profile.TraceContext,
+                SessionContext = profile.SessionContext,
                 Target = profile.Target,
                 Tools = profile.Tools,
                 Tags = tags
             });
         }
 
-        private async Task PublishReportProfile(ITargetProfile profile, IEnumerable<OutputModel> outputs)
+        private async Task PublishReportProfile(ITarget profile, IEnumerable<OutputModel> outputs)
         {
             var reports = outputs
                 .Where(toolOutput => toolOutput.Successful)
@@ -92,7 +92,7 @@ namespace Platform.Consumer.Collector.Consumers
 
             await _publishClient.Publish(new ReportProfile
             {
-                TraceContext = profile.TraceContext,
+                SessionContext = profile.SessionContext,
                 Target = profile.Target,
                 Reports = reports
             });

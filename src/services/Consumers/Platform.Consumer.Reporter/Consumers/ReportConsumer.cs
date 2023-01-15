@@ -34,7 +34,7 @@ namespace Platform.Consumer.Reporter.Consumers
             var (fileName, fileBody) = await _reportService.MakeFileReport(profile.Target, profile.Reports);
             await _publishClient.Publish(new TelegramProfile
             {
-                TraceContext = profile.TraceContext,
+                SessionContext = profile.SessionContext,
                 Target = profile.Target,
                 FileBody = fileBody,
                 FileName = fileName

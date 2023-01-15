@@ -1,11 +1,12 @@
-﻿using Platform.Contract.Reporter.Abstractions;
+﻿using System.Net;
+using Platform.Contract.Reporter.Abstractions;
 using Platform.Primitive;
 
 namespace Platform.Contract.Reporter
 {
     public class ReportProfile : IReportProfile
     {
-        public TraceContext TraceContext { get; set; }
+        public SessionContext SessionContext { get; set; }
 
         public string Target { get; set; }
 

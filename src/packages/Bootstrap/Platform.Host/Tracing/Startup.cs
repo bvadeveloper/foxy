@@ -8,11 +8,11 @@ namespace Platform.Host.Tracing
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped(_ => new StrongBox<TraceContext?>(TraceContext.Empty()));
-            services.AddScoped<TraceContext>(sp =>
+            services.AddScoped(_ => new StrongBox<SessionContext?>(SessionContext.Init()));
+            services.AddScoped<SessionContext>(sp =>
             {
-                var box = sp.GetService<StrongBox<TraceContext?>>();
-                return box?.Value ?? TraceContext.Init();
+                var box = sp.GetService<StrongBox<SessionContext?>>();
+                return box?.Value ?? SessionContext.Init();
             });
         }
     }

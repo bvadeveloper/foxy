@@ -2,10 +2,10 @@ using Platform.Primitive;
 
 namespace Platform.Contract.Abstractions
 {
-    public interface ITargetProfile
+    public interface ITarget
     {
         string Target { get; set; }
         
-        TraceContext TraceContext { get; set; }
+        SessionContext SessionContext { get; set; }
     }
 }

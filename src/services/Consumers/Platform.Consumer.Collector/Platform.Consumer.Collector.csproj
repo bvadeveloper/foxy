@@ -27,7 +27,6 @@
         <ProjectReference Include="..\..\..\packages\Bootstrap\Platform.Host\Platform.Host.csproj" />
         <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Publisher\Platform.Bus.Publisher.csproj" />
         <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Subscriber\Platform.Bus.Subscriber.csproj" />
-        <ProjectReference Include="..\..\..\packages\Contracts\Platform.Contract.Collector\Platform.Contract.Collector.csproj" />
         <ProjectReference Include="..\..\..\packages\Contracts\Platform.Contract.Reporter\Platform.Contract.Reporter.csproj" />
         <ProjectReference Include="..\..\..\packages\Contracts\Platform.Contract.Scanner\Platform.Contract.Scanner.csproj" />
         <ProjectReference Include="..\..\..\packages\Tools\Platform.Tools\Platform.Tools.csproj" />

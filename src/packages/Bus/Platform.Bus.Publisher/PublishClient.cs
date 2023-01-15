@@ -23,10 +23,10 @@ namespace Platform.Bus.Publisher
             _logger = logger;
         }
 
-        public async Task<Result<string>[]> Publish<TProfile>(IEnumerable<TProfile> profiles) where TProfile : ITargetProfile =>
+        public async Task<Result<string>[]> Publish<TProfile>(IEnumerable<TProfile> profiles) where TProfile : ITarget =>
             await Task.WhenAll(profiles.Select(Publish));
 
-        public async Task<Result<string>> Publish<TProfile>(TProfile profiles) where TProfile : ITargetProfile
+        public async Task<Result<string>> Publish<TProfile>(TProfile profiles) where TProfile : ITarget
         {
             try
             {

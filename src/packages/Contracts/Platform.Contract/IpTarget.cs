@@ -1,14 +1,14 @@
 using Platform.Contract.Abstractions;
 using Platform.Primitive;
 
-namespace Platform.Contract.Collector
+namespace Platform.Contract
 {
-    public class DomainCollectorProfile : ITargetProfile, IToolProfile
+    public class IpTarget : ITarget, IToolProfile
     {
         public string Target { get; set; }
 
         public string[] Tools { get; set; }
 
-        public TraceContext TraceContext { get; set; }
+        public SessionContext SessionContext { get; set; }
     }
 }
