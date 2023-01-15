@@ -7,9 +7,10 @@ namespace Platform.Validation.Fluent.Rules
     {
         public DomainTargetValidator()
         {
-            RuleFor(model => model.Target)
+            RuleFor(model => model.Value)
                 .NotNull()
                 .NotEmpty()
+                .Custom(DomainNameStaticValidator.Validate)
                 .Custom((text, context) =>
                 {
                     if (string.IsNullOrWhiteSpace(text)

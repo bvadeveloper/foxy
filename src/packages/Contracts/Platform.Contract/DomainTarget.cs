@@ -3,9 +3,9 @@ using Platform.Primitive;
 
 namespace Platform.Contract
 {
-    public class DomainTarget : ITarget, IToolProfile
+    public record DomainTarget : ITarget, IToolProfile
     {
-        public string Target { get; set; }
+        public string Value { get; set; }
 
         public string[] Tools { get; set; }
 

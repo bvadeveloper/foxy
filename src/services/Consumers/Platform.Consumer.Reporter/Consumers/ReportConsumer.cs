@@ -31,11 +31,11 @@ namespace Platform.Consumer.Reporter.Consumers
 
         private async Task PublishTelegramProfile(IReportProfile profile)
         {
-            var (fileName, fileBody) = await _reportService.MakeFileReport(profile.Target, profile.Reports);
+            var (fileName, fileBody) = await _reportService.MakeFileReport(profile.Value, profile.Reports);
             await _publishClient.Publish(new TelegramProfile
             {
                 SessionContext = profile.SessionContext,
-                Target = profile.Target,
+                Value = profile.Value,
                 FileBody = fileBody,
                 FileName = fileName
             });

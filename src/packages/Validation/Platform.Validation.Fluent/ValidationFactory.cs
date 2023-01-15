@@ -23,25 +23,22 @@ public class ValidationFactory : IValidationFactory
         _types = Assembly.GetExecutingAssembly().GetTypes();
     }
 
-    public IImmutableList<ITarget> Validate(IImmutableList<ITarget> targets) =>
+    public IImmutableList<(ITarget, bool)> Validate(IImmutableList<ITarget> targets) =>
         targets
-            .Where(target =>
+            .Select(target =>
             {
                 var genericValidationType = typeof(IValidator<>).MakeGenericType(target.GetType());
                 var methodInfo = genericValidationType.GetMethod("Validate");
                 var validatorType = _types.FirstOrDefault(x =>
                     genericValidationType.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
-
                 var instance = Activator.CreateInstance(validatorType);
-                var validationResult = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
+                var result = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
                     new[] { target }, CultureInfo.InvariantCulture);
 
-                if (!validationResult.IsValid)
-                {
-                    _logger.Warn($"Validation failed for '{target.Target}', '{validationResult.Errors.ToString()}'");
-                }
+                if (!result.IsValid)
+                    _logger.Warn($"Validation failed for '{target.Value}', trace id '{target.SessionContext.TraceId}', '{result.ToString()}'");
 
-                return validationResult.IsValid;
+                return (target, result.IsValid);
                 
             }).ToImmutableList();
 }

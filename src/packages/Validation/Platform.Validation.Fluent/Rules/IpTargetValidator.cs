@@ -8,16 +8,18 @@ namespace Platform.Validation.Fluent.Rules
     {
         public IpTargetValidator()
         {
-            RuleFor(model => model.Target).NotNull().NotEmpty();
-            RuleFor(model => model.Target).NotEmpty().Custom((text, context) =>
-            {
-                if (string.IsNullOrWhiteSpace(text)
-                    || text.Length > 1024
-                    || IsPrivateIp(text))
+            RuleFor(model => model.Value)
+                .NotNull()
+                .NotEmpty()
+                .Custom((text, context) =>
                 {
-                    context.AddFailure("not valid symbols caught");
-                }
-            });
+                    if (string.IsNullOrWhiteSpace(text)
+                        || text.Length > 1024
+                        || IsPrivateIp(text))
+                    {
+                        context.AddFailure("not valid symbols caught");
+                    }
+                });
         }
 
         private static bool IsPrivateIp(string text) =>

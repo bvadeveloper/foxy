@@ -6,7 +6,7 @@ namespace Platform.Contract.Scanner
 {
     public abstract class ScanProfile : ITarget, IToolProfile
     {
-        public string Target { get; set; }
+        public string Value { get; set; }
 
         public string[] Tools { get; set; }
 

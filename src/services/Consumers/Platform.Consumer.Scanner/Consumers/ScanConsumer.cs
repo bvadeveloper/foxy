@@ -30,11 +30,11 @@ namespace Platform.Consumer.Scanner.Consumers
 
         public async Task ConsumeAsync(DomainScanProfile profile, CancellationToken cancellationToken = new())
         {
-            _logger.Trace($"Run scan tools for target '{profile.Target}'");
+            _logger.Trace($"Run scan tools for target '{profile.Value}'");
 
             var outputs = await _toolsHolder
                 .FilterByTargetMarks(profile.Tags)
-                .RunTools(profile.Target);
+                .RunTools(profile.Value);
 
             await PublishReportProfile(profile, outputs);
         }
@@ -54,7 +54,7 @@ namespace Platform.Consumer.Scanner.Consumers
             await _publishClient.Publish(new ReportProfile
             {
                 SessionContext = profile.SessionContext,
-                Target = profile.Target,
+                Value = profile.Value,
                 Reports = reports
             });
         }

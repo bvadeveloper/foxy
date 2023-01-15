@@ -12,7 +12,6 @@ using Platform.Telegram.Bot.Extensions;
 using Platform.Validation.Fluent.Abstractions;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
-using Telegram.Bot.Types.Enums;
 
 namespace Platform.Telegram.Bot.Services
 {
@@ -51,52 +50,45 @@ namespace Platform.Telegram.Bot.Services
 
                     if (message.From is { IsBot: true })
                     {
-                        await _botClient.SendTextMessageAsync(message.Chat,
-                            "Messages from the bots are not currently supported",
-                            cancellationToken: cancellationToken);
+                        await _botClient.Say(message.Chat, "messages from the bots are not currently supported", cancellationToken);
 
                         continue;
                     }
 
                     try
                     {
+                        _logger.Trace($"Input '{message.Text}'");
+                        
                         // todo: workaround for resolving scoped service from singleton lifetime scope 
                         using var scope = _serviceProvider.CreateScope();
 
                         var context = scope.ServiceProvider.GetRequiredService<SessionContext>().FillSession(message.Chat.Id);
                         var publishClient = scope.ServiceProvider.GetRequiredService<IPublishClient>();
 
-                        var targets = _validationFactory.Validate(message.Text.ToTargets(context));
+                        var validationResults = _validationFactory.Validate(message.Text.ToTargets(context));
 
-                        foreach (var target in targets)
+                        foreach (var (target, isValid) in validationResults)
                         {
-                            if (await _requestLimiter.Acquire(MessageExtensions.MakeInput(message.From)))
+                            if (isValid)
                             {
-                                await _botClient.SendTextMessageAsync(
-                                    message.Chat, "Sorry, request limit reached, try after a couple of minutes...",
-                                    cancellationToken: cancellationToken);
+                                if (await _requestLimiter.Acquire(MessageExtensions.MakeInput(message.From)))
+                                {
+                                    await _botClient.Say(message.Chat, "request limit reached, please try again in a couple of minutes", cancellationToken);
+                                    break;
+                                }
 
-                                break;
+                                var confirmations = await publishClient.Publish(target).Extract();
+                                await _botClient.Say(message.Chat, confirmations, cancellationToken);
                             }
-
-                            await _botClient.SendChatActionAsync(message.Chat, ChatAction.Typing,
-                                cancellationToken: cancellationToken);
-
-                            var confirmations = await publishClient.Publish(target).Extract();
-
-                            await _botClient.SendTextMessageAsync(message.Chat,
-                                string.Join(Environment.NewLine, confirmations),
-                                cancellationToken: cancellationToken);
+                            else
+                            {
+                                await _botClient.Say(message.Chat, $"{target.Value} - validation failed, please use valid domain names or IP address", cancellationToken);
+                            }
                         }
                     }
                     catch (Exception e)
                     {
                         _logger.Error($"An error was thrown while message processing. '{e.Message}'", e);
-
-                        await _botClient.SendTextMessageAsync(
-                            message.Chat,
-                            $"sorry, input not recognized, {e.Message.ToLower()}",
-                            cancellationToken: cancellationToken);
                     }
                 }
             }

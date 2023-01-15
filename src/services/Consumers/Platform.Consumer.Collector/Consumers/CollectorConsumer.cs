@@ -45,7 +45,7 @@ namespace Platform.Consumer.Collector.Consumers
             else
             {
                 // 1. start collect tools, fill target tags
-                var (outputs, tags) = await CollectTargetTags(profile.Target);
+                var (outputs, tags) = await CollectTargetTags(profile.Value);
 
                 if (tags.ContainsKey(TargetType.NotAvailable))
                 {
@@ -72,7 +72,7 @@ namespace Platform.Consumer.Collector.Consumers
             await _publishClient.Publish(new DomainScanProfile
             {
                 SessionContext = profile.SessionContext,
-                Target = profile.Target,
+                Value = profile.Value,
                 Tools = profile.Tools,
                 Tags = tags
             });
@@ -93,7 +93,7 @@ namespace Platform.Consumer.Collector.Consumers
             await _publishClient.Publish(new ReportProfile
             {
                 SessionContext = profile.SessionContext,
-                Target = profile.Target,
+                Value = profile.Value,
                 Reports = reports
             });
         }

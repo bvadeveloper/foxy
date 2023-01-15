@@ -8,7 +8,7 @@ namespace Platform.Contract.Reporter
     {
         public SessionContext SessionContext { get; set; }
 
-        public string Target { get; set; }
+        public string Value { get; set; }
 
         public ReportModel[] Reports { get; set; }
     }

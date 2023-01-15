@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -14,6 +16,7 @@ using Platform.Telegram.Bot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Platform.Telegram.Bot.Extensions
 {
@@ -87,10 +90,16 @@ namespace Platform.Telegram.Bot.Extensions
                         .Replace("http://", "")
                         .Replace("https://", ""))
                 .Select<string, ITarget>(target => IPAddress.TryParse(target, out var ipAddress)
-                    ? new IpTarget { Target = ipAddress.ToString(), SessionContext = sessionContext }
-                    : new DomainTarget { Target = target, SessionContext = sessionContext })
+                    ? new IpTarget { Value = ipAddress.ToString(), SessionContext = sessionContext }
+                    : new DomainTarget { Value = target, SessionContext = sessionContext })
                 .ToImmutableList();
 
         internal static string MakeInput(User? user) => $"{user.FirstName}:{user.Id}";
+
+        internal static async Task Say(this ITelegramBotClient botClient, Chat chat, string message, CancellationToken token)
+        {
+            await botClient.SendChatActionAsync(chat, ChatAction.Typing, cancellationToken: token);
+            await botClient.SendTextMessageAsync(chat, string.Join(Environment.NewLine, message), cancellationToken: token);
+        }
     }
 }
