@@ -11,12 +11,12 @@ using Platform.Primitive;
 
 namespace Platform.Bus.Publisher
 {
-    public class PublishClient : IPublishClient
+    public class Publisher : IPublisher
     {
         private readonly IBus _bus;
         private readonly ILogger _logger;
 
-        public PublishClient(IBus bus, ILogger<PublishClient> logger)
+        public Publisher(IBus bus, ILogger<Publisher> logger)
         {
             _bus = bus;
             _logger = logger;

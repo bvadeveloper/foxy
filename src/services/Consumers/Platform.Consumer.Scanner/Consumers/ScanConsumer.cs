@@ -18,10 +18,10 @@ namespace Platform.Consumer.Scanner.Consumers
     public class ScanConsumer : IConsumeAsync<DomainScanProfile>
     {
         private readonly IToolsHolder _toolsHolder;
-        private readonly IPublishClient _publishClient;
+        private readonly IPublisher _publishClient;
         private readonly ILogger _logger;
 
-        public ScanConsumer(IToolsHolder toolsHolder, IPublishClient publishClient, ILogger<ScanConsumer> logger)
+        public ScanConsumer(IToolsHolder toolsHolder, IPublisher publishClient, ILogger<ScanConsumer> logger)
         {
             _toolsHolder = toolsHolder;
             _publishClient = publishClient;

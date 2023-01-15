@@ -12,6 +12,7 @@ using Platform.Telegram.Bot.Extensions;
 using Platform.Validation.Fluent.Abstractions;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
+using static Platform.Telegram.Bot.Extensions.MessageExtensions;
 
 namespace Platform.Telegram.Bot.Services
 {
@@ -51,7 +52,6 @@ namespace Platform.Telegram.Bot.Services
                     if (message.From is { IsBot: true })
                     {
                         await _botClient.Say(message.Chat, "messages from the bots are not currently supported", cancellationToken);
-
                         continue;
                     }
 
@@ -59,26 +59,24 @@ namespace Platform.Telegram.Bot.Services
                     {
                         _logger.Trace($"Input '{message.Text}'");
                         
-                        // todo: workaround for resolving scoped service from singleton lifetime scope 
                         using var scope = _serviceProvider.CreateScope();
-
-                        var context = scope.ServiceProvider.GetRequiredService<SessionContext>().FillSession(message.Chat.Id);
-                        var publishClient = scope.ServiceProvider.GetRequiredService<IPublishClient>();
-
-                        var validationResults = _validationFactory.Validate(message.Text.ToTargets(context));
+                        var publisher = scope.ServiceProvider.GetService<IPublisher>();
+                        var session = scope.ServiceProvider.GetService<SessionContext>().FillSession(message.Chat.Id);
+                        
+                        var validationResults = _validationFactory.Validate(message.Text!.ToTargets(session));
 
                         foreach (var (target, isValid) in validationResults)
                         {
                             if (isValid)
                             {
-                                if (await _requestLimiter.Acquire(MessageExtensions.MakeInput(message.From)))
+                                if (await _requestLimiter.Acquire(MakeInput(message.From)))
                                 {
                                     await _botClient.Say(message.Chat, "request limit reached, please try again in a couple of minutes", cancellationToken);
                                     break;
                                 }
-
-                                var confirmations = await publishClient.Publish(target).Extract();
-                                await _botClient.Say(message.Chat, confirmations, cancellationToken);
+                                
+                                var confirmation = await publisher.Publish(target).Extract();
+                                await _botClient.Say(message.Chat, confirmation, cancellationToken);
                             }
                             else
                             {

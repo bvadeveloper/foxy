@@ -8,8 +8,6 @@ namespace Platform.Primitive
 
         public long? ChatId { get; set; }
 
-        public static SessionContext Empty() => new();
-
         public static SessionContext Init() => new() { TraceId = Guid.NewGuid() };
     }
 }

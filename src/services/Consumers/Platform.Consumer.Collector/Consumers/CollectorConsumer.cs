@@ -20,12 +20,12 @@ namespace Platform.Consumer.Collector.Consumers
     public class CollectorConsumer : IConsumeAsync<DomainTarget>
     {
         private readonly IToolsHolder _toolsHolder;
-        private readonly IPublishClient _publishClient;
+        private readonly IPublisher _publishClient;
         private readonly ILogger _logger;
 
         public CollectorConsumer(
             IToolsHolder toolsHolder,
-            IPublishClient publishClient,
+            IPublisher publishClient,
             ILogger<CollectorConsumer> logger)
         {
             _toolsHolder = toolsHolder;

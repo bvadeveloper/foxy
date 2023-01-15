@@ -9,10 +9,10 @@ namespace Platform.Host.Tracing
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped(_ => new StrongBox<SessionContext?>(SessionContext.Init()));
-            services.AddScoped<SessionContext>(sp =>
+            services.AddScoped<SessionContext>(provider =>
             {
-                var box = sp.GetService<StrongBox<SessionContext?>>();
-                return box?.Value ?? SessionContext.Init();
+                var strongBox = provider.GetService<StrongBox<SessionContext?>>();
+                return strongBox?.Value ?? SessionContext.Init();
             });
         }
     }

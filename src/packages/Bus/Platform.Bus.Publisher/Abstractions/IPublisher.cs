@@ -5,7 +5,7 @@ using Platform.Primitive;
 
 namespace Platform.Bus.Publisher.Abstractions
 {
-    public interface IPublishClient
+    public interface IPublisher
     {
         Task<Result<string>[]> Publish<TProfile>(IEnumerable<TProfile> profiles) where TProfile : ITarget;
         

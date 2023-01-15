@@ -12,12 +12,12 @@ namespace Platform.Consumer.Reporter.Consumers
 {
     public class ReportConsumer : IConsumeAsync<ReportProfile>
     {
-        private readonly IPublishClient _publishClient;
+        private readonly IPublisher _publishClient;
         private readonly IReportService _reportService;
         private readonly ILogger _logger;
 
         public ReportConsumer(
-            IPublishClient publishClient,
+            IPublisher publishClient,
             IReportService reportService,
             ILogger<ReportConsumer> logger)
         {

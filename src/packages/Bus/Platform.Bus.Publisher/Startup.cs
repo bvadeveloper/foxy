@@ -18,7 +18,7 @@ public class Startup
             Configuration.GetSection("Bus").Bind(options));
 
          services
-            .AddScoped<IPublishClient, PublishClient>()
+            .AddScoped<IPublisher, Publisher>()
             .AddBus();
     }
 }
