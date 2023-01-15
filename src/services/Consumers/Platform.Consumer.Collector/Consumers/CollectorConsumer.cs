@@ -35,8 +35,6 @@ namespace Platform.Consumer.Collector.Consumers
 
         public async Task ConsumeAsync(DomainTarget profile, CancellationToken cancellationToken = new())
         {
-            // todo: move to common area
-
             if (profile.Tools.Any())
             {
                 // 1. send scan profile to scanners

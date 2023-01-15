@@ -58,11 +58,11 @@ namespace Platform.Telegram.Bot.Services
                     try
                     {
                         _logger.Trace($"Input '{message.Text}'");
-                        
+
                         using var scope = _serviceProvider.CreateScope();
                         var publisher = scope.ServiceProvider.GetService<IPublisher>();
                         var session = scope.ServiceProvider.GetService<SessionContext>().FillSession(message.Chat.Id);
-                        
+
                         var validationResults = _validationFactory.Validate(message.Text!.ToTargets(session));
 
                         foreach (var (target, isValid) in validationResults)
@@ -71,16 +71,21 @@ namespace Platform.Telegram.Bot.Services
                             {
                                 if (await _requestLimiter.Acquire(MakeInput(message.From)))
                                 {
-                                    await _botClient.Say(message.Chat, "request limit reached, please try again in a couple of minutes", cancellationToken);
+                                    await _botClient.Say(message.Chat,
+                                        "request limit reached, please try again in a couple of minutes",
+                                        cancellationToken);
+                                    
                                     break;
                                 }
-                                
+
                                 var confirmation = await publisher.Publish(target).Extract();
                                 await _botClient.Say(message.Chat, confirmation, cancellationToken);
                             }
                             else
                             {
-                                await _botClient.Say(message.Chat, $"{target.Value} - validation failed, please use valid domain names or IP address", cancellationToken);
+                                await _botClient.Say(message.Chat,
+                                    $"{target.Value} - validation failed, please use valid domain names or IP address",
+                                    cancellationToken);
                             }
                         }
                     }

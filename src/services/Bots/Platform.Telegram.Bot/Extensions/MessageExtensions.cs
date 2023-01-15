@@ -96,10 +96,11 @@ namespace Platform.Telegram.Bot.Extensions
 
         internal static string MakeInput(User? user) => $"{user.FirstName}:{user.Id}";
 
-        internal static async Task Say(this ITelegramBotClient botClient, Chat chat, string message, CancellationToken token)
+        internal static async Task Say(this ITelegramBotClient botClient, Chat chat, string message,
+            CancellationToken token)
         {
             await botClient.SendChatActionAsync(chat, ChatAction.Typing, cancellationToken: token);
-            await botClient.SendTextMessageAsync(chat, string.Join(Environment.NewLine, message), cancellationToken: token);
+            await botClient.SendTextMessageAsync(chat, message, cancellationToken: token);
         }
     }
 }

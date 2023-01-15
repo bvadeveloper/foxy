@@ -32,13 +32,13 @@ public class ValidationFactory : IValidationFactory
                 var validatorType = _types.FirstOrDefault(x =>
                     genericValidationType.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
                 var instance = Activator.CreateInstance(validatorType);
-                var result = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
+                var validationResult = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
                     new[] { target }, CultureInfo.InvariantCulture);
 
-                if (!result.IsValid)
-                    _logger.Warn($"Validation failed for '{target.Value}', trace id '{target.SessionContext.TraceId}', '{result.ToString()}'");
+                if (!validationResult.IsValid)
+                    _logger.Warn($"Validation failed for '{target.Value}', '{validationResult.ToString()}'", ("session", target.SessionContext));
 
-                return (target, result.IsValid);
+                return (target, validationResult.IsValid);
                 
             }).ToImmutableList();
 }

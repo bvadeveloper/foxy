@@ -34,7 +34,7 @@ namespace Platform.Bus.Publisher
             }
             catch (Exception e)
             {
-                _logger.Error($"An error was thrown while sending a request '{e.Message}', trace id '{target.SessionContext.TraceId}'", e);
+                _logger.Error($"An error was thrown while sending a request '{e.Message}'", e, ("session", target.SessionContext));
                 return new Result<string>().UseResult($"{target.Value} - can't process, something went wrong").Fail();
             }
         }
