@@ -3,6 +3,7 @@ using Platform.Caching.Redis.Internal;
 using Platform.Limiter.Redis.Abstractions;
 using Platform.Limiter.Redis.Extensions;
 using StackExchange.Redis;
+using static Platform.Limiter.Redis.Extensions.LimiterExtensions;
 
 namespace Platform.Limiter.Redis;
 
@@ -31,6 +32,6 @@ public class RequestLimiter : IRequestLimiter
     }
 
     private async Task<bool> HasLimit(string input, int timeFrame, int permitCount) =>
-        ((int)await _redisConnection.Database.ScriptEvaluateAsync(LimiterExtensions.SlidingScript,
+        ((int)await _redisConnection.Database.ScriptEvaluateAsync(SlidingScript,
             new { key = new RedisKey(input), timeFrame, permitCount })) == 1;
 }

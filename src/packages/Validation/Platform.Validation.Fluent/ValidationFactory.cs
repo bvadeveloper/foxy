@@ -36,7 +36,7 @@ public class ValidationFactory : IValidationFactory
                     new[] { target }, CultureInfo.InvariantCulture);
 
                 if (!validationResult.IsValid)
-                    _logger.Warn($"Validation failed for '{target.Value}', '{validationResult.ToString()}'", ("session", target.SessionContext));
+                    _logger.Warn($"Validation failed for '{target.Value}', '{validationResult}'", ("session", target.SessionContext));
 
                 return (target, validationResult.IsValid);
                 
