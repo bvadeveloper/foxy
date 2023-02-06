@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Platform.Contract.Reporter;
+﻿using Platform.Contract.Reporter;
 using Platform.Contract.Reporter.Abstractions;
 using Platform.Primitive;
 

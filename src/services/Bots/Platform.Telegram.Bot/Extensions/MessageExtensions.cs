@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Platform.Contract;
 using Platform.Contract.Abstractions;
+using Platform.Contract.Models;
+using Platform.Contract.Models.Bot;
 using Platform.Primitive;
 using Platform.Telegram.Bot.Configuration;
 using Platform.Telegram.Bot.Services;
@@ -80,18 +82,18 @@ namespace Platform.Telegram.Bot.Extensions
             return context;
         }
 
-        internal static IImmutableList<ITarget> ToTargets(this string message, SessionContext sessionContext) =>
+        internal static IImmutableList<ITarget> ToTargets(this string message) =>
             message
                 .Split(Environment.NewLine)
                 .Where(t => !string.IsNullOrWhiteSpace(t))
                 .Select(t =>
                     t.Trim()
                         .TrimEnd('/')
-                        .Replace("http://", "")
-                        .Replace("https://", ""))
+                        .Replace("https://", "")
+                        .Replace("http://", ""))
                 .Select<string, ITarget>(target => IPAddress.TryParse(target, out var ipAddress)
-                    ? new IpTarget { Value = ipAddress.ToString(), SessionContext = sessionContext }
-                    : new DomainTarget { Value = target, SessionContext = sessionContext })
+                    ? new IpTarget { Value = ipAddress.ToString() }
+                    : new DomainTarget { Value = target})
                 .ToImmutableList();
 
         internal static string MakeInput(User? user) => $"{user.FirstName}:{user.Id}";

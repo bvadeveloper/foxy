@@ -17,12 +17,12 @@ namespace Platform.Validation.Fluent.Rules
 
         private static Dictionary<string, string> Validate(this string input)
         {
-            var validationContext = new Dictionary<string, string>();
+            var context = new Dictionary<string, string>();
 
             if (string.IsNullOrEmpty(input))
             {
-                validationContext.Add("domain name", "domain name is required");
-                return validationContext;
+                context.Add("domain name", "domain name is required");
+                return context;
             }
 
             var lowerCased = input.ToLowerInvariant();
@@ -30,8 +30,8 @@ namespace Platform.Validation.Fluent.Rules
 
             if (split.Length < 2)
             {
-                validationContext.Add(input, "sld and tld should be provided");
-                return validationContext;
+                context.Add(input, "sld and tld should be provided");
+                return context;
             }
 
             var sld = split[0];
@@ -39,14 +39,14 @@ namespace Platform.Validation.Fluent.Rules
 
             if (string.IsNullOrEmpty(tld))
             {
-                validationContext.Add(input, "tld is required");
-                return validationContext;
+                context.Add(input, "tld is required");
+                return context;
             }
 
             if (string.IsNullOrEmpty(sld))
             {
-                validationContext.Add(input, "sld is required");
-                return validationContext;
+                context.Add(input, "sld is required");
+                return context;
             }
             
             // alphanumeric, hyphen, each label less than 64 chars
@@ -55,26 +55,26 @@ namespace Platform.Validation.Fluent.Rules
             {
                 if (string.IsNullOrEmpty(l))
                 {
-                    validationContext.Add(input, "empty labels are not allowed");
-                    return validationContext;
+                    context.Add(input, "empty labels are not allowed");
+                    return context;
                 }
 
                 if (l.StartsWith("-"))
                 {
-                    validationContext.Add(input, "domain label can not start with hyphen");
-                    return validationContext;
+                    context.Add(input, "domain label can not start with hyphen");
+                    return context;
                 }
 
                 if (l.EndsWith("-"))
                 {
-                    validationContext.Add(input, "domain label can not end with hyphen");
-                    return validationContext;
+                    context.Add(input, "domain label can not end with hyphen");
+                    return context;
                 }
 
                 if (l.Length > 63)
                 {
-                    validationContext.Add(input, "each label should be less or equal 63 characters");
-                    return validationContext;
+                    context.Add(input, "each label should be less or equal 63 characters");
+                    return context;
                 }
 
                 foreach (var c in from c in l
@@ -83,8 +83,8 @@ namespace Platform.Validation.Fluent.Rules
                          where c is < '0' or > '9'
                          select c)
                 {
-                    validationContext.Add(input, $"invalid character in domain name: {c}");
-                    return validationContext;
+                    context.Add(input, $"invalid character in domain name: {c}");
+                    return context;
                 }
             }
 
@@ -98,11 +98,11 @@ namespace Platform.Validation.Fluent.Rules
                 }
                 catch (Exception)
                 {
-                    validationContext.Add(input, "invalid idn name");
+                    context.Add(input, "invalid idn name");
                 }
             }
 
-            return validationContext;
+            return context;
         }
 
         private static string DnsForm(this string input)

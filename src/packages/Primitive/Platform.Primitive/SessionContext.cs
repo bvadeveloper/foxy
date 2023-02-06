@@ -2,7 +2,7 @@ using System;
 
 namespace Platform.Primitive
 {
-    public class SessionContext
+    public record SessionContext
     {
         public Guid TraceId { get; set; }
 

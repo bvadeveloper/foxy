@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Publisher.Abstractions;
+using Platform.Contract;
+using Platform.Contract.Abstractions;
+using Platform.Contract.Models;
 using Platform.Limiter.Redis.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Primitive;
@@ -63,7 +66,7 @@ namespace Platform.Telegram.Bot.Services
                         var publisher = scope.ServiceProvider.GetService<IPublisher>();
                         var session = scope.ServiceProvider.GetService<SessionContext>().FillSession(message.Chat.Id);
 
-                        var validationResults = _validationFactory.Validate(message.Text!.ToTargets(session));
+                        var validationResults = _validationFactory.Validate(message.Text!.ToTargets());
 
                         foreach (var (target, isValid) in validationResults)
                         {
@@ -77,6 +80,8 @@ namespace Platform.Telegram.Bot.Services
                                     
                                     break;
                                 }
+
+                                var messageRqm = new Message<ITarget>(target, session);
 
                                 var confirmation = await publisher.Publish(target).Extract();
                                 await _botClient.Say(message.Chat, confirmation, cancellationToken);

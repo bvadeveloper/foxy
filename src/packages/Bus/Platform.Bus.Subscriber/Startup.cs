@@ -19,9 +19,9 @@ public class Startup
             Configuration.GetSection("Bus").Bind(options));
 
         services
-            .AddHostedService<BusHostedService>()
-            .AddScoped<IAutoSubscriberMessageDispatcher, MessageDispatcher>()
-            .AddScoped<IBusSubscriber, BusSubscriber>()
+            //.AddHostedService<BusHostedService>()
+            //.AddScoped<IAutoSubscriberMessageDispatcher, MessageDispatcher>()
+            // .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddBus();
     }
 }

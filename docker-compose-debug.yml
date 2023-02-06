@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  rabbitmq:
+    image: rabbitmq:3.8-management
+    container_name: 'rabbitmq'
+    hostname: 'rabbitmq'
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - bot_network
+    environment:
+      - RABBITMQ_DEFAULT_USER=rmquser
+      - RABBITMQ_DEFAULT_PASS=rmquser
+  redis:
+    image: redis
+    container_name: 'redis'
+    hostname: 'redis'
+    ports:
+      - "6379:6379"
+    networks:
+      - bot_network
+
+networks:
+  bot_network:
+    driver: bridge

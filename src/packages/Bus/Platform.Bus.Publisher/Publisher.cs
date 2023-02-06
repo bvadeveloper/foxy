@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using EasyNetQ;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Publisher.Abstractions;
+using Platform.Contract;
 using Platform.Contract.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Primitive;
@@ -22,20 +24,18 @@ namespace Platform.Bus.Publisher
             _logger = logger;
         }
 
-        public async Task<Result<string>[]> Publish<T>(IEnumerable<T> targets) where T : ITarget =>
-            await Task.WhenAll(targets.Select(Publish));
-
-        public async Task<Result<string>> Publish<T>(T target) where T : ITarget
+        public async Task<Result<string>> Publish(ITarget message)
         {
             try
             {
-                await _bus.PubSub.PublishAsync(target);
-                return new Result<string>().UseResult($"{target.Value} - processing").Ok();
+                object obj = message;
+                await _bus.PubSub.PublishAsync(obj);
+                return new Result<string>().UseResult($"{message.Value} - processing").Ok();
             }
             catch (Exception e)
             {
-                _logger.Error($"An error was thrown while sending a request '{e.Message}'", e, ("session", target.SessionContext));
-                return new Result<string>().UseResult($"{target.Value} - can't process, something went wrong").Fail();
+                 _logger.Error($"An error was thrown while sending a request '{e.Message}'", e, ("session", message));
+                return new Result<string>().UseResult($"{message.Value} - can't process, something went wrong").Fail();
             }
         }
     }

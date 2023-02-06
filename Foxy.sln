@@ -9,6 +9,8 @@ ProjectSection(SolutionItems) = preProject
 	docker-compose.yml = docker-compose.yml
 	Makefile = Makefile
 	src\services\limiter.json = src\services\limiter.json
+	toolkit.Dockerfile = toolkit.Dockerfile
+	docker-compose-debug.yml = docker-compose-debug.yml
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D170892B-9BBB-4E43-AD65-34C765256436}"
@@ -39,13 +41,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Validation", "Validation", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Validation.Fluent", "src\packages\Validation\Platform.Validation.Fluent\Platform.Validation.Fluent.csproj", "{AB2CCB0E-2865-4FEE-BEFC-E78ED93CCCD9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Consumers", "Consumers", "{D089713B-18C1-4BA6-BDB0-8F3CEB18A3FC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Processors", "Processors", "{D089713B-18C1-4BA6-BDB0-8F3CEB18A3FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Consumer.Collector", "src\services\Consumers\Platform.Consumer.Collector\Platform.Consumer.Collector.csproj", "{AF6C39C9-061F-4CA7-B634-DE650B9A7A0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Processor.Collector", "src\services\Processors\Platform.Processor.Collector\Platform.Processor.Collector.csproj", "{AF6C39C9-061F-4CA7-B634-DE650B9A7A0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Consumer.Reporter", "src\services\Consumers\Platform.Consumer.Reporter\Platform.Consumer.Reporter.csproj", "{39351CC7-6F41-48C5-BE35-31552B51B8BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Consumer.Reporter", "src\services\Processors\Platform.Consumer.Reporter\Platform.Consumer.Reporter.csproj", "{39351CC7-6F41-48C5-BE35-31552B51B8BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Consumer.Scanner", "src\services\Consumers\Platform.Consumer.Scanner\Platform.Consumer.Scanner.csproj", "{1FA62C57-AE65-4120-8A38-2BA6B75B5462}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Consumer.Scanner", "src\services\Processors\Platform.Consumer.Scanner\Platform.Consumer.Scanner.csproj", "{1FA62C57-AE65-4120-8A38-2BA6B75B5462}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bots", "Bots", "{037EA4A1-18EA-4FC0-90BF-73DAF6351637}"
 EndProject
@@ -95,6 +97,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Limiter.Redis", "src\packages\Limiter\Platform.Limiter.Redis\Platform.Limiter.Redis.csproj", "{73BAC263-65D6-4CAA-B3CA-CB56D274AB1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Host.Endpoint", "src\packages\Bootstrap\Platform.Host.Endpoint\Platform.Host.Endpoint.csproj", "{2E1AC902-BE27-405B-BB7C-CF5429F8C019}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Processor.GeoCoordinator", "src\services\Processors\Platform.Processor.GeoCoordinator\Platform.Processor.GeoCoordinator.csproj", "{1E797886-8292-4CE2-B066-B8B6738A49C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Bus.Rmq", "src\packages\Bus\Platform.Bus.Rmq\Platform.Bus.Rmq.csproj", "{46D11A7C-E1D4-483F-B19C-A3164FA2AAE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -194,6 +200,14 @@ Global
 		{2E1AC902-BE27-405B-BB7C-CF5429F8C019}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E1AC902-BE27-405B-BB7C-CF5429F8C019}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E1AC902-BE27-405B-BB7C-CF5429F8C019}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E797886-8292-4CE2-B066-B8B6738A49C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E797886-8292-4CE2-B066-B8B6738A49C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E797886-8292-4CE2-B066-B8B6738A49C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E797886-8292-4CE2-B066-B8B6738A49C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46D11A7C-E1D4-483F-B19C-A3164FA2AAE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46D11A7C-E1D4-483F-B19C-A3164FA2AAE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46D11A7C-E1D4-483F-B19C-A3164FA2AAE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46D11A7C-E1D4-483F-B19C-A3164FA2AAE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{06AB5CCD-BDE9-44CC-8DE6-EFEAB92D4A48} = {D170892B-9BBB-4E43-AD65-34C765256436}
@@ -232,5 +246,7 @@ Global
 		{BDFFF958-2675-471A-A409-344870F35FEE} = {BDBDCECF-6856-49A3-A19A-BEC931D1093E}
 		{73BAC263-65D6-4CAA-B3CA-CB56D274AB1D} = {BDFFF958-2675-471A-A409-344870F35FEE}
 		{2E1AC902-BE27-405B-BB7C-CF5429F8C019} = {90EB3018-AB7B-45B6-87E4-278E16D5037D}
+		{1E797886-8292-4CE2-B066-B8B6738A49C5} = {D089713B-18C1-4BA6-BDB0-8F3CEB18A3FC}
+		{46D11A7C-E1D4-483F-B19C-A3164FA2AAE2} = {B559AB1A-F320-41EE-990D-C2467C0C3B5D}
 	EndGlobalSection
 EndGlobal

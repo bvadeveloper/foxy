@@ -5,9 +5,7 @@ using System.Linq;
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.Extensions.Logging;
 using Platform.Contract.Abstractions;
-using Platform.Logging.Extensions;
 using Platform.Validation.Fluent.Abstractions;
 
 namespace Platform.Validation.Fluent;
@@ -15,13 +13,8 @@ namespace Platform.Validation.Fluent;
 public class ValidationFactory : IValidationFactory
 {
     private readonly Type[] _types;
-    private readonly ILogger _logger;
 
-    public ValidationFactory(ILogger<ValidationFactory> logger)
-    {
-        _logger = logger;
-        _types = Assembly.GetExecutingAssembly().GetTypes();
-    }
+    public ValidationFactory() => _types = Assembly.GetExecutingAssembly().GetTypes();
 
     public IImmutableList<(ITarget, bool)> Validate(IImmutableList<ITarget> targets) =>
         targets
@@ -30,15 +23,12 @@ public class ValidationFactory : IValidationFactory
                 var genericValidationType = typeof(IValidator<>).MakeGenericType(target.GetType());
                 var methodInfo = genericValidationType.GetMethod("Validate");
                 var validatorType = _types.FirstOrDefault(x =>
-                    genericValidationType.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
+                    genericValidationType.IsAssignableFrom(x) && x is { IsInterface: false, IsAbstract: false });
                 var instance = Activator.CreateInstance(validatorType);
-                var validationResult = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
+                var result = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
                     new[] { target }, CultureInfo.InvariantCulture);
 
-                if (!validationResult.IsValid)
-                    _logger.Warn($"Validation failed for '{target.Value}', '{validationResult}'", ("session", target.SessionContext));
-
-                return (target, validationResult.IsValid);
+                return (target, result.IsValid);
                 
             }).ToImmutableList();
 }

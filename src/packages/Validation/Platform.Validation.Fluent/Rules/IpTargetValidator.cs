@@ -1,6 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using FluentValidation;
 using Platform.Contract;
+using Platform.Contract.Models;
+using Platform.Contract.Models.Bot;
 
 namespace Platform.Validation.Fluent.Rules
 {

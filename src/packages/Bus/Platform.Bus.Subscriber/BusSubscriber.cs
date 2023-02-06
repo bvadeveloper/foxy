@@ -24,10 +24,10 @@ namespace Platform.Bus.Subscriber
         /// <param name="cancellationToken"></param>
         public async Task Subscribe(CancellationToken cancellationToken)
         {
-            var subscriber = new AutoSubscriber(_bus, "_")
+            var subscriber = new AutoSubscriber(_bus, "foxy")
             {
                 ConfigureSubscriptionConfiguration = s => s.WithAutoDelete(),
-                GenerateSubscriptionId = info => "_",
+                // GenerateSubscriptionId = info => "_",
                 AutoSubscriberMessageDispatcher = _messageDispatcher
             };
 
