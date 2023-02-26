@@ -1,16 +1,17 @@
+using Platform.Contract.Abstractions;
 using Platform.Primitive;
 
 namespace Platform.Contract.Models;
 
-public class Message<T>
+/// <summary>
+/// Request wrapper for AMQP communication
+/// </summary>
+/// <param name="Payload"></param>
+/// <param name="Context"></param>
+/// <typeparam name="T"></typeparam>
+public record Message<T>(T Payload, SessionContext Context) where T : ITarget
 {
-    public Message(T value, SessionContext sessionContext)
-    {
-        Value = value;
-        SessionContext = sessionContext;
-    }
+    public SessionContext Context { get; set; } = Context;
 
-    public SessionContext SessionContext { get; set; }
-
-    public T Value { get; set; }
+    public T Payload { get; set; } = Payload;
 }

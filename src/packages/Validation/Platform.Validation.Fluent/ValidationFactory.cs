@@ -1,34 +1,40 @@
 using System;
-using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.Extensions.Logging;
 using Platform.Contract.Abstractions;
+using Platform.Logging.Extensions;
 using Platform.Validation.Fluent.Abstractions;
 
 namespace Platform.Validation.Fluent;
 
 public class ValidationFactory : IValidationFactory
 {
+    private readonly ILogger<ValidationFactory> _logger;
     private readonly Type[] _types;
 
-    public ValidationFactory() => _types = Assembly.GetExecutingAssembly().GetTypes();
+    public ValidationFactory(ILogger<ValidationFactory> logger)
+    {
+        _logger = logger;
+        _types = Assembly.GetExecutingAssembly().GetTypes();
+    }
 
-    public IImmutableList<(ITarget, bool)> Validate(IImmutableList<ITarget> targets) =>
-        targets
-            .Select(target =>
-            {
-                var genericValidationType = typeof(IValidator<>).MakeGenericType(target.GetType());
-                var methodInfo = genericValidationType.GetMethod("Validate");
-                var validatorType = _types.FirstOrDefault(x =>
-                    genericValidationType.IsAssignableFrom(x) && x is { IsInterface: false, IsAbstract: false });
-                var instance = Activator.CreateInstance(validatorType);
-                var result = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
-                    new[] { target }, CultureInfo.InvariantCulture);
+    public ValidationResult Validate(ITarget target)
+    {
+        var genericValidationType = typeof(IValidator<>).MakeGenericType(target.GetType());
+        var methodInfo = genericValidationType.GetMethod("Validate");
+        var validatorType = _types.FirstOrDefault(x =>
+            genericValidationType.IsAssignableFrom(x) && x is { IsInterface: false, IsAbstract: false });
+        var instance = Activator.CreateInstance(validatorType);
 
-                return (target, result.IsValid);
-                
-            }).ToImmutableList();
+        var validationResult = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
+            new[] { target }, CultureInfo.InvariantCulture);
+
+        _logger.Info($"Validation errors '{validationResult}'");
+        
+        return validationResult;
+    }
 }

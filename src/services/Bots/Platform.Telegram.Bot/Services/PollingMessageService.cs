@@ -4,10 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Platform.Bus.Publisher.Abstractions;
-using Platform.Contract;
-using Platform.Contract.Abstractions;
-using Platform.Contract.Models;
+using Platform.Bus.Publisher;
 using Platform.Limiter.Redis.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Primitive;
@@ -55,6 +52,7 @@ namespace Platform.Telegram.Bot.Services
                     if (message.From is { IsBot: true })
                     {
                         await _botClient.Say(message.Chat, "messages from the bots are not currently supported", cancellationToken);
+                        
                         continue;
                     }
 
@@ -66,31 +64,27 @@ namespace Platform.Telegram.Bot.Services
                         var publisher = scope.ServiceProvider.GetService<IPublisher>();
                         var session = scope.ServiceProvider.GetService<SessionContext>().FillSession(message.Chat.Id);
 
-                        var validationResults = _validationFactory.Validate(message.Text!.ToTargets());
+                        var items = message.Text.SplitMessage();
 
-                        foreach (var (target, isValid) in validationResults)
+                        foreach (var item in items)
                         {
-                            if (isValid)
+                            var target = item.ToTarget();
+
+                            if (_validationFactory.Validate(target).IsValid)
                             {
-                                if (await _requestLimiter.Acquire(MakeInput(message.From)))
+                                if (await _requestLimiter.Acquire(MakeUserKey(message.From)))
                                 {
-                                    await _botClient.Say(message.Chat,
-                                        "request limit reached, please try again in a couple of minutes",
-                                        cancellationToken);
-                                    
+                                    await _botClient.Say(message.Chat, "request limit reached, please try again in a couple of minutes", cancellationToken);
+
                                     break;
                                 }
 
-                                var messageRqm = new Message<ITarget>(target, session);
-
-                                var confirmation = await publisher.Publish(target).Extract();
+                                var confirmation = await publisher.Publish(target, session).Extract();
                                 await _botClient.Say(message.Chat, confirmation, cancellationToken);
                             }
                             else
                             {
-                                await _botClient.Say(message.Chat,
-                                    $"{target.Value} - validation failed, please use valid domain names or IP address",
-                                    cancellationToken);
+                                await _botClient.Say(message.Chat, $"{target.Name} - validation failed, please use valid domain names or IP address", cancellationToken);
                             }
                         }
                     }

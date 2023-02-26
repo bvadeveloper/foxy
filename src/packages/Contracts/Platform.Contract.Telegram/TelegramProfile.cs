@@ -8,7 +8,7 @@ namespace Platform.Contract.Telegram
     {
         public SessionContext SessionContext { get; set; }
 
-        public string Value { get; set; }
+        public string Name { get; set; }
 
         public ReportModel[] Reports { get; set; }
         

@@ -1,20 +1,15 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using EasyNetQ.AutoSubscribe;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Publisher;
-using Platform.Bus.Publisher.Abstractions;
-using Platform.Contract;
 using Platform.Contract.Abstractions;
 using Platform.Contract.Enums;
-using Platform.Contract.Models;
 using Platform.Contract.Models.Bot;
-using Platform.Contract.Scanner;
 
 namespace Platform.Processor.GeoCoordinator.Coordinators
 {
-    public class IpTargetCoordinator : IConsumeAsync<IpTarget>
+    public class IpTargetCoordinator // : IConsumeAsync<IpTarget>
     {
         private readonly IPublisher _publishClient;
         private readonly ILogger _logger;

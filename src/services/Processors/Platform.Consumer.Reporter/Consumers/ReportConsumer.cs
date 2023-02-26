@@ -1,16 +1,14 @@
 using System.Threading;
 using System.Threading.Tasks;
-using EasyNetQ.AutoSubscribe;
+using Microsoft.Extensions.Logging;
+using Platform.Bus.Publisher;
 using Platform.Consumer.Reporter.Abstractions;
 using Platform.Contract.Reporter;
 using Platform.Contract.Reporter.Abstractions;
-using Platform.Contract.Telegram;
-using Microsoft.Extensions.Logging;
-using Platform.Bus.Publisher.Abstractions;
 
 namespace Platform.Consumer.Reporter.Consumers
 {
-    public class ReportConsumer : IConsumeAsync<ReportProfile>
+    public class ReportConsumer // : IConsumeAsync<ReportProfile>
     {
         private readonly IPublisher _publishClient;
         private readonly IReportService _reportService;
@@ -31,7 +29,7 @@ namespace Platform.Consumer.Reporter.Consumers
 
         private async Task PublishTelegramProfile(IReportProfile profile)
         {
-            var (fileName, fileBody) = await _reportService.MakeFileReport(profile.Value, profile.Reports);
+            var (fileName, fileBody) = await _reportService.MakeFileReport(profile.Name, profile.Reports);
             // await _publishClient.Publish(new TelegramProfile
             // {
             //     SessionContext = profile.SessionContext,

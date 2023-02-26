@@ -2,6 +2,6 @@ namespace Platform.Contract.Abstractions
 {
     public interface ITarget
     {
-        string Value { get; set; }
+        string Name { get; set; }
     }
 }

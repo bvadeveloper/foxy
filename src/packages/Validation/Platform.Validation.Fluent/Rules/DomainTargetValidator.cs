@@ -9,7 +9,7 @@ namespace Platform.Validation.Fluent.Rules
     {
         public DomainTargetValidator()
         {
-            RuleFor(model => model.Value)
+            RuleFor(model => model.Name)
                 .NotNull()
                 .NotEmpty()
                 .Custom(DomainNameStaticValidator.Validate)

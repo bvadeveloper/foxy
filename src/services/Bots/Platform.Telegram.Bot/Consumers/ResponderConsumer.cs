@@ -1,16 +1,15 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using EasyNetQ.AutoSubscribe;
-using Platform.Contract.Telegram;
 using Microsoft.Extensions.Logging;
+using Platform.Contract.Telegram;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace Platform.Telegram.Bot.Consumers
 {
-    public class ResponderConsumer : IConsumeAsync<TelegramProfile>
+    public class ResponderConsumer // : IConsumeAsync<TelegramProfile>
     {
         private readonly ITelegramBotClient _botClient;
         private readonly ILogger _logger;

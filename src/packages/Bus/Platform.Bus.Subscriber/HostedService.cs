@@ -1,21 +1,20 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Platform.Bus.Rmq.Abstractions;
 
-namespace Platform.Bus.Rmq
+namespace Platform.Bus.Subscriber
 {
-    public class BusHostedService : IHostedService
+    public class HostedService : IHostedService
     {
-        private readonly IBusSubscriber _busSubscriber;
+        private readonly ISubscriber _busSubscriber;
 
-        public BusHostedService(IBusSubscriber busSubscriber) => _busSubscriber = busSubscriber;
+        public HostedService(ISubscriber busSubscriber) => _busSubscriber = busSubscriber;
 
         public async Task StartAsync(CancellationToken cancellationToken) => await _busSubscriber.Subscribe(cancellationToken);
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _busSubscriber.Unsubscribe();
+            _busSubscriber.Unsubscribe(cancellationToken);
             return Task.CompletedTask;
         }
     }

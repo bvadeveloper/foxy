@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Platform.Bus.EasyNetQ;
-using Platform.Bus.EasyNetQ.Configurations;
-using Platform.Bus.Publisher.Abstractions;
+using Platform.Bus.Rmq;
 
 namespace Platform.Bus.Publisher;
 
@@ -12,13 +10,9 @@ public class Startup
 
     private IConfiguration Configuration { get; }
 
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.Configure<BusConfiguration>(options =>
-            Configuration.GetSection("Bus").Bind(options));
-
-         services
+    public void ConfigureServices(IServiceCollection services) =>
+        services
+            .AddRmqConfiguration(Configuration)
             .AddScoped<IPublisher, Publisher>()
-            .AddBus();
-    }
+            .AddRmq();
 }

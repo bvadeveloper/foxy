@@ -1,19 +1,16 @@
 using System;
-using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Platform.Bus.Rmq.Abstractions;
 using Platform.Contract.Models;
 using Platform.Logging.Extensions;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Platform.Bus.Rmq
+namespace Platform.Bus.Subscriber
 {
-    public class BusSubscriber : IBusSubscriber
+    public class Subscriber : ISubscriber
     {
         private readonly IConnection _connection;
         private readonly IModel _model;
@@ -22,7 +19,7 @@ namespace Platform.Bus.Rmq
 
         private readonly string _subscriberName;
 
-        public BusSubscriber(IConnection connection, IModel model, ILogger<BusSubscriber> logger, Exchanges exchanges)
+        public Subscriber(IConnection connection, IModel model, ILogger<Subscriber> logger, Exchanges exchanges)
         {
             _connection = connection;
             _model = model;
@@ -53,10 +50,12 @@ namespace Platform.Bus.Rmq
             var consumer = new AsyncEventingBasicConsumer(_model);
             consumer.Received += async (ch, ea) =>
             {
+                // decode 
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 var routingKey = ea.RoutingKey;
 
+                // process message
                 _logger.Info($" [x] Received '{routingKey}':'{message}'");
 
                 _model.BasicAck(ea.DeliveryTag, false);
@@ -66,18 +65,18 @@ namespace Platform.Bus.Rmq
 
             _exchanges.Values.ForEach(value =>
             {
-                var exchangeName = value.Exchange.ToString().ToLower();
+                var exchangeName = value.exchangeTypes.ToString().ToLower();
 
                 _model.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                _model.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.Route);
+                _model.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.route);
 
-                _logger.Info($"Subscribed to exchange {exchangeName} with routing key {value.Route}");
+                _logger.Info($"Subscribed to exchange {exchangeName} with routing key {value.route}");
             });
 
             _model.BasicConsume(queueName, false, consumer);
         }
 
-        public void Unsubscribe()
+        public void Unsubscribe(CancellationToken cancellationToken)
         {
             _model.Close();
             _connection.Close();

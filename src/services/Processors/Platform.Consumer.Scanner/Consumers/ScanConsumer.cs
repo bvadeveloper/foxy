@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EasyNetQ.AutoSubscribe;
+using Microsoft.Extensions.Logging;
+using Platform.Bus.Publisher;
+using Platform.Contract.Abstractions;
 using Platform.Contract.Reporter;
 using Platform.Contract.Scanner;
-using Microsoft.Extensions.Logging;
-using Platform.Bus.Publisher.Abstractions;
-using Platform.Contract.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Tools.Abstractions;
 using Platform.Tools.Models;
 
 namespace Platform.Consumer.Scanner.Consumers
 {
-    public class ScanConsumer : IConsumeAsync<DomainScanProfile>
+    public class ScanConsumer // : IConsumeAsync<DomainScanProfile>
     {
         private readonly IToolsHolder _toolsHolder;
         private readonly IPublisher _publishClient;
@@ -30,11 +29,11 @@ namespace Platform.Consumer.Scanner.Consumers
 
         public async Task ConsumeAsync(DomainScanProfile profile, CancellationToken cancellationToken = new())
         {
-            _logger.Trace($"Run scan tools for target '{profile.Value}'");
+            _logger.Trace($"Run scan tools for target '{profile.Name}'");
 
             var outputs = await _toolsHolder
                 .FilterByTargetMarks(profile.Tags)
-                .RunTools(profile.Value);
+                .RunTools(profile.Name);
 
             await PublishReportProfile(profile, outputs);
         }

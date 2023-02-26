@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\packages\Bootstrap\Platform.Host\Platform.Host.csproj" />
-        <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.EasyNetQ\Platform.Bus.EasyNetQ.csproj" />
         <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Publisher\Platform.Bus.Publisher.csproj" />
         <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Subscriber\Platform.Bus.Subscriber.csproj" />
         <ProjectReference Include="..\..\..\packages\Contracts\Platform.Contract.Reporter\Platform.Contract.Reporter.csproj" />

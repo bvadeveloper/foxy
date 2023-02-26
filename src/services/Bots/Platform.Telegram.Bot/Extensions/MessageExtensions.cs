@@ -82,7 +82,7 @@ namespace Platform.Telegram.Bot.Extensions
             return context;
         }
 
-        internal static IImmutableList<ITarget> ToTargets(this string message) =>
+        internal static IEnumerable<string> SplitMessage(this string message) =>
             message
                 .Split(Environment.NewLine)
                 .Where(t => !string.IsNullOrWhiteSpace(t))
@@ -91,12 +91,14 @@ namespace Platform.Telegram.Bot.Extensions
                         .TrimEnd('/')
                         .Replace("https://", "")
                         .Replace("http://", ""))
-                .Select<string, ITarget>(target => IPAddress.TryParse(target, out var ipAddress)
-                    ? new IpTarget { Value = ipAddress.ToString() }
-                    : new DomainTarget { Value = target})
                 .ToImmutableList();
 
-        internal static string MakeInput(User? user) => $"{user.FirstName}:{user.Id}";
+        internal static ITarget ToTarget(this string message) =>
+            IPAddress.TryParse(message, out var ipAddress)
+                ? new IpTarget(name: ipAddress.ToString())
+                : new DomainTarget(name: message);
+
+        internal static string MakeUserKey(User? user) => $"{user.FirstName}:{user.Id}";
 
         internal static async Task Say(this ITelegramBotClient botClient, Chat chat, string message,
             CancellationToken token)

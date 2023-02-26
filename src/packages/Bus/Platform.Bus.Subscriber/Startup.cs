@@ -1,9 +1,6 @@
-﻿using EasyNetQ.AutoSubscribe;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Platform.Bus.EasyNetQ;
-using Platform.Bus.EasyNetQ.Configurations;
-using Platform.Bus.Subscriber.Abstractions;
+using Platform.Bus.Rmq;
 
 namespace Platform.Bus.Subscriber;
 
@@ -13,15 +10,10 @@ public class Startup
 
     private IConfiguration Configuration { get; }
 
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.Configure<BusConfiguration>(options =>
-            Configuration.GetSection("Bus").Bind(options));
-
+    public void ConfigureServices(IServiceCollection services) =>
         services
-            //.AddHostedService<BusHostedService>()
-            //.AddScoped<IAutoSubscriberMessageDispatcher, MessageDispatcher>()
-            // .AddScoped<IBusSubscriber, BusSubscriber>()
-            .AddBus();
-    }
+            .AddRmqConfiguration(Configuration)
+            .AddHostedService<HostedService>()
+            .AddScoped<ISubscriber, Subscriber>()
+            .AddRmq();
 }

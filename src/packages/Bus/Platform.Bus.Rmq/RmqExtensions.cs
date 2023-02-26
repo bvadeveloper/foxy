@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Immutable;
-using System.Linq;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Platform.Bus.Rmq.Configurations;
-using Platform.Contract;
-using Platform.Contract.Models;
 using RabbitMQ.Client;
 
 namespace Platform.Bus.Rmq
 {
-    public static class BusExtensions
+    public static class RmqExtensions
     {
         /// <summary>
         /// Just like connections, channels are meant to be long-lived. 
@@ -20,7 +17,7 @@ namespace Platform.Bus.Rmq
         public static IServiceCollection AddRmq(this IServiceCollection services) =>
             services.AddSingleton<IConnection>(provider =>
             {
-                var configuration = provider.GetRequiredService<IOptions<BusConfiguration>>().Value;
+                var configuration = provider.GetRequiredService<IOptions<RmqConfiguration>>().Value;
                 var factory = new ConnectionFactory
                 {
                     ClientProvidedName = AppDomain.CurrentDomain.FriendlyName.ToLower(),
@@ -40,15 +37,9 @@ namespace Platform.Bus.Rmq
                 return connection.CreateModel();
             });
 
-        public static IServiceCollection AddExchangeTypes(this IServiceCollection services, params Type[] types)
-        {
-            var mapping = types.Select(type =>
-            {
-                var attr = Attribute.GetCustomAttribute(type, typeof(ExchangeAttribute), true) as ExchangeAttribute;
-                return (attr.Exchange, attr.Route);
-            }).ToImmutableList();
-
-            return services.AddSingleton(new Exchanges(mapping));
-        }
+        public static IServiceCollection AddRmqConfiguration(this IServiceCollection services,
+            IConfiguration configuration) =>
+            services.Configure<RmqConfiguration>(options =>
+                configuration.GetSection("Bus").Bind(options));
     }
 }

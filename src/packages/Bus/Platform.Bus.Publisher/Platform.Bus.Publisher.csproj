@@ -15,7 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Contracts\Platform.Contract\Platform.Contract.csproj" />
-      <ProjectReference Include="..\Platform.Bus.EasyNetQ\Platform.Bus.EasyNetQ.csproj" />
+      <ProjectReference Include="..\Platform.Bus.Rmq\Platform.Bus.Rmq.csproj" />
     </ItemGroup>
 
 </Project>

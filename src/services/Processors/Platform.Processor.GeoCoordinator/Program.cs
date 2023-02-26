@@ -8,9 +8,8 @@ namespace Platform.Processor.GeoCoordinator
         {
             var types = new[]
             {
-                // typeof(Platform.Bus.Publisher.Startup),
-                // typeof(Platform.Bus.Subscriber.Startup),
-                typeof(Platform.Bus.Rmq.Startup),
+                typeof(Platform.Bus.Publisher.Startup),
+                typeof(Platform.Bus.Subscriber.Startup),
                 typeof(Startup),
             };
 

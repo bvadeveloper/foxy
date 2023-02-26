@@ -1,12 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Platform.Bus.Rmq.Abstractions
+namespace Platform.Bus.Subscriber
 {
-    public interface IBusSubscriber
+    public interface ISubscriber
     {
         Task Subscribe(CancellationToken cancellationToken);
         
-        void Unsubscribe();
+        void Unsubscribe(CancellationToken cancellationToken);
     }
 }

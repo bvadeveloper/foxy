@@ -10,7 +10,7 @@ namespace Platform.Validation.Fluent.Rules
     {
         public IpTargetValidator()
         {
-            RuleFor(model => model.Value)
+            RuleFor(model => model.Name)
                 .NotNull()
                 .NotEmpty()
                 .Custom((text, context) =>

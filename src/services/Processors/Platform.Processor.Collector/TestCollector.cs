@@ -3,23 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EasyNetQ.AutoSubscribe;
 using Microsoft.Extensions.Logging;
-using Platform.Bus.Publisher.Abstractions;
-using Platform.Contract;
+using Platform.Bus.Publisher;
 using Platform.Contract.Abstractions;
 using Platform.Contract.Enums;
-using Platform.Contract.Models;
 using Platform.Contract.Models.Processor;
 using Platform.Contract.Reporter;
-using Platform.Contract.Scanner;
 using Platform.Tools;
 using Platform.Tools.Abstractions;
 using Platform.Tools.Models;
 
 namespace Platform.Processor.Collector
 {
-    public class TestCollector : IConsumeAsync<TestTarget>
+    public class TestCollector // : IConsumeAsync<TestTarget>
     {
         private readonly IToolsHolder _toolsHolder;
         private readonly IPublisher _publishClient;
@@ -45,7 +41,7 @@ namespace Platform.Processor.Collector
             else
             {
                 // 1. start collect tools, fill target tags
-                var (outputs, tags) = await CollectTargetTags(target.Value);
+                var (outputs, tags) = await CollectTargetTags(target.Name);
 
                 if (tags.ContainsKey(TargetType.NotAvailable))
                 {
@@ -67,7 +63,7 @@ namespace Platform.Processor.Collector
             }
         }
 
-        private async Task PublishScanProfile(Target profile, Dictionary<TargetType, List<string>> tags = default)
+        private async Task PublishScanProfile(ITarget profile, Dictionary<TargetType, List<string>> tags = default)
         {
             // await _publishClient.Publish(new DomainScanProfile
             // {
@@ -78,7 +74,7 @@ namespace Platform.Processor.Collector
             // });
         }
 
-        private async Task PublishReportProfile(Target profile, IEnumerable<OutputModel> outputs)
+        private async Task PublishReportProfile(ITarget profile, IEnumerable<OutputModel> outputs)
         {
             var reports = outputs
                 .Where(toolOutput => toolOutput.Successful)

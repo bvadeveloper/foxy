@@ -1,6 +1,6 @@
 namespace Platform.Bus.Rmq.Configurations
 {
-    public record BusConfiguration
+    public record RmqConfiguration
     {
         public string Host { get; set; }
         public int Port { get; set; } = 5672;
