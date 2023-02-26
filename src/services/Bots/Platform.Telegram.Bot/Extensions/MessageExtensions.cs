@@ -95,8 +95,8 @@ namespace Platform.Telegram.Bot.Extensions
 
         internal static ITarget ToTarget(this string message) =>
             IPAddress.TryParse(message, out var ipAddress)
-                ? new IpTarget(name: ipAddress.ToString())
-                : new DomainTarget(name: message);
+                ? new IpTarget(Name: ipAddress.ToString())
+                : new DomainTarget(Name: message);
 
         internal static string MakeUserKey(User? user) => $"{user.FirstName}:{user.Id}";
 
