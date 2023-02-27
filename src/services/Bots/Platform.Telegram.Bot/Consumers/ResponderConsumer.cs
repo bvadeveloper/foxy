@@ -22,8 +22,8 @@ namespace Platform.Telegram.Bot.Consumers
 
         public async Task ConsumeAsync(TelegramProfile profile, CancellationToken cancellationToken = new())
         {
-            await _botClient.SendChatActionAsync(profile.SessionContext.ChatId, ChatAction.Typing, cancellationToken);
-            await SendFileToChat(profile.SessionContext.ChatId, profile.FileBody, profile.FileName, cancellationToken);
+            // await _botClient.SendChatActionAsync(profile.SessionContext.ChatId, ChatAction.Typing, cancellationToken);
+            // await SendFileToChat(profile.SessionContext.ChatId, profile.FileBody, profile.FileName, cancellationToken);
         }
 
         /// <summary>

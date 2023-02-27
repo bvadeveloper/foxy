@@ -4,11 +4,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Platform.Contract;
-using Platform.Contract.Abstractions;
-using Platform.Contract.Models;
 using Platform.Logging.Extensions;
-using Platform.Primitive;
+using Platform.Serializer;
 using RabbitMQ.Client;
 
 namespace Platform.Bus.Publisher
@@ -16,19 +13,23 @@ namespace Platform.Bus.Publisher
     public class Publisher : IPublisher
     {
         private readonly IModel _channel;
+        private readonly ISerializer _serializer;
         private readonly ILogger _logger;
 
-        public Publisher(IModel channel, ILogger<Publisher> logger)
+        public Publisher(IModel channel, ISerializer serializer, ILogger<Publisher> logger)
         {
             _channel = channel;
+            _serializer = serializer;
             _logger = logger;
         }
 
-        public async Task<Result<string>> Publish<T>(Message<T> message) where T : ITarget
+        public async Task Publish(object payload)
         {
             try
             {
-                var (exchangeName, routingKey) = ReadAttribute((IExchange)message.Payload);
+                var ddd = _serializer.Serialize(payload);
+                
+                var (exchangeName, routingKey) = ReadAttribute(payload.GetType());
 
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
 
@@ -42,23 +43,21 @@ namespace Platform.Bus.Publisher
                     body: body);
 
                 Console.WriteLine($" [x] Sent '{routingKey}':'{message1}'");
-
-                return await Task.FromResult(new Result<string>().UseResult($"{message.Payload.Name} - processing").Ok());
             }
             catch (Exception e)
             {
-                _logger.Error($"An error was thrown while sending a request '{e.Message}'", e, ("session", message));
-                return new Result<string>().UseResult($"{message.Payload.Name} - can't process, something went wrong").Fail();
+                _logger.Error($"An error was thrown while sending a request '{e.Message}'", e, ("session", "message"));
             }
         }
 
-        private static (string, string) ReadAttribute<T>(T value) where T : IExchange
-        {
-            var exchangeType = typeof(IExchange);
-            var derivedType = value.GetType().GetInterfaces().First(i => exchangeType != i && i.IsAssignableTo(exchangeType));
-            var attribute = Attribute.GetCustomAttribute(derivedType, typeof(ExchangeAttribute), true) as ExchangeAttribute;
-
-            return (attribute.Exchange.ToString().ToLower(), attribute.Route);
-        }
+        private static (string, string) ReadAttribute(Type type) =>
+            type.GetInterfaces()
+                .Where(t => Attribute.IsDefined(t, typeof(RouteAttribute)))
+                .Select(t =>
+                {
+                    var attr = t.GetCustomAttribute<RouteAttribute>();
+                    return (attr.Exchange.ToString().ToLower(), attr.Route);
+                })
+                .First();
     }
 }

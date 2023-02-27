@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Platform.Contract.Models;
 using Platform.Logging.Extensions;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -15,16 +14,16 @@ namespace Platform.Bus.Subscriber
         private readonly IConnection _connection;
         private readonly IModel _model;
         private readonly ILogger _logger;
-        private readonly Exchanges _exchanges;
+        private readonly RoutesHolder _routesHolder;
 
         private readonly string _subscriberName;
 
-        public Subscriber(IConnection connection, IModel model, ILogger<Subscriber> logger, Exchanges exchanges)
+        public Subscriber(IConnection connection, IModel model, ILogger<Subscriber> logger, RoutesHolder routesHolder)
         {
             _connection = connection;
             _model = model;
             _logger = logger;
-            _exchanges = exchanges;
+            _routesHolder = routesHolder;
 
             _subscriberName = MakeSubscriberName();
         }
@@ -63,7 +62,7 @@ namespace Platform.Bus.Subscriber
             };
             await Task.Yield();
 
-            _exchanges.Values.ForEach(value =>
+            _routesHolder.Values.ForEach(value =>
             {
                 var exchangeName = value.exchangeTypes.ToString().ToLower();
 

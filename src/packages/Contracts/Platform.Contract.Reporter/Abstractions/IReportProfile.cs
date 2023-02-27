@@ -1,4 +1,4 @@
-using Platform.Contract.Abstractions;
+using Platform.Contract.Messages;
 
 namespace Platform.Contract.Reporter.Abstractions
 {

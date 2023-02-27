@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Platform.Bus.Rmq;
+using Platform.Bus;
 
 namespace Platform.Bus.Subscriber;
 

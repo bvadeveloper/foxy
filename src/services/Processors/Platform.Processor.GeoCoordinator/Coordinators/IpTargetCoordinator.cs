@@ -3,9 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Publisher;
-using Platform.Contract.Abstractions;
+using Platform.Contract;
 using Platform.Contract.Enums;
-using Platform.Contract.Models.Bot;
+using Platform.Contract.Messages;
+using Platform.Contract.Messages.Messages;
 
 namespace Platform.Processor.GeoCoordinator.Coordinators
 {
@@ -22,7 +23,7 @@ namespace Platform.Processor.GeoCoordinator.Coordinators
             _logger = logger;
         }
 
-        public async Task ConsumeAsync(IpTarget target, CancellationToken cancellationToken = new())
+        public async Task ConsumeAsync(IpMessage target, CancellationToken cancellationToken = new())
         {
             await PublishScanProfile(target);
         }

@@ -5,7 +5,8 @@ using System.Reflection;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using Platform.Contract.Abstractions;
+using Platform.Contract;
+using Platform.Contract.Messages;
 using Platform.Logging.Extensions;
 using Platform.Validation.Fluent.Abstractions;
 

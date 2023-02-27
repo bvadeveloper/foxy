@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 using Platform.Caching.Redis.Internal;
 using Platform.Limiter.Redis.Abstractions;
-using Platform.Limiter.Redis.Extensions;
 using StackExchange.Redis;
-using static Platform.Limiter.Redis.Extensions.LimiterExtensions;
+using static Platform.Limiter.Redis.Extensions;
 
 namespace Platform.Limiter.Redis;
 

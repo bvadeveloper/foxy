@@ -1,5 +1,5 @@
 using Platform.Contract.Abstractions;
-using Platform.Primitive;
+using Platform.Contract.Messages;
 
 namespace Platform.Contract.Scanner
 {
@@ -8,7 +8,6 @@ namespace Platform.Contract.Scanner
         public string Name { get; set; }
 
         public string[] Tools { get; set; }
-
-        public SessionContext SessionContext { get; set; }
+        
     }
 }

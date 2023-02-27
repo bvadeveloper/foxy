@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <OutputType>Library</OutputType>
@@ -15,8 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Contracts\Platform.Contract\Platform.Contract.csproj" />
-      <ProjectReference Include="..\Platform.Bus.Rmq\Platform.Bus.Rmq.csproj" />
+      <ProjectReference Include="..\..\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
+      <ProjectReference Include="..\Platform.Bus\Platform.Bus.csproj" />
     </ItemGroup>
     
 </Project>

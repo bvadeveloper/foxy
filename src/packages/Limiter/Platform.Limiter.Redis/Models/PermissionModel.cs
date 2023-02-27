@@ -20,7 +20,7 @@ public record PermissionModel
     /// <summary>
     /// Type of user
     /// </summary>
-    public UserTypes Type { get; init; }
+    public LimiterTypes Type { get; init; }
 
     /// <summary>
     /// Request rate for user type

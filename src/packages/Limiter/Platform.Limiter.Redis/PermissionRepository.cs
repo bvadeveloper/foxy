@@ -18,10 +18,10 @@ internal class PermissionRepository : IPermissionRepository
     }
 
     private PermissionModel GetDefaultPermission() =>
-        _limiterModels.First(m => m is { Hash: "default", Type: UserTypes.Default });
+        _limiterModels.First(m => m is { Hash: "default", Type: LimiterTypes.Default });
 
     public PermissionModel FindPermission(string hash) =>
         _limiterModels.FirstOrDefault(m =>
-            m.Hash == hash && m.Type is UserTypes.Admin or UserTypes.Advanced or UserTypes.Newcomer) ??
+            m.Hash == hash && m.Type is LimiterTypes.Admin or LimiterTypes.Advanced or LimiterTypes.Newcomer) ??
         _defaultPermission;
 }

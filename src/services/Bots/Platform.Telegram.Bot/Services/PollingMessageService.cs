@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Platform.Bus.Publisher;
 using Platform.Limiter.Redis.Abstractions;
 using Platform.Logging.Extensions;
-using Platform.Primitive;
+using Platform.Primitives;
 using Platform.Telegram.Bot.Extensions;
 using Platform.Validation.Fluent.Abstractions;
 using Telegram.Bot;
@@ -23,6 +23,7 @@ namespace Platform.Telegram.Bot.Services
         private readonly ITelegramBotClient _botClient;
         private readonly IRequestLimiter _requestLimiter;
         private readonly IValidationFactory _validationFactory;
+
         private readonly ILogger _logger;
 
         public PollingMessageService(
@@ -52,7 +53,7 @@ namespace Platform.Telegram.Bot.Services
                     if (message.From is { IsBot: true })
                     {
                         await _botClient.Say(message.Chat, "messages from the bots are not currently supported", cancellationToken);
-                        
+
                         continue;
                     }
 
@@ -61,8 +62,8 @@ namespace Platform.Telegram.Bot.Services
                         _logger.Trace($"Input '{message.Text}'");
 
                         using var scope = _serviceProvider.CreateScope();
-                        var publisher = scope.ServiceProvider.GetService<IPublisher>();
-                        var session = scope.ServiceProvider.GetService<SessionContext>().FillSession(message.Chat.Id);
+                        scope.ServiceProvider.GetRequiredService<SessionContext>().FillSession(message.Chat.Id);
+                        var publisher = scope.ServiceProvider.GetRequiredService<IPublisher>();
 
                         var items = message.Text.SplitMessage();
 
@@ -79,8 +80,8 @@ namespace Platform.Telegram.Bot.Services
                                     break;
                                 }
 
-                                var confirmation = await publisher.Publish(target, session).Extract();
-                                await _botClient.Say(message.Chat, confirmation, cancellationToken);
+                                await publisher.Publish(target);
+                                await _botClient.Say(message.Chat, "ok", cancellationToken);
                             }
                             else
                             {

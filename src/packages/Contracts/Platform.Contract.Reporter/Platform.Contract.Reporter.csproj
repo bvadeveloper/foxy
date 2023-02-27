@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <OutputType>Library</OutputType>
@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Platform.Contract\Platform.Contract.csproj" />
+      <ProjectReference Include="..\Platform.Contract.Messages\Platform.Contract.Messages.csproj" />
     </ItemGroup>
 
 </Project>

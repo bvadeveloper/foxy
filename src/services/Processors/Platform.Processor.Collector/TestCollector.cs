@@ -5,9 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Publisher;
-using Platform.Contract.Abstractions;
+using Platform.Contract;
 using Platform.Contract.Enums;
-using Platform.Contract.Models.Processor;
+using Platform.Contract.Messages;
+using Platform.Contract.Messages.Messages;
 using Platform.Contract.Reporter;
 using Platform.Tools;
 using Platform.Tools.Abstractions;
@@ -31,7 +32,7 @@ namespace Platform.Processor.Collector
             _logger = logger;
         }
 
-        public async Task ConsumeAsync(TestTarget target, CancellationToken cancellationToken = new())
+        public async Task ConsumeAsync(TestMessage target, CancellationToken cancellationToken = new())
         {
             if (true)//(target.Tools.Any())
             {

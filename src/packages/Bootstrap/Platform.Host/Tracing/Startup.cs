@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
-using Platform.Primitive;
 using Microsoft.Extensions.DependencyInjection;
+using Platform.Primitives;
 
 namespace Platform.Host.Tracing
 {

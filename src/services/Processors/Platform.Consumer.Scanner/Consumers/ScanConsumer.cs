@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Publisher;
-using Platform.Contract.Abstractions;
+using Platform.Contract.Messages;
 using Platform.Contract.Reporter;
 using Platform.Contract.Scanner;
 using Platform.Logging.Extensions;

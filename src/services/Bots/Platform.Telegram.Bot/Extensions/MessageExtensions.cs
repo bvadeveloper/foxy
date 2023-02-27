@@ -9,10 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Platform.Contract;
-using Platform.Contract.Abstractions;
-using Platform.Contract.Models;
-using Platform.Contract.Models.Bot;
-using Platform.Primitive;
+using Platform.Contract.Messages;
+using Platform.Contract.Messages.Messages;
+using Platform.Primitives;
 using Platform.Telegram.Bot.Configuration;
 using Platform.Telegram.Bot.Services;
 using Telegram.Bot;
@@ -95,8 +94,8 @@ namespace Platform.Telegram.Bot.Extensions
 
         internal static ITarget ToTarget(this string message) =>
             IPAddress.TryParse(message, out var ipAddress)
-                ? new IpTarget(Name: ipAddress.ToString())
-                : new DomainTarget(Name: message);
+                ? new IpMessage(Name: ipAddress.ToString())
+                : new DomainMessage(Name: message);
 
         internal static string MakeUserKey(User? user) => $"{user.FirstName}:{user.Id}";
 

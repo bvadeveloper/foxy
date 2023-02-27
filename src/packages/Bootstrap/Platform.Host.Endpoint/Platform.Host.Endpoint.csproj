@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <IsPackable>true</IsPackable>
-        <TargetFramework>net6.0</TargetFramework>
         <OutputType>Library</OutputType>
     </PropertyGroup>
 
@@ -16,7 +16,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
-      <ProjectReference Include="..\..\Primitive\Platform.Primitive\Platform.Primitive.csproj" />
     </ItemGroup>
 
 </Project>

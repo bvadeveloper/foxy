@@ -1,5 +1,6 @@
 using FluentValidation.Results;
-using Platform.Contract.Abstractions;
+using Platform.Contract;
+using Platform.Contract.Messages;
 
 namespace Platform.Validation.Fluent.Abstractions;
 

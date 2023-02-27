@@ -2,8 +2,6 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using Platform.Contract;
-using Platform.Contract.Models;
 
 namespace Platform.Bus.Subscriber;
 
@@ -13,10 +11,10 @@ public static class Extensions
     {
         var mapping = types.Select(type =>
         {
-            var attr = Attribute.GetCustomAttribute(type, typeof(ExchangeAttribute), true) as ExchangeAttribute;
+            var attr = Attribute.GetCustomAttribute(type, typeof(RouteAttribute), true) as RouteAttribute;
             return (attr.Exchange, attr.Route);
         }).ToImmutableList();
 
-        return services.AddSingleton(new Exchanges(mapping));
+        return services.AddSingleton(new RoutesHolder(mapping));
     }
 }
