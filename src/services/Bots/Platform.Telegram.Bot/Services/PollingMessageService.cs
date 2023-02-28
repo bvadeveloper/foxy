@@ -73,10 +73,7 @@ namespace Platform.Telegram.Bot.Services
                                     break;
                                 }
 
-                                // await publisher.Publish(payload, routeHolder);
-                                //
-                                // await publisher.PublishToCoordinator(item, sessionContext);
-                                
+                                await publisher.PublishToCoordinator(item, sessionContext);
                                 await _botClient.Say(message.Chat, "ok", cancellationToken);
                             }
                             else

@@ -13,8 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj" />
       <ProjectReference Include="..\..\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
-      <ProjectReference Include="..\..\Serializer\Platform.Serializer\Platform.Serializer.csproj" />
+      <ProjectReference Include="..\..\Primitives\Platform.Primitives\Platform.Primitives.csproj" />
       <ProjectReference Include="..\Platform.Bus\Platform.Bus.csproj" />
     </ItemGroup>
 

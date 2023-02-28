@@ -1,9 +1,12 @@
-﻿using Platform.Primitives;
+﻿using MemoryPack;
+using Platform.Primitives;
 
 namespace Platform.Contract.Profiles;
 
-public record Profile
+[MemoryPackable]
+public partial record Profile(SessionContext SessionContext, string Message)
 {
+    [MemoryPackAllowSerialize]
     public SessionContext SessionContext { get; set; }
 
     public string TargetName { get; set; }
