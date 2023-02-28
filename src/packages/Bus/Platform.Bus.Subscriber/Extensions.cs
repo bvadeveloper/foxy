@@ -1,20 +1,13 @@
-using System;
 using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Platform.Bus.Subscriber;
 
 public static class Extensions
 {
-    public static IServiceCollection AddExchanges(this IServiceCollection services, params Type[] types)
-    {
-        var mapping = types.Select(type =>
-        {
-            var attr = Attribute.GetCustomAttribute(type, typeof(RouteAttribute), true) as RouteAttribute;
-            return (attr.Exchange, attr.Route);
-        }).ToImmutableList();
+    public static IServiceCollection AddExchanges(this IServiceCollection services, ExchangeCollection exchanges) =>
+        services.AddSingleton(exchanges);
 
-        return services.AddSingleton(new RoutesHolder(mapping));
-    }
+    public static IServiceCollection AddExchange(this IServiceCollection services, ExchangeTypes exchangeTypes, string routingKey = "default") =>
+        services.AddSingleton(new ExchangeCollection(ImmutableList.Create(new Exchange(exchangeTypes, routingKey))));
 }

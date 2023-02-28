@@ -1,14 +1,13 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using Platform.Contract;
-using Platform.Contract.Messages;
+using Platform.Contract.Telegram;
 using Platform.Logging.Extensions;
-using Platform.Validation.Fluent.Abstractions;
 
 namespace Platform.Validation.Fluent;
 
@@ -23,19 +22,25 @@ public class ValidationFactory : IValidationFactory
         _types = Assembly.GetExecutingAssembly().GetTypes();
     }
 
-    public ValidationResult Validate(ITarget target)
+    public ValidationResult Validate(string message)
     {
-        var genericValidationType = typeof(IValidator<>).MakeGenericType(target.GetType());
+        var request = MakeValidationMessage(message);
+        var genericValidationType = typeof(IValidator<>).MakeGenericType(request.GetType());
         var methodInfo = genericValidationType.GetMethod("Validate");
         var validatorType = _types.FirstOrDefault(x =>
             genericValidationType.IsAssignableFrom(x) && x is { IsInterface: false, IsAbstract: false });
         var instance = Activator.CreateInstance(validatorType);
 
         var validationResult = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
-            new[] { target }, CultureInfo.InvariantCulture);
+            new[] { request }, CultureInfo.InvariantCulture);
 
         _logger.Info($"Validation errors '{validationResult}'");
-        
+
         return validationResult;
     }
+
+    private static IValidationMessage MakeValidationMessage(string message) =>
+        IPAddress.TryParse(message, out var ipAddress)
+            ? new IpMessage(Name: ipAddress.ToString())
+            : new DomainMessage(Name: message);
 }

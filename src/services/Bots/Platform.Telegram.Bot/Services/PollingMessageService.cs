@@ -9,7 +9,7 @@ using Platform.Limiter.Redis.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Primitives;
 using Platform.Telegram.Bot.Extensions;
-using Platform.Validation.Fluent.Abstractions;
+using Platform.Validation.Fluent;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using static Platform.Telegram.Bot.Extensions.MessageExtensions;
@@ -23,7 +23,6 @@ namespace Platform.Telegram.Bot.Services
         private readonly ITelegramBotClient _botClient;
         private readonly IRequestLimiter _requestLimiter;
         private readonly IValidationFactory _validationFactory;
-
         private readonly ILogger _logger;
 
         public PollingMessageService(
@@ -53,7 +52,6 @@ namespace Platform.Telegram.Bot.Services
                     if (message.From is { IsBot: true })
                     {
                         await _botClient.Say(message.Chat, "messages from the bots are not currently supported", cancellationToken);
-
                         continue;
                     }
 
@@ -62,30 +60,28 @@ namespace Platform.Telegram.Bot.Services
                         _logger.Trace($"Input '{message.Text}'");
 
                         using var scope = _serviceProvider.CreateScope();
-                        scope.ServiceProvider.GetRequiredService<SessionContext>().FillSession(message.Chat.Id);
+                        var sessionContext = scope.ServiceProvider.GetRequiredService<SessionContext>().FillSession(message.Chat.Id);
                         var publisher = scope.ServiceProvider.GetRequiredService<IPublisher>();
 
-                        var items = message.Text.SplitMessage();
-
-                        foreach (var item in items)
+                        foreach (var item in message.Text!.SplitMessage())
                         {
-                            var target = item.ToTarget();
-
-                            if (_validationFactory.Validate(target).IsValid)
+                            if (_validationFactory.Validate(item).IsValid)
                             {
                                 if (await _requestLimiter.Acquire(MakeUserKey(message.From)))
                                 {
                                     await _botClient.Say(message.Chat, "request limit reached, please try again in a couple of minutes", cancellationToken);
-
                                     break;
                                 }
 
-                                await publisher.Publish(target);
+                                // await publisher.Publish(payload, routeHolder);
+                                //
+                                // await publisher.PublishToCoordinator(item, sessionContext);
+                                
                                 await _botClient.Say(message.Chat, "ok", cancellationToken);
                             }
                             else
                             {
-                                await _botClient.Say(message.Chat, $"{target.Name} - validation failed, please use valid domain names or IP address", cancellationToken);
+                                await _botClient.Say(message.Chat, $"{item} - validation failed, please use valid domain names or IP address", cancellationToken);
                             }
                         }
                     }

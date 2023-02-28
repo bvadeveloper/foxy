@@ -4,6 +4,6 @@ namespace Platform.Bus.Publisher
 {
     public interface IPublisher
     {
-        Task Publish(object payload);
+        Task Publish(byte[] payload, Exchange exchange);
     }
 }

@@ -8,9 +8,4 @@
         <IsPackable>true</IsPackable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Platform.Contract.Reporter\Platform.Contract.Reporter.csproj" />
-      <ProjectReference Include="..\Platform.Contract\Platform.Contract.csproj" />
-    </ItemGroup>
-
 </Project>

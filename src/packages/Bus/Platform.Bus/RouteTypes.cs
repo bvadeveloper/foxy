@@ -1,8 +1,7 @@
 namespace Platform.Bus;
 
-public enum RouteTypes
+public enum ExchangeTypes
 {
     Telegram,
-    Coordinator,
-    Processor
+    Coordinator
 }

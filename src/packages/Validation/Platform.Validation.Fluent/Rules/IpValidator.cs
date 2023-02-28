@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using FluentValidation;
-using Platform.Contract.Messages.Messages;
+using Platform.Contract.Telegram;
 
 namespace Platform.Validation.Fluent.Rules
 {

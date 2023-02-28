@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Platform.Contract;
-using Platform.Contract.Messages;
-using Platform.Contract.Messages.Messages;
+using Platform.Contract.Telegram;
 using Platform.Primitives;
 using Platform.Telegram.Bot.Configuration;
 using Platform.Telegram.Bot.Services;
@@ -91,12 +89,7 @@ namespace Platform.Telegram.Bot.Extensions
                         .Replace("https://", "")
                         .Replace("http://", ""))
                 .ToImmutableList();
-
-        internal static ITarget ToTarget(this string message) =>
-            IPAddress.TryParse(message, out var ipAddress)
-                ? new IpMessage(Name: ipAddress.ToString())
-                : new DomainMessage(Name: message);
-
+        
         internal static string MakeUserKey(User? user) => $"{user.FirstName}:{user.Id}";
 
         internal static async Task Say(this ITelegramBotClient botClient, Chat chat, string message,

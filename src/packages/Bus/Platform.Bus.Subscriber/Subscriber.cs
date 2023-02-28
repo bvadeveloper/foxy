@@ -14,16 +14,16 @@ namespace Platform.Bus.Subscriber
         private readonly IConnection _connection;
         private readonly IModel _model;
         private readonly ILogger _logger;
-        private readonly RoutesHolder _routesHolder;
+        private readonly ExchangeCollection _exchangeCollection;
 
         private readonly string _subscriberName;
 
-        public Subscriber(IConnection connection, IModel model, ILogger<Subscriber> logger, RoutesHolder routesHolder)
+        public Subscriber(IConnection connection, IModel model, ExchangeCollection exchangeCollection, ILogger<Subscriber> logger)
         {
             _connection = connection;
             _model = model;
             _logger = logger;
-            _routesHolder = routesHolder;
+            _exchangeCollection = exchangeCollection;
 
             _subscriberName = MakeSubscriberName();
         }
@@ -31,11 +31,7 @@ namespace Platform.Bus.Subscriber
         private static string MakeSubscriberName()
         {
             var span = AppDomain.CurrentDomain.FriendlyName.AsSpan();
-            var slice = span[(span.LastIndexOf('.') + 1)..];
-            var spanSliced = new Span<char>(new char[slice.Length]);
-            slice.ToLowerInvariant(spanSliced);
-            
-            return spanSliced.ToString();
+            return span[(span.LastIndexOf('.') + 1)..].ToString();
         }
 
         /// <summary>
@@ -62,14 +58,14 @@ namespace Platform.Bus.Subscriber
             };
             await Task.Yield();
 
-            _routesHolder.Values.ForEach(value =>
+            _exchangeCollection.Exchanges.ForEach(value =>
             {
-                var exchangeName = value.exchangeTypes.ToString().ToLower();
+                var exchangeName = value.ExchangeTypes.ToString();
 
                 _model.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                _model.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.route);
+                _model.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
 
-                _logger.Info($"Subscribed to exchange {exchangeName} with routing key {value.route}");
+                _logger.Info($"Subscribed to exchange {exchangeName} with routing key {value.RoutingKey}");
             });
 
             _model.BasicConsume(queueName, false, consumer);

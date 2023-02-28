@@ -2,14 +2,14 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+        <OutputType>Library</OutputType>
+        <IsPackable>true</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Bus\Platform.Bus\Platform.Bus.csproj" />
-      <ProjectReference Include="..\Platform.Contract\Platform.Contract.csproj" />
-      <ProjectReference Include="..\Platform.Primitives\Platform.Primitives.csproj" />
+      <ProjectReference Include="..\..\Primitives\Platform.Primitives\Platform.Primitives.csproj" />
     </ItemGroup>
 
     <ItemGroup>
