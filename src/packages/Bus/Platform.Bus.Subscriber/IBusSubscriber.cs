@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Platform.Bus.Subscriber
 {
-    public interface ISubscriber
+    public interface IBusSubscriber
     {
         Task Subscribe(CancellationToken cancellationToken);
         

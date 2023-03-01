@@ -9,20 +9,20 @@ using RabbitMQ.Client;
 
 namespace Platform.Bus.Publisher
 {
-    public class Publisher : IPublisher
+    public class BusPublisher : IBusPublisher
     {
         private readonly IModel _channel;
         private readonly ILogger _logger;
         private readonly SessionContext _sessionContext;
 
-        public Publisher(IModel channel, SessionContext sessionContext, ILogger<Publisher> logger)
+        public BusPublisher(IModel channel, SessionContext sessionContext, ILogger<BusPublisher> logger)
         {
             _channel = channel;
             _sessionContext = sessionContext;
             _logger = logger;
         }
 
-        public async ValueTask Publish(byte[] payload, Exchange exchange)
+        public ValueTask Publish(byte[] payload, Exchange exchange)
         {
             try
             {
@@ -39,13 +39,14 @@ namespace Platform.Bus.Publisher
                     routingKey: exchange.RoutingKey,
                     basicProperties: props,
                     body: payload);
-
-                await Task.CompletedTask;
             }
             catch (Exception e)
             {
-                _logger.Error($"An error was thrown while sending a request '{e.Message}'", e, ("session", "message"));
+                _logger.Error($"An error was thrown while sending a request '{e.Message}'", e, ("exchange", exchange));
+                throw;
             }
+            
+            return ValueTask.CompletedTask;
         }
     }
 }

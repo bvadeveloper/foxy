@@ -6,9 +6,9 @@ namespace Platform.Bus.Subscriber
 {
     public class HostedService : IHostedService
     {
-        private readonly ISubscriber _busSubscriber;
+        private readonly IBusSubscriber _busSubscriber;
 
-        public HostedService(ISubscriber busSubscriber) => _busSubscriber = busSubscriber;
+        public HostedService(IBusSubscriber busSubscriber) => _busSubscriber = busSubscriber;
 
         public async Task StartAsync(CancellationToken cancellationToken) => await _busSubscriber.Subscribe(cancellationToken);
 

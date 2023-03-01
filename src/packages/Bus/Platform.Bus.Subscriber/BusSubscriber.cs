@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using MemoryPack;
@@ -12,7 +14,7 @@ using RabbitMQ.Client.Events;
 
 namespace Platform.Bus.Subscriber
 {
-    public class Subscriber : ISubscriber
+    public class BusSubscriber : IBusSubscriber
     {
         private readonly IConnection _connection;
         private readonly IModel _model;
@@ -22,12 +24,12 @@ namespace Platform.Bus.Subscriber
 
         private readonly string _subscriberName;
 
-        public Subscriber(
+        public BusSubscriber(
             IConnection connection,
             IModel model,
             ExchangeCollection exchangeCollection,
             IServiceProvider serviceProvider,
-            ILogger<Subscriber> logger)
+            ILogger<BusSubscriber> logger)
         {
             _connection = connection;
             _model = model;
@@ -81,17 +83,20 @@ namespace Platform.Bus.Subscriber
             {
                 using var scope = _serviceProvider.CreateScope();
                 scope.ServiceProvider.GetRequiredService<SessionContext>().AddContext((byte[])sessionBytes);
-                var processor = scope.ServiceProvider.GetRequiredService<IProcessorAsync>();
 
-                var profile = new Profile(string.Empty);
                 try
                 {
-                    profile = MemoryPackSerializer.Deserialize<Profile>(eventArgs.Body.ToArray());
-                    await processor.Process(profile ?? throw new InvalidOperationException("A deserialization error has occurred"));
+                    var payload = MemoryPackSerializer.Deserialize<IProfile>(eventArgs.Body.ToArray())
+                                  ?? throw new InvalidOperationException("A deserialization error has occurred, profile can't be null.");
+
+                    var consumerInstance = scope.ServiceProvider.GetRequiredService(typeof(IConsumeAsync<>).MakeGenericType(payload.GetType()));
+                    var methodInfo = consumerInstance.GetType().GetMethod(nameof(IConsumeAsync<IProfile>.ConsumeAsync));
+
+                    await (ValueTask)methodInfo.Invoke(consumerInstance, BindingFlags.Public, null, new[] { payload }, CultureInfo.InvariantCulture);
                 }
                 catch (Exception e)
                 {
-                    _logger.Error($"A processing error has occurred, '{eventArgs.RoutingKey}'", e, ("profile", profile));
+                    _logger.Error($"A processing error has occurred, '{eventArgs.RoutingKey}'", e);
                 }
 
                 _model.BasicAck(eventArgs.DeliveryTag, false);
@@ -104,10 +109,5 @@ namespace Platform.Bus.Subscriber
                 // todo: do we need to re-process it, I guess not (need to notify about it to admin channel)
             }
         }
-    }
-
-    internal interface IProcessorAsync
-    {
-        ValueTask Process(Profile profile);
     }
 }

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace Platform.Bus.Publisher
 {
-    public interface IPublisher
+    public interface IBusPublisher
     {
         ValueTask Publish(byte[] payload, Exchange exchange);
     }

@@ -61,7 +61,7 @@ namespace Platform.Telegram.Bot.Services
 
                         using var scope = _serviceProvider.CreateScope();
                         scope.ServiceProvider.GetRequiredService<SessionContext>().AddChatId(message.Chat.Id);
-                        var publisher = scope.ServiceProvider.GetRequiredService<IPublisher>();
+                        var publisher = scope.ServiceProvider.GetRequiredService<IBusPublisher>();
 
                         foreach (var item in message.Text!.SplitMessage())
                         {

@@ -1,12 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
 using Platform.Bus.Subscriber;
+using Platform.Contract.Profiles;
 
 namespace Platform.Processor.GeoCoordinator
 {
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services) =>
-            services.AddExchangeListeners(ExchangeTypes.GeoCoordinator);
+            services.AddExchangeListeners(ExchangeTypes.GeoCoordinator)
+                .AddScoped<IConsumeAsync<Profile>, CoordinatorConsumer>();
     }
 }

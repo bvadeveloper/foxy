@@ -14,6 +14,6 @@ public class Startup
         services
             .AddRmqConfiguration(Configuration)
             .AddHostedService<HostedService>()
-            .AddScoped<ISubscriber, Subscriber>()
+            .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddRmq();
 }
