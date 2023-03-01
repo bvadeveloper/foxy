@@ -7,6 +7,6 @@ namespace Platform.Processor.GeoCoordinator
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services) =>
-            services.AddExchange(ExchangeTypes.Telegram);
+            services.AddExchangeListeners(ExchangeTypes.GeoCoordinator);
     }
 }

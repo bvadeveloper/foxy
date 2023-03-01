@@ -7,14 +7,15 @@ namespace Platform.Bus.Publisher;
 
 public static class Extensions
 {
-    public static Task PublishToCoordinator(this IPublisher publisher, string message, SessionContext sessionContext)
-    {
-        var profile = new Profile(sessionContext, message);
-        
-        var bin = MemoryPackSerializer.Serialize(profile);
-        var val = MemoryPackSerializer.Deserialize<Profile>(bin);
+    public static ValueTask PublishToCoordinatorExchange(this IPublisher publisher, string message) =>
+        publisher.PublishTo(ExchangeTypes.GeoCoordinator, message);
 
-        // publisher.Publish();
-        return Task.CompletedTask;
+    private static async ValueTask PublishTo(this IPublisher publisher, ExchangeTypes exchangeTypes, string message)
+    {
+        var exchange = new Exchange(exchangeTypes);
+        var profile = new Profile(message);
+        var payload = MemoryPackSerializer.Serialize(profile);
+
+        await publisher.Publish(payload, exchange);
     }
 }

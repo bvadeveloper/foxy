@@ -73,9 +73,9 @@ namespace Platform.Telegram.Bot.Extensions
             }
         }
 
-        internal static SessionContext FillSession(this SessionContext context, long id)
+        internal static SessionContext AddChatId(this SessionContext context, long id)
         {
-            context.ChatId = id;
+            context.ChatId = id.ToString();
             return context;
         }
 

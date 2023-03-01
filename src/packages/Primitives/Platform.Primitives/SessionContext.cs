@@ -2,10 +2,12 @@ namespace Platform.Primitives
 {
     public record SessionContext
     {
-        public Guid TraceId { get; set; }
+        public string TraceId { get; set; }
 
-        public long? ChatId { get; set; }
+        public string ChatId { get; set; }
 
-        public static SessionContext Init() => new() { TraceId = Guid.NewGuid() };
+        public static SessionContext Init() => new() { TraceId = Guid.NewGuid().ToString() };
+
+        public override string ToString() => $"{TraceId}:{ChatId}";
     }
 }

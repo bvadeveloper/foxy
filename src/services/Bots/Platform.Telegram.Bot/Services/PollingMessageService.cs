@@ -60,7 +60,7 @@ namespace Platform.Telegram.Bot.Services
                         _logger.Trace($"Input '{message.Text}'");
 
                         using var scope = _serviceProvider.CreateScope();
-                        var sessionContext = scope.ServiceProvider.GetRequiredService<SessionContext>().FillSession(message.Chat.Id);
+                        scope.ServiceProvider.GetRequiredService<SessionContext>().AddChatId(message.Chat.Id);
                         var publisher = scope.ServiceProvider.GetRequiredService<IPublisher>();
 
                         foreach (var item in message.Text!.SplitMessage())
@@ -73,7 +73,7 @@ namespace Platform.Telegram.Bot.Services
                                     break;
                                 }
 
-                                await publisher.PublishToCoordinator(item, sessionContext);
+                                await publisher.PublishToCoordinatorExchange(item);
                                 await _botClient.Say(message.Chat, "ok", cancellationToken);
                             }
                             else
