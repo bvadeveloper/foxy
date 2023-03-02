@@ -20,12 +20,6 @@ debug-up:
 debug-down:
 	docker compose -f docker-compose-debug.yml down
 
-aws-up:
-	echo "no implementation"
-
-aws-down:
-	echo "no implementation"
-
 toolkit-build:
 	docker build -f toolkit.Dockerfile -t vsp/toolkit:$(foxy_image_ver) .
 

@@ -4,6 +4,7 @@ services:
     image: rabbitmq:3.8-management
     container_name: 'rabbitmq'
     hostname: 'rabbitmq'
+    restart: on-failure
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -30,6 +31,7 @@ services:
     image: vsp/telegram-bot:0.1
     container_name: 'telegram-bot'
     hostname: 'telegram-bot'
+    restart: on-failure
     ports:
       - "8080:80"
     networks:
@@ -42,15 +44,18 @@ services:
       - RedisConnectionString=redis:6379
     depends_on:
       - rabbitmq
+      - redis
     links:
       - rabbitmq
-  collector:
+      - redis
+  domain_scanner:
     build:
       context: ./src
-      dockerfile: ./services/Consumers/Platform.Consumer.Collector/Dockerfile
+      dockerfile: ./services/Scanners/Platform.Scanners.Domain/Dockerfile
     image: vsp/collector:0.1
-    container_name: 'collector'
-    hostname: 'collector'
+    container_name: 'domain_scanner'
+    hostname: 'domain_scanner'
+    restart: on-failure
     ports:
       - "8081:80"
     networks:
@@ -64,15 +69,79 @@ services:
       - bot
     links:
       - rabbitmq
-  scanner:
+  host_scanner:
     build:
       context: ./src
-      dockerfile: ./services/Consumers/Platform.Consumer.Scanner/Dockerfile
+      dockerfile: ./services/Scanners/Platform.Scanners.Host/Dockerfile
     image: vsp/scanner:0.1
-    container_name: 'scanner'
-    hostname: 'scanner'
+    container_name: 'host_scanner'
+    hostname: 'host_scanner'
+    restart: on-failure
     ports:
       - "8082:80"
+    networks:
+      - bot_network
+    environment:
+      - Bus__Host=rabbitmq
+      - Bus__UserName=${RMQ_USER:?error}
+      - Bus__Password=${RMQ_PASS:?error}
+    depends_on:
+      - rabbitmq
+      - bot
+    links:
+      - rabbitmq
+  facebook_scanner:
+    build:
+      context: ./src
+      dockerfile: ./services/Scanners/Platform.Scanners.Facebook/Dockerfile
+    image: vsp/reporter:0.1
+    container_name: 'facebook_scanner'
+    hostname: 'facebook_scanner'
+    restart: on-failure
+    ports:
+      - "8083:80"
+    networks:
+      - bot_network
+    environment:
+      - Bus__Host=rabbitmq
+      - Bus__UserName=${RMQ_USER:?error}
+      - Bus__Password=${RMQ_PASS:?error}
+    depends_on:
+      - rabbitmq
+      - bot
+    links:
+      - rabbitmq
+  email_scanner:
+    build:
+      context: ./src
+      dockerfile: ./services/Scanners/Platform.Scanners.Email/Dockerfile
+    image: vsp/reporter:0.1
+    container_name: 'email_scanner'
+    hostname: 'email_scanner'
+    restart: on-failure
+    ports:
+      - "8084:80"
+    networks:
+      - bot_network
+    environment:
+      - Bus__Host=rabbitmq
+      - Bus__UserName=${RMQ_USER:?error}
+      - Bus__Password=${RMQ_PASS:?error}
+    depends_on:
+      - rabbitmq
+      - bot
+    links:
+      - rabbitmq
+  coordinator:
+    build:
+      context: ./src
+      dockerfile: ./services/Processors/Platform.Processor.GeoCoordinator/Dockerfile
+    image: vsp/reporter:0.1
+    container_name: 'coordinator'
+    hostname: 'coordinator'
+    restart: on-failure
+    ports:
+      - "8085:80"
     networks:
       - bot_network
     environment:
@@ -87,12 +156,13 @@ services:
   reporter:
     build:
       context: ./src
-      dockerfile: ./services/Consumers/Platform.Consumer.Reporter/Dockerfile
+      dockerfile: ./services/Processors/Platform.Processor.Reporter/Dockerfile
     image: vsp/reporter:0.1
     container_name: 'reporter'
     hostname: 'reporter'
+    restart: on-failure
     ports:
-      - "8083:80"
+      - "8086:80"
     networks:
       - bot_network
     environment:

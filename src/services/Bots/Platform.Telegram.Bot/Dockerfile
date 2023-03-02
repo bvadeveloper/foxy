@@ -1,12 +1,14 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /sdk
 
+ARG PROJECT_PATH="services/Bots/Platform.Telegram.Bot/Platform.Telegram.Bot.csproj"
+
 COPY . .
-RUN dotnet restore "services/Bots/Platform.Telegram.Bot/Platform.Telegram.Bot.csproj"
-RUN dotnet build "services/Bots/Platform.Telegram.Bot/Platform.Telegram.Bot.csproj" -c Release -o /app/build
+RUN dotnet restore $PROJECT_PATH
+RUN dotnet build $PROJECT_PATH -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "services/Bots/Platform.Telegram.Bot/Platform.Telegram.Bot.csproj" -c Release -o /app/publish
+RUN dotnet publish $PROJECT_PATH -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app
