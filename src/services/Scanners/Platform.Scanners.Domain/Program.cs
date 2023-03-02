@@ -1,6 +1,6 @@
 ﻿using Platform.Host;
 
-namespace Platform.Consumer.Scanner
+namespace Platform.Scanners.Domain
 {
     internal static class Program
     {

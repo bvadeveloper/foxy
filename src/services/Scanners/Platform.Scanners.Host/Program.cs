@@ -1,6 +1,6 @@
 ﻿using Platform.Host;
 
-namespace Platform.Processor.Collector
+namespace Platform.Scanners.Host
 {
     internal static class Program
     {

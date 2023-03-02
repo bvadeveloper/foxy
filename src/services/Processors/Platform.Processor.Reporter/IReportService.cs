@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Platform.Contract.Profiles;
 
-namespace Platform.Consumer.Reporter
+namespace Platform.Processor.Reporter
 {
     public interface IReportService
     {

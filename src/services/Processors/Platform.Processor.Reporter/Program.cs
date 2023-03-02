@@ -1,6 +1,6 @@
 ﻿using Platform.Host;
 
-namespace Platform.Consumer.Reporter
+namespace Platform.Processor.Reporter
 {
     internal static class Program
     {

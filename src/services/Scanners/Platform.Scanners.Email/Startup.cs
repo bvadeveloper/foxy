@@ -6,7 +6,7 @@ using Platform.Contract.Profiles;
 using Platform.Tool.GeoIp;
 using Platform.Tools.Extensions;
 
-namespace Platform.Consumer.Scanner
+namespace Platform.Scanners.Email
 {
     public class Startup
     {
@@ -17,8 +17,8 @@ namespace Platform.Consumer.Scanner
         public void ConfigureServices(IServiceCollection services) =>
             services
                 .AddTools(Configuration)
-                .AddExchangeListeners(ExchangeTypes.Scanner)
-                .AddScoped<IConsumeAsync<Profile>, ScanConsumer>()
+                .AddExchangeListeners(ExchangeTypes.Email)
+                .AddScoped<IConsumeAsync<Profile>, EmailScanner>()
                 .AddScoped<IGeoIpService, GeoIpService>();
     }
 }

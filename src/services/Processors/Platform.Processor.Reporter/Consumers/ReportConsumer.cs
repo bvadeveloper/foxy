@@ -4,7 +4,7 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 
-namespace Platform.Consumer.Reporter.Consumers
+namespace Platform.Processor.Reporter.Consumers
 {
     public class ReportConsumer : IConsumeAsync<Profile>
     {
@@ -31,7 +31,7 @@ namespace Platform.Consumer.Reporter.Consumers
             var (fileName, fileBody) = await _reportService.MakeFileReport(profile.TargetName, profile.ToolOutputs);
             profile.FileReport = new FileReport(fileName, fileBody);
             
-            await _publisher.PublishToBotExchange(profile);
+            await _publisher.PublishToTelegramExchange(profile);
         }
     }
 }

@@ -1,12 +1,12 @@
-using Platform.Tools.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Tool.GeoIp;
+using Platform.Tools.Extensions;
 
-namespace Platform.Processor.Collector
+namespace Platform.Scanners.Facebook
 {
     public class Startup
     {
@@ -17,8 +17,8 @@ namespace Platform.Processor.Collector
         public void ConfigureServices(IServiceCollection services) =>
             services
                 .AddTools(Configuration)
-                .AddExchangeListeners(ExchangeTypes.Collector)
-                .AddScoped<IConsumeAsync<Profile>, CollectorConsumer>()
+                .AddExchangeListeners(ExchangeTypes.Facebook)
+                .AddScoped<IConsumeAsync<Profile>, FacebookScanner>()
                 .AddScoped<IGeoIpService, GeoIpService>();
     }
 }

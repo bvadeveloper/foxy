@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Platform.Consumer.Scanner": {
+    "Platform.Scanners.Email": {
       "commandName": "Project",
       "applicationUrl": "http://localhost:5002",
       "environmentVariables": {

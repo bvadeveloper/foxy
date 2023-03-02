@@ -12,18 +12,18 @@ using Platform.Tools;
 using Platform.Tools.Abstractions;
 using Platform.Tools.Models;
 
-namespace Platform.Processor.Collector
+namespace Platform.Scanners.Domain
 {
-    public class CollectorConsumer : IConsumeAsync<Profile>
+    public class DomainScanner : IConsumeAsync<Profile>
     {
         private readonly IToolsHolder _toolsHolder;
         private readonly IBusPublisher _publisher;
         private readonly ILogger _logger;
         
-        public CollectorConsumer(
+        public DomainScanner(
             IToolsHolder toolsHolder,
             IBusPublisher publishClient,
-            ILogger<CollectorConsumer> logger)
+            ILogger<DomainScanner> logger)
         {
             _toolsHolder = toolsHolder;
             _publisher = publishClient;
@@ -64,7 +64,7 @@ namespace Platform.Processor.Collector
         
         private async Task PublishScanProfile(Profile profile, Dictionary<TargetType, List<string>>? tags = default)
         {
-            await _publisher.PublishToScannerExchange(profile);
+            await _publisher.PublishToHostExchange(profile);
         }
         
         // private async Task PublishReportProfile(ITarget profile, IEnumerable<OutputModel> outputs)

@@ -6,20 +6,23 @@ namespace Platform.Bus.Publisher;
 
 public static class Extensions
 {
-    public static async ValueTask PublishToBotExchange(this IBusPublisher publisher, Profile profile) =>
+    public static async ValueTask PublishToTelegramExchange(this IBusPublisher publisher, Profile profile) =>
         await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Telegram));
 
-    public static async ValueTask PublishToCollectorExchange(this IBusPublisher publisher, Profile profile) =>
-        await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Collector));
+    public static async ValueTask PublishToDomainExchange(this IBusPublisher publisher, Profile profile) =>
+        await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Domain));
 
-    public static async ValueTask PublishToScannerExchange(this IBusPublisher publisher, Profile profile) =>
-        await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Scanner));
+    public static async ValueTask PublishToHostExchange(this IBusPublisher publisher, Profile profile) =>
+        await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Host));
 
     public static async ValueTask PublishToReportExchange(this IBusPublisher publisher, Profile profile) =>
         await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Report));
 
     public static ValueTask PublishToCoordinatorExchange(this IBusPublisher publisher, string message) =>
         publisher.PublishTo(ExchangeTypes.GeoCoordinator, message);
+    
+    public static ValueTask PublishToGeoSynchronizationExchange(this IBusPublisher publisher, string route) =>
+        publisher.PublishTo(ExchangeTypes.GeoSynchronization, route);
 
     private static async ValueTask PublishTo(this IBusPublisher publisher, ExchangeTypes exchangeTypes, string message)
     {

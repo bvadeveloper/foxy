@@ -9,15 +9,15 @@ using Platform.Contract.Profiles;
 using Platform.Tools.Abstractions;
 using Platform.Tools.Models;
 
-namespace Platform.Consumer.Scanner
+namespace Platform.Scanners.Facebook
 {
-    public class ScanConsumer : IConsumeAsync<Profile>
+    public class FacebookScanner : IConsumeAsync<Profile>
     {
         private readonly IToolsHolder _toolsHolder;
         private readonly IBusPublisher _publishClient;
         private readonly ILogger _logger;
 
-        public ScanConsumer(IToolsHolder toolsHolder, IBusPublisher publishClient, ILogger<ScanConsumer> logger)
+        public FacebookScanner(IToolsHolder toolsHolder, IBusPublisher publishClient, ILogger<FacebookScanner> logger)
         {
             _toolsHolder = toolsHolder;
             _publishClient = publishClient;

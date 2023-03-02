@@ -5,7 +5,9 @@ public enum ExchangeTypes
     Telegram,
     GeoCoordinator,
     GeoSynchronization,
-    Collector,
-    Scanner,
+    Domain,
+    Host,
+    Facebook,
+    Email,
     Report
 }

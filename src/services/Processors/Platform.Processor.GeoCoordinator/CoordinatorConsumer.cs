@@ -19,6 +19,6 @@ public class CoordinatorConsumer : IConsumeAsync<Profile>
 
     public async ValueTask ConsumeAsync(Profile profile)
     {
-        await _publisher.PublishToCollectorExchange(profile);
+        await _publisher.PublishToDomainExchange(profile);
     }
 }

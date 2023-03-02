@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Platform.Contract.Profiles;
 
-namespace Platform.Consumer.Reporter
+namespace Platform.Processor.Reporter
 {
     public class CustomerReportService : IReportService
     {

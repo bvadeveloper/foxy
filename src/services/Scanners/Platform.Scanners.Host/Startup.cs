@@ -1,11 +1,12 @@
-using Platform.Consumer.Reporter.Consumers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
+using Platform.Tool.GeoIp;
+using Platform.Tools.Extensions;
 
-namespace Platform.Consumer.Reporter
+namespace Platform.Scanners.Host
 {
     public class Startup
     {
@@ -15,8 +16,9 @@ namespace Platform.Consumer.Reporter
 
         public void ConfigureServices(IServiceCollection services) =>
             services
-                .AddExchangeListeners(ExchangeTypes.Report)
-                .AddScoped<IReportService, CustomerReportService>()
-                .AddScoped<IConsumeAsync<Profile>, ReportConsumer>();
+                .AddTools(Configuration)
+                .AddExchangeListeners(ExchangeTypes.Host)
+                .AddScoped<IConsumeAsync<Profile>, HostScanner>()
+                .AddScoped<IGeoIpService, GeoIpService>();
     }
 }
