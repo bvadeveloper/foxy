@@ -16,7 +16,7 @@ namespace Platform.Processor.Reporter
         public void ConfigureServices(IServiceCollection services) =>
             services
                 .AddExchangeListeners(ExchangeTypes.Report)
-                .AddScoped<IReportService, CustomerReportService>()
-                .AddScoped<IConsumeAsync<Profile>, ReportConsumer>();
+                .AddScoped<IReportBuilder, ReportBuilder>()
+                .AddScoped<IConsumeAsync<Profile>, ReportProcessor>();
     }
 }

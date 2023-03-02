@@ -8,9 +8,9 @@ using Platform.Contract.Profiles;
 
 namespace Platform.Processor.Reporter
 {
-    public class CustomerReportService : IReportService
+    public class ReportBuilder : IReportBuilder
     {
-        public Task<(string, byte[])> MakeFileReport(string targetName, ImmutableList<ToolOutput> toolOutputs)
+        public Task<(string, byte[])> BuildTextFileReport(string targetName, ImmutableList<ToolOutput> toolOutputs)
         {
             var sb = new StringBuilder();
             sb.AppendLine($"target: {targetName}");
@@ -26,7 +26,7 @@ namespace Platform.Processor.Reporter
                     sb.AppendLine(m.Output);
                 });
         
-            var fileName = $"{targetName}_report_{DateTime.UtcNow:yyyyMMddHHmm}.txt";
+            var fileName = $"{targetName}_report_{DateTime.UtcNow:yyyy_MM_dd_HH_mm}.txt";
             var report = Encoding.Default.GetBytes(sb.ToString());
         
             return Task.FromResult((fileName, report));

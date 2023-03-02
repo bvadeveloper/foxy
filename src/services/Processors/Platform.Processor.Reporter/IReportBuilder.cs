@@ -4,8 +4,8 @@ using Platform.Contract.Profiles;
 
 namespace Platform.Processor.Reporter
 {
-    public interface IReportService
+    public interface IReportBuilder
     {
-        Task<(string, byte[])> MakeFileReport(string target, ImmutableList<ToolOutput> reports);
+        Task<(string, byte[])> BuildTextFileReport(string target, ImmutableList<ToolOutput> toolOutputs);
     }
 }

@@ -6,18 +6,18 @@ using Platform.Contract.Profiles;
 
 namespace Platform.Processor.Reporter.Consumers
 {
-    public class ReportConsumer : IConsumeAsync<Profile>
+    public class ReportProcessor : IConsumeAsync<Profile>
     {
         private readonly IBusPublisher _publisher;
-        private readonly IReportService _reportService;
+        private readonly IReportBuilder _reportBuilder;
         private readonly ILogger _logger;
 
-        public ReportConsumer(
+        public ReportProcessor(
             IBusPublisher publisher,
-            IReportService reportService,
-            ILogger<ReportConsumer> logger)
+            IReportBuilder reportBuilder,
+            ILogger<ReportProcessor> logger)
         {
-            _reportService = reportService;
+            _reportBuilder = reportBuilder;
             _publisher = publisher;
             _logger = logger;
         }
@@ -28,7 +28,7 @@ namespace Platform.Processor.Reporter.Consumers
 
         private async Task PublishTelegramProfile(Profile profile)
         {
-            var (fileName, fileBody) = await _reportService.MakeFileReport(profile.TargetName, profile.ToolOutputs);
+            var (fileName, fileBody) = await _reportBuilder.BuildTextFileReport(profile.TargetName, profile.ToolOutputs);
             profile.FileReport = new FileReport(fileName, fileBody);
             
             await _publisher.PublishToTelegramExchange(profile);
