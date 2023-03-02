@@ -1,7 +1,9 @@
-using Platform.Consumer.Reporter.Abstractions;
 using Platform.Consumer.Reporter.Consumers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Platform.Bus;
+using Platform.Bus.Subscriber;
+using Platform.Contract.Profiles;
 
 namespace Platform.Consumer.Reporter
 {
@@ -13,7 +15,8 @@ namespace Platform.Consumer.Reporter
 
         public void ConfigureServices(IServiceCollection services) =>
             services
-                .AddScoped<ReportConsumer>()
-                .AddScoped<IReportService, CustomerReportService>();
+                .AddExchangeListeners(ExchangeTypes.Report)
+                .AddScoped<IReportService, CustomerReportService>()
+                .AddScoped<IConsumeAsync<Profile>, ReportConsumer>();
     }
 }

@@ -8,7 +8,7 @@ namespace Platform.Processor.GeoCoordinator
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services) =>
-            services.AddExchangeListeners(ExchangeTypes.GeoCoordinator)
+            services.AddExchangeListeners(ExchangeTypes.GeoCoordinator, ExchangeTypes.GeoSynchronization)
                 .AddScoped<IConsumeAsync<Profile>, CoordinatorConsumer>();
     }
 }

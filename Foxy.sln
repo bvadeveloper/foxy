@@ -98,6 +98,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Primitives", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Contract.Profiles", "src\packages\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj", "{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tool.GeoIp", "src\packages\Tools\Platform.Tool.GeoIp\Platform.Tool.GeoIp.csproj", "{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -196,6 +198,10 @@ Global
 		{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{06AB5CCD-BDE9-44CC-8DE6-EFEAB92D4A48} = {D170892B-9BBB-4E43-AD65-34C765256436}
@@ -234,5 +240,6 @@ Global
 		{575E9875-D525-4D60-B3B4-1953825DE70C} = {BDBDCECF-6856-49A3-A19A-BEC931D1093E}
 		{1240ED53-BD88-4737-88A4-19876B31389D} = {575E9875-D525-4D60-B3B4-1953825DE70C}
 		{A929068D-C0A3-4FCA-B998-CCEEBCDB328E} = {E41E0675-1D80-4E6C-9910-5431BFD1824E}
+		{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A} = {315CE37C-58D8-4D45-B774-CA1F2287E119}
 	EndGlobalSection
 EndGlobal

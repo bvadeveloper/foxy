@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /sdk
 
 COPY . .
@@ -8,7 +8,7 @@ RUN dotnet build "services/Bots/Platform.Telegram.Bot/Platform.Telegram.Bot.cspr
 FROM build AS publish
 RUN dotnet publish "services/Bots/Platform.Telegram.Bot/Platform.Telegram.Bot.csproj" -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app
 
 FROM runtime AS final

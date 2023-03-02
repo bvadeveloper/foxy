@@ -9,7 +9,7 @@ namespace Platform.Telegram.Bot
             var types = new[]
             {
                 typeof(Platform.Bus.Publisher.Startup),
-                // typeof(Platform.Bus.Subscriber.Startup),
+                typeof(Platform.Bus.Subscriber.Startup),
                 typeof(Platform.Caching.Redis.Startup),
                 typeof(Platform.Limiter.Redis.Startup),
                 typeof(Platform.Validation.Fluent.Startup),

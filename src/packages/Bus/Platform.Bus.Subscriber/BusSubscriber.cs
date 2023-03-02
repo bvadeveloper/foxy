@@ -46,10 +46,6 @@ namespace Platform.Bus.Subscriber
             return span[(span.LastIndexOf('.') + 1)..].ToString();
         }
 
-        /// <summary>
-        /// Subscribe to consumers from assembly
-        /// </summary>
-        /// <param name="cancellationToken"></param>
         public async Task Subscribe(CancellationToken cancellationToken)
         {
             var queueName = _model.QueueDeclare(_subscriberName);
@@ -63,7 +59,7 @@ namespace Platform.Bus.Subscriber
                 _model.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
                 _model.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
 
-                _logger.Info($"Subscribed to exchange {exchangeName} with routing key {value.RoutingKey}");
+                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKey}'");
             });
 
             _model.BasicConsume(queueName, false, consumer);

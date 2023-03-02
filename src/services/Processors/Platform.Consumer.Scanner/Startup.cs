@@ -1,6 +1,9 @@
-using Platform.Consumer.Scanner.Consumers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Platform.Bus;
+using Platform.Bus.Subscriber;
+using Platform.Contract.Profiles;
+using Platform.Tool.GeoIp;
 using Platform.Tools.Extensions;
 
 namespace Platform.Consumer.Scanner
@@ -13,8 +16,9 @@ namespace Platform.Consumer.Scanner
 
         public void ConfigureServices(IServiceCollection services) =>
             services
-                .AddScoped<ScanConsumer>()
                 .AddTools(Configuration)
-                .AddHealthChecks();
+                .AddExchangeListeners(ExchangeTypes.Scanner)
+                .AddScoped<IConsumeAsync<Profile>, ScanConsumer>()
+                .AddScoped<IGeoIpService, GeoIpService>();
     }
 }

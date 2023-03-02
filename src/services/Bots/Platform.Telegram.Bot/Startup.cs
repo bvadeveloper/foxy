@@ -1,6 +1,9 @@
 using Platform.Telegram.Bot.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Platform.Bus;
+using Platform.Bus.Subscriber;
+using Platform.Contract.Profiles;
 using Platform.Telegram.Bot.Consumers;
 
 namespace Platform.Telegram.Bot
@@ -13,7 +16,8 @@ namespace Platform.Telegram.Bot
 
         public void ConfigureServices(IServiceCollection services) =>
             services
-                .AddScoped<ResponderConsumer>()
-                .AddTelegramBot(Configuration);
+                .AddTelegramBot(Configuration)
+                .AddExchangeListeners(ExchangeTypes.Telegram)
+                .AddScoped<IConsumeAsync<Profile>, ResponderConsumer>();
     }
 }

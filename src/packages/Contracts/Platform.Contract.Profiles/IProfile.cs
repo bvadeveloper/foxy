@@ -1,3 +1,4 @@
+using System;
 using MemoryPack;
 
 namespace Platform.Contract.Profiles;
@@ -6,4 +7,5 @@ namespace Platform.Contract.Profiles;
 [MemoryPackUnion(0, typeof(Profile))]
 public partial interface IProfile
 {
+    DateTime CreationDateUtc { get; set; }
 }

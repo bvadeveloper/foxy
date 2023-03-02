@@ -4,5 +4,8 @@ public enum ExchangeTypes
 {
     Telegram,
     GeoCoordinator,
-    GeoSynchronization
+    GeoSynchronization,
+    Collector,
+    Scanner,
+    Report
 }

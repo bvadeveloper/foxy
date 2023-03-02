@@ -1,34 +1,37 @@
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Platform.Bus.Publisher;
+using Platform.Bus.Subscriber;
+using Platform.Contract.Profiles;
+
 namespace Platform.Consumer.Reporter.Consumers
 {
-    public class ReportConsumer // : IConsumeAsync<ReportProfile>
+    public class ReportConsumer : IConsumeAsync<Profile>
     {
-        // private readonly IPublisher _publishClient;
-        // private readonly IReportService _reportService;
-        // private readonly ILogger _logger;
-        //
-        // public ReportConsumer(
-        //     IPublisher publishClient,
-        //     IReportService reportService,
-        //     ILogger<ReportConsumer> logger)
-        // {
-        //     _reportService = reportService;
-        //     _logger = logger;
-        //     _publishClient = publishClient;
-        // }
-        //
-        // public async Task ConsumeAsync(ReportProfile profile, CancellationToken cancellationToken = new()) =>
-        //     await PublishTelegramProfile(profile);
-        //
-        // private async Task PublishTelegramProfile(IReportProfile profile)
-        // {
-        //     var (fileName, fileBody) = await _reportService.MakeFileReport(profile.Name, profile.Reports);
-        //     // await _publishClient.Publish(new TelegramProfile
-        //     // {
-        //     //     SessionContext = profile.SessionContext,
-        //     //     Value = profile.Value,
-        //     //     FileBody = fileBody,
-        //     //     FileName = fileName
-        //     // });
-        // }
+        private readonly IBusPublisher _publisher;
+        private readonly IReportService _reportService;
+        private readonly ILogger _logger;
+
+        public ReportConsumer(
+            IBusPublisher publisher,
+            IReportService reportService,
+            ILogger<ReportConsumer> logger)
+        {
+            _reportService = reportService;
+            _publisher = publisher;
+            _logger = logger;
+        }
+
+        public async ValueTask ConsumeAsync(Profile profile) =>
+            await PublishTelegramProfile(profile);
+
+
+        private async Task PublishTelegramProfile(Profile profile)
+        {
+            var (fileName, fileBody) = await _reportService.MakeFileReport(profile.TargetName, profile.ToolOutputs);
+            profile.FileReport = new FileReport(fileName, fileBody);
+            
+            await _publisher.PublishToBotExchange(profile);
+        }
     }
 }

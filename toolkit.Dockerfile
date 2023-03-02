@@ -1,5 +1,5 @@
 ﻿# build base dotnet/aspnet runtime image with kali toolkit
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /kali
 
 ENV DEBIAN_FRONTEND noninteractive
