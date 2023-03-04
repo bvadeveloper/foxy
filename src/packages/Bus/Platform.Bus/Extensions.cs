@@ -14,10 +14,10 @@ namespace Platform.Bus
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddRmq(this IServiceCollection services) =>
+        public static IServiceCollection AddBus(this IServiceCollection services) =>
             services.AddSingleton<IConnection>(provider =>
             {
-                var configuration = provider.GetRequiredService<IOptions<RmqConfiguration>>().Value;
+                var configuration = provider.GetRequiredService<IOptions<BusConfiguration>>().Value;
                 var factory = new ConnectionFactory
                 {
                     ClientProvidedName = AppDomain.CurrentDomain.FriendlyName.ToLower(),
@@ -27,8 +27,8 @@ namespace Platform.Bus
                     HostName = configuration.Host,
                     Port = configuration.Port, // TODO: switch to TLS https://www.rabbitmq.com/ssl.html
                     RequestedHeartbeat = TimeSpan.FromSeconds(20),
-                    DispatchConsumersAsync = true,
-                    HandshakeContinuationTimeout = TimeSpan.FromSeconds(20)
+                    HandshakeContinuationTimeout = TimeSpan.FromSeconds(20),
+                    DispatchConsumersAsync = true
                 };
 
                 return factory.CreateConnection();
@@ -38,9 +38,9 @@ namespace Platform.Bus
                 return connection.CreateModel();
             });
 
-        public static IServiceCollection AddRmqConfiguration(this IServiceCollection services,
+        public static IServiceCollection AddBusConfiguration(this IServiceCollection services,
             IConfiguration configuration) =>
-            services.Configure<RmqConfiguration>(options =>
+            services.Configure<BusConfiguration>(options =>
                 configuration.GetSection("Bus").Bind(options));
     }
 }

@@ -9,9 +9,9 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Platform.Telegram.Bot.Consumers
+namespace Platform.Telegram.Bot
 {
-    public class ResponderConsumer : IConsumeAsync<Profile>
+    public class ResponderProcessor : IConsumeAsync<Profile>
     {
         private readonly ITelegramBotClient _botClient;
         private readonly ILogger _logger;
@@ -19,7 +19,7 @@ namespace Platform.Telegram.Bot.Consumers
         private readonly SessionContext _sessionContext;
 
 
-        public ResponderConsumer(ITelegramBotClient botClient, SessionContext sessionContext, ILogger<ResponderConsumer> logger)
+        public ResponderProcessor(ITelegramBotClient botClient, SessionContext sessionContext, ILogger<ResponderProcessor> logger)
         {
             _botClient = botClient;
             _sessionContext = sessionContext;

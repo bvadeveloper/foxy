@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
-using Platform.Processor.Reporter.Consumers;
 
 namespace Platform.Processor.Reporter
 {

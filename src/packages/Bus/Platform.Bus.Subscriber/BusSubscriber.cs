@@ -11,13 +11,14 @@ using Platform.Logging.Extensions;
 using Platform.Primitives;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using static Force.Crc32.Crc32CAlgorithm;
 
 namespace Platform.Bus.Subscriber
 {
     public class BusSubscriber : IBusSubscriber
     {
         private readonly IConnection _connection;
-        private readonly IModel _model;
+        private readonly IModel _channel;
         private readonly ILogger _logger;
         private readonly ExchangeCollection _exchangeCollection;
         private readonly IServiceProvider _serviceProvider;
@@ -26,13 +27,13 @@ namespace Platform.Bus.Subscriber
 
         public BusSubscriber(
             IConnection connection,
-            IModel model,
+            IModel channel,
             ExchangeCollection exchangeCollection,
             IServiceProvider serviceProvider,
             ILogger<BusSubscriber> logger)
         {
             _connection = connection;
-            _model = model;
+            _channel = channel;
             _logger = logger;
             _serviceProvider = serviceProvider;
             _exchangeCollection = exchangeCollection;
@@ -48,60 +49,63 @@ namespace Platform.Bus.Subscriber
 
         public async Task Subscribe(CancellationToken cancellationToken)
         {
-            var queueName = _model.QueueDeclare(_subscriberName);
-            var consumer = new AsyncEventingBasicConsumer(_model);
+            var queueName = _channel.QueueDeclare(_subscriberName);
+            var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.Received += ConsumerOnReceived;
 
             _exchangeCollection.Exchanges.ForEach(value =>
             {
                 var exchangeName = value.ExchangeTypes.ToString();
 
-                _model.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                _model.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
+                _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
+                _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
 
                 _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKey}'");
             });
 
-            _model.BasicConsume(queueName, false, consumer);
+            _channel.BasicConsume(queueName, false, consumer);
 
             await Task.Yield();
         }
 
         public void Unsubscribe(CancellationToken cancellationToken)
         {
-            _model.Close();
+            _channel.Close();
             _connection.Close();
         }
 
         private async Task ConsumerOnReceived(object sender, BasicDeliverEventArgs eventArgs)
         {
-            if (eventArgs.BasicProperties.Headers.TryGetValue("fx-session", out var sessionBytes))
+            var payload = eventArgs.Body.ToArray();
+
+            if (eventArgs.BasicProperties.Headers.TryGetValue("fx-session", out var sessionBytes)
+                && IsValidWithCrcAtEnd(payload))
             {
                 using var scope = _serviceProvider.CreateScope();
                 scope.ServiceProvider.GetRequiredService<SessionContext>().AddContext((byte[])sessionBytes);
 
                 try
                 {
-                    var payload = MemoryPackSerializer.Deserialize<IProfile>(eventArgs.Body.ToArray())
+                    var profile = MemoryPackSerializer.Deserialize<IProfile>(payload.AsSpan()[..(payload.Length - 4)])
                                   ?? throw new InvalidOperationException("A deserialization error has occurred, profile can't be null.");
 
-                    var consumerInstance = scope.ServiceProvider.GetRequiredService(typeof(IConsumeAsync<>).MakeGenericType(payload.GetType()));
+                    var consumerInstance = scope.ServiceProvider.GetRequiredService(typeof(IConsumeAsync<>).MakeGenericType(profile.GetType()));
                     var methodInfo = consumerInstance.GetType().GetMethod(nameof(IConsumeAsync<IProfile>.ConsumeAsync));
 
-                    await (ValueTask)methodInfo.Invoke(consumerInstance, BindingFlags.Public, null, new[] { payload }, CultureInfo.InvariantCulture);
+                    await (ValueTask)methodInfo.Invoke(consumerInstance, BindingFlags.Public, null, new[] { profile }, CultureInfo.InvariantCulture);
                 }
                 catch (Exception e)
                 {
                     _logger.Error($"A processing error has occurred, '{eventArgs.RoutingKey}'", e);
                 }
 
-                _model.BasicAck(eventArgs.DeliveryTag, false);
+                _channel.BasicAck(eventArgs.DeliveryTag, false);
                 await Task.Yield();
             }
             else
             {
-                _logger.Error($"Something went wrong, the 'fx-session' headers corrupted, '{eventArgs.RoutingKey}'");
-                _model.BasicAck(eventArgs.DeliveryTag, false);
+                _logger.Error($"Something went wrong, the 'fx-session' headers corrupted, '{eventArgs.RoutingKey}' or CRC not valid.");
+                _channel.BasicAck(eventArgs.DeliveryTag, false);
                 // todo: do we need to re-process it, I guess not (need to notify about it to admin channel)
             }
         }

@@ -34,7 +34,10 @@ public class ValidationFactory : IValidationFactory
         var validationResult = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
             new[] { request }, CultureInfo.InvariantCulture);
 
-        _logger.Info($"Validation errors '{validationResult}'");
+        if (!validationResult.IsValid)
+        {
+            _logger.Warn($"Validation errors '{validationResult}'");
+        }
 
         return validationResult;
     }

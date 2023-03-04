@@ -12,7 +12,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services) =>
         services
-            .AddRmqConfiguration(Configuration)
+            .AddBusConfiguration(Configuration)
             .AddScoped<IBusPublisher, BusPublisher>()
-            .AddRmq();
+            .AddBus();
 }

@@ -12,8 +12,8 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services) =>
         services
-            .AddRmqConfiguration(Configuration)
+            .AddBusConfiguration(Configuration)
             .AddHostedService<HostedService>()
             .AddScoped<IBusSubscriber, BusSubscriber>()
-            .AddRmq();
+            .AddBus();
 }

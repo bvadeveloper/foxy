@@ -1,6 +1,8 @@
+using System;
 using System.Threading.Tasks;
 using MemoryPack;
 using Platform.Contract.Profiles;
+using static Force.Crc32.Crc32CAlgorithm;
 
 namespace Platform.Bus.Publisher;
 
@@ -20,7 +22,7 @@ public static class Extensions
 
     public static ValueTask PublishToCoordinatorExchange(this IBusPublisher publisher, string message) =>
         publisher.PublishTo(ExchangeTypes.GeoCoordinator, message);
-    
+
     public static ValueTask PublishToGeoSynchronizationExchange(this IBusPublisher publisher, string route) =>
         publisher.PublishTo(ExchangeTypes.GeoSynchronization, route);
 
@@ -32,9 +34,21 @@ public static class Extensions
         await publisher.PublishToExchange(profile, exchange);
     }
 
-    private static async Task PublishToExchange(this IBusPublisher publisher, Profile profile, Exchange exchange)
+    private static async Task PublishToExchange(this IBusPublisher publisher, IProfile profile, Exchange exchange)
     {
-        var payload = MemoryPackSerializer.Serialize((IProfile)profile);
+        var payload = MemoryPackSerializer.Serialize(profile)
+            .AsMemory()
+            .AddCrc32();
+
         await publisher.Publish(payload, exchange);
+    }
+
+    private static byte[] AddCrc32(this Memory<byte> memory)
+    {
+        var crcBytes = new byte[memory.Length + 4]; // magic numbers for crc32 value in payload
+        memory.CopyTo(crcBytes);
+        ComputeAndWriteToEnd(crcBytes);
+
+        return crcBytes;
     }
 }

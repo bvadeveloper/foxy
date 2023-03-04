@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Platform.Bus.Publisher
+namespace Platform.Bus
 {
     public interface IBusPublisher
     {
