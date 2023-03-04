@@ -16,6 +16,11 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=${RMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RMQ_PASS}
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 30s
+      retries: 4
   redis:
     image: redis
     container_name: 'redis'
@@ -43,8 +48,15 @@ services:
       - Bus__Password=${RMQ_PASS}
       - RedisConnectionString=redis:6379
     depends_on:
-      - rabbitmq
-      - redis
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: curl --fail http://localhost:80 || exit 1
+      interval: 10s
+      timeout: 30s
+      retries: 4
     links:
       - rabbitmq
       - redis
@@ -65,8 +77,10 @@ services:
       - Bus__UserName=${RMQ_USER}
       - Bus__Password=${RMQ_PASS}
     depends_on:
-      - rabbitmq
-      - bot
+      rabbitmq:
+        condition: service_healthy
+      bot:
+        condition: service_healthy
     links:
       - rabbitmq
   host_scanner:
@@ -86,8 +100,10 @@ services:
       - Bus__UserName=${RMQ_USER}
       - Bus__Password=${RMQ_PASS}
     depends_on:
-      - rabbitmq
-      - bot
+      rabbitmq:
+        condition: service_healthy
+      bot:
+        condition: service_healthy
     links:
       - rabbitmq
   facebook_scanner:
@@ -107,8 +123,10 @@ services:
       - Bus__UserName=${RMQ_USER}
       - Bus__Password=${RMQ_PASS}
     depends_on:
-      - rabbitmq
-      - bot
+      rabbitmq:
+        condition: service_healthy
+      bot:
+        condition: service_healthy
     links:
       - rabbitmq
   email_scanner:
@@ -128,8 +146,10 @@ services:
       - Bus__UserName=${RMQ_USER}
       - Bus__Password=${RMQ_PASS}
     depends_on:
-      - rabbitmq
-      - bot
+      rabbitmq:
+        condition: service_healthy
+      bot:
+        condition: service_healthy
     links:
       - rabbitmq
   coordinator:
@@ -149,8 +169,10 @@ services:
       - Bus__UserName=${RMQ_USER}
       - Bus__Password=${RMQ_PASS}
     depends_on:
-      - rabbitmq
-      - bot
+      rabbitmq:
+        condition: service_healthy
+      bot:
+        condition: service_healthy
     links:
       - rabbitmq
   reporter:
@@ -170,8 +192,10 @@ services:
       - Bus__UserName=${RMQ_USER}
       - Bus__Password=${RMQ_PASS}
     depends_on:
-      - rabbitmq
-      - bot
+      rabbitmq:
+        condition: service_healthy
+      bot:
+        condition: service_healthy
     links:
       - rabbitmq
 
