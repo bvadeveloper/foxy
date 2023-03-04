@@ -6,19 +6,19 @@ Small high scalable Telegram bot for RHT (Red Hat Teams) for gathering and analy
 ```bash
 Set environment variables:
 
-API_KEY=<key>
-RMQ_USER=<user>>
-RMQ_PASS=<pass>
+export API_KEY=<key>
+export RMQ_USER=<user>
+export RMQ_PASS=<pass>
 
 cd foxy/
-make up
+make docker-up
 ```
 
 ### Local cleanup
 
 ```bash
 cd foxy/
-make cleanup_all
+make docker-cleanup
 ```
 
 ### Deployment to AWS ECS
@@ -29,3 +29,4 @@ One of the ideas is to deploy scanners and collectors (SaC) to different regions
 cd foxy/infra
 make deploy
 ```
+~~~~

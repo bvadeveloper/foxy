@@ -12,10 +12,10 @@ services:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
-      - foxy_network
+      - bot_network
     environment:
-      - RABBITMQ_DEFAULT_USER=${RMQ_USER:?error}
-      - RABBITMQ_DEFAULT_PASS=${RMQ_PASS:?error}
+      - RABBITMQ_DEFAULT_USER=${RMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RMQ_PASS}
   redis:
     image: redis
     container_name: 'redis'
@@ -23,7 +23,7 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - foxy_network
+      - bot_network
   bot:
     build:
       context: ./src
@@ -31,16 +31,16 @@ services:
     image: vsp/telegram-bot:0.1
     container_name: 'telegram-bot'
     hostname: 'telegram-bot'
-    restart: no
+    restart: on-failure
     ports:
       - "8080:80"
     networks:
-      - foxy_network
+      - bot_network
     environment:
-      - Telegram__ApiKey=${API_KEY:?error}
+      - Telegram__ApiKey=${API_KEY}
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
       - RedisConnectionString=redis:6379
     depends_on:
       - rabbitmq
@@ -59,11 +59,11 @@ services:
     ports:
       - "8081:80"
     networks:
-      - foxy_network
+      - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
     depends_on:
       - rabbitmq
       - bot
@@ -80,11 +80,11 @@ services:
     ports:
       - "8082:80"
     networks:
-      - foxy_network
+      - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
     depends_on:
       - rabbitmq
       - bot
@@ -101,11 +101,11 @@ services:
     ports:
       - "8083:80"
     networks:
-      - foxy_network
+      - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
     depends_on:
       - rabbitmq
       - bot
@@ -122,11 +122,11 @@ services:
     ports:
       - "8084:80"
     networks:
-      - foxy_network
+      - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
     depends_on:
       - rabbitmq
       - bot
@@ -143,11 +143,11 @@ services:
     ports:
       - "8085:80"
     networks:
-      - foxy_network
+      - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
     depends_on:
       - rabbitmq
       - bot
@@ -164,11 +164,11 @@ services:
     ports:
       - "8086:80"
     networks:
-      - foxy_network
+      - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
     depends_on:
       - rabbitmq
       - bot
@@ -176,5 +176,5 @@ services:
       - rabbitmq
 
 networks:
-  foxy_network:
+  bot_network:
     driver: bridge

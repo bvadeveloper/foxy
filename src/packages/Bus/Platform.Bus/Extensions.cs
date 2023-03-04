@@ -26,8 +26,7 @@ namespace Platform.Bus
                     VirtualHost = configuration.VirtualHost,
                     HostName = configuration.Host,
                     Port = configuration.Port, // TODO: switch to TLS https://www.rabbitmq.com/ssl.html
-                    RequestedHeartbeat = TimeSpan.FromSeconds(20),
-                    HandshakeContinuationTimeout = TimeSpan.FromSeconds(20),
+                    RequestedHeartbeat = TimeSpan.FromSeconds(10),
                     DispatchConsumersAsync = true
                 };
 
