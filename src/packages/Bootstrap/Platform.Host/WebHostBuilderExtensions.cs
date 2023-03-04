@@ -13,14 +13,13 @@ namespace Platform.Host
         {
             webBuilder.ConfigureServices((context, collection) =>
             {
-                var startup = new CompositeStartup(startups, context.Configuration);
+                var startup = new CompositeStartupBuilder(startups, context.Configuration);
                 startup.ConfigureServices(collection);
                 collection.AddSingleton<ICompositeStartup>(startup);
             });
             webBuilder.Configure((context, builder) =>
             {
                 var startup = builder.ApplicationServices.GetService<ICompositeStartup>();
-                builder.UseHealthChecks("/status");
                 startup.Configure(builder);
             });
 

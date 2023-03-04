@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Platform.Telegram.Bot.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,5 +19,7 @@ namespace Platform.Telegram.Bot
                 .AddTelegramBot(Configuration)
                 .AddExchangeListeners(ExchangeTypes.Telegram)
                 .AddScoped<IConsumeAsync<Profile>, ResponderProcessor>();
+
+        public void Configure(IApplicationBuilder app) => app.UseHealthChecks("/status");
     }
 }

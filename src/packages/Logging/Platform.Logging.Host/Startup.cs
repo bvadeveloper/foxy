@@ -16,7 +16,7 @@ namespace Platform.Logging.Host
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(x => x.ClearProviders());
+            //services.AddLogging(x => x.ClearProviders());
 
             AddSerilogServices(services);
             AddServiceLogProperty(services);

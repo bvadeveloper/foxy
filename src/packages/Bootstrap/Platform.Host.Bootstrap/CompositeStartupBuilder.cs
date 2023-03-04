@@ -7,11 +7,11 @@ using Platform.Host.Bootstrap.Abstractions;
 
 namespace Platform.Host.Bootstrap
 {
-    public class CompositeStartup : ICompositeStartup
+    public class CompositeStartupBuilder : ICompositeStartup
     {
         private readonly IList<StartupWrapper> _startupWrappers = new List<StartupWrapper>();
 
-        public CompositeStartup(IEnumerable<Type> startups, params object[] startupArguments)
+        public CompositeStartupBuilder(IEnumerable<Type> startups, params object[] startupArguments)
         {
             foreach (var startup in startups)
             {

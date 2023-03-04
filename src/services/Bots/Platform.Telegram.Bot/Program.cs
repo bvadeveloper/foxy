@@ -1,4 +1,5 @@
-﻿using Platform.Host;
+﻿using Platform.Bus.Publisher;
+using Platform.Host;
 
 namespace Platform.Telegram.Bot
 {
@@ -17,6 +18,10 @@ namespace Platform.Telegram.Bot
             };
 
             Application.Run(args, types);
+            Application.RunCustom(args, (services, configuration) =>
+            {
+                services.AddPublisher(configuration);
+            }, application => { }, types);
         }
     }
 }
