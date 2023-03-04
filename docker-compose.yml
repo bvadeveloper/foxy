@@ -12,7 +12,7 @@ services:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
-      - bot_network
+      - foxy_network
     environment:
       - RABBITMQ_DEFAULT_USER=${RMQ_USER:?error}
       - RABBITMQ_DEFAULT_PASS=${RMQ_PASS:?error}
@@ -23,7 +23,7 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - bot_network
+      - foxy_network
   bot:
     build:
       context: ./src
@@ -31,11 +31,11 @@ services:
     image: vsp/telegram-bot:0.1
     container_name: 'telegram-bot'
     hostname: 'telegram-bot'
-    restart: on-failure
+    restart: no
     ports:
       - "8080:80"
     networks:
-      - bot_network
+      - foxy_network
     environment:
       - Telegram__ApiKey=${API_KEY:?error}
       - Bus__Host=rabbitmq
@@ -52,14 +52,14 @@ services:
     build:
       context: ./src
       dockerfile: ./services/Scanners/Platform.Scanners.Domain/Dockerfile
-    image: vsp/collector:0.1
+    image: vsp/domain_scanner:0.1
     container_name: 'domain_scanner'
     hostname: 'domain_scanner'
     restart: on-failure
     ports:
       - "8081:80"
     networks:
-      - bot_network
+      - foxy_network
     environment:
       - Bus__Host=rabbitmq
       - Bus__UserName=${RMQ_USER:?error}
@@ -73,14 +73,14 @@ services:
     build:
       context: ./src
       dockerfile: ./services/Scanners/Platform.Scanners.Host/Dockerfile
-    image: vsp/scanner:0.1
+    image: vsp/host_scanner:0.1
     container_name: 'host_scanner'
     hostname: 'host_scanner'
     restart: on-failure
     ports:
       - "8082:80"
     networks:
-      - bot_network
+      - foxy_network
     environment:
       - Bus__Host=rabbitmq
       - Bus__UserName=${RMQ_USER:?error}
@@ -94,14 +94,14 @@ services:
     build:
       context: ./src
       dockerfile: ./services/Scanners/Platform.Scanners.Facebook/Dockerfile
-    image: vsp/reporter:0.1
+    image: vsp/facebook_scanner:0.1
     container_name: 'facebook_scanner'
     hostname: 'facebook_scanner'
     restart: on-failure
     ports:
       - "8083:80"
     networks:
-      - bot_network
+      - foxy_network
     environment:
       - Bus__Host=rabbitmq
       - Bus__UserName=${RMQ_USER:?error}
@@ -115,14 +115,14 @@ services:
     build:
       context: ./src
       dockerfile: ./services/Scanners/Platform.Scanners.Email/Dockerfile
-    image: vsp/reporter:0.1
+    image: vsp/email_scanner:0.1
     container_name: 'email_scanner'
     hostname: 'email_scanner'
     restart: on-failure
     ports:
       - "8084:80"
     networks:
-      - bot_network
+      - foxy_network
     environment:
       - Bus__Host=rabbitmq
       - Bus__UserName=${RMQ_USER:?error}
@@ -136,14 +136,14 @@ services:
     build:
       context: ./src
       dockerfile: ./services/Processors/Platform.Processor.GeoCoordinator/Dockerfile
-    image: vsp/reporter:0.1
+    image: vsp/coordinator:0.1
     container_name: 'coordinator'
     hostname: 'coordinator'
     restart: on-failure
     ports:
       - "8085:80"
     networks:
-      - bot_network
+      - foxy_network
     environment:
       - Bus__Host=rabbitmq
       - Bus__UserName=${RMQ_USER:?error}
@@ -164,7 +164,7 @@ services:
     ports:
       - "8086:80"
     networks:
-      - bot_network
+      - foxy_network
     environment:
       - Bus__Host=rabbitmq
       - Bus__UserName=${RMQ_USER:?error}
@@ -176,5 +176,5 @@ services:
       - rabbitmq
 
 networks:
-  bot_network:
+  foxy_network:
     driver: bridge
