@@ -1,22 +1,29 @@
-﻿using Platform.Host;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Platform.Bus;
+using Platform.Bus.Publisher;
+using Platform.Bus.Subscriber;
+using Platform.Caching.Redis;
+using Platform.Contract.Profiles;
+using Platform.Host;
+using Platform.Limiter.Redis;
+using Platform.Validation.Fluent;
 
-namespace Platform.Telegram.Bot
+namespace Platform.Telegram.Bot;
+
+internal static class Program
 {
-    internal static class Program
-    {
-        public static void Main(string[] args)
+    public static async Task Main(string[] args) =>
+        await Application.RunAsync(args, (services, configuration) =>
         {
-            var types = new[]
-            {
-                typeof(Platform.Bus.Publisher.Startup),
-                typeof(Platform.Bus.Subscriber.Startup),
-                typeof(Platform.Caching.Redis.Startup),
-                typeof(Platform.Limiter.Redis.Startup),
-                typeof(Platform.Validation.Fluent.Startup),
-                typeof(Startup),
-            };
-
-            Application.Run(args, types);
-        }
-    }
+            services
+                .AddTelegramBot(configuration)
+                .AddPublisher(configuration)
+                .AddSubscriber(configuration)
+                .AddExchangeListeners(ExchangeTypes.Telegram)
+                .AddRedis(configuration)
+                .AddRequestLimiter(configuration)
+                .AddValidation()
+                .AddScoped<IConsumeAsync<Profile>, ResponderProcessor>();
+        });
 }

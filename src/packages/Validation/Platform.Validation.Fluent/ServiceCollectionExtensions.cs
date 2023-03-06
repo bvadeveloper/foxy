@@ -2,9 +2,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Platform.Validation.Fluent
 {
-    public class Startup
+    public static class ServiceCollectionExtensions
     {
-        public void ConfigureServices(IServiceCollection services) =>
+        public static  IServiceCollection AddValidation(this IServiceCollection services) =>
             services.AddSingleton<IValidationFactory, ValidationFactory>();
     }
 }

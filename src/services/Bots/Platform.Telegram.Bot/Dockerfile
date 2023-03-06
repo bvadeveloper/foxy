@@ -17,6 +17,9 @@ FROM runtime AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
+# install curl for healthchecks
+RUN apt-get update && apt-get install curl -y 
+
 # expose 80 port for healthchecks
 EXPOSE 80
 

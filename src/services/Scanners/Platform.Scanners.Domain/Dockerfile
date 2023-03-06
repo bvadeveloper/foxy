@@ -20,6 +20,4 @@ COPY --from=publish /app/publish .
 # expose 80 port for healthchecks
 EXPOSE 80
 
-RUN dotnet --info
-
 ENTRYPOINT ["dotnet", "Platform.Scanners.Domain.dll"]

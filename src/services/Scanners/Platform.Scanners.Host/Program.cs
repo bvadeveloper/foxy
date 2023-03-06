@@ -1,19 +1,26 @@
-﻿using Platform.Host;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Platform.Bus;
+using Platform.Bus.Publisher;
+using Platform.Bus.Subscriber;
+using Platform.Contract.Profiles;
+using Platform.Host;
+using Platform.Tool.GeoIp;
+using Platform.Tools.Extensions;
 
-namespace Platform.Scanners.Host
+namespace Platform.Scanners.Host;
+
+internal static class Program
 {
-    internal static class Program
-    {
-        public static void Main(string[] args)
+    public static async Task Main(string[] args) =>
+        await Application.RunAsync(args, (services, configuration) =>
         {
-            var types = new[]
-            {
-                typeof(Platform.Bus.Publisher.Startup),
-                typeof(Platform.Bus.Subscriber.Startup),
-                typeof(Startup),
-            };
-
-            Application.Run(args, types);
-        }
-    }
+            services
+                .AddPublisher(configuration)
+                .AddSubscriber(configuration)
+                .AddExchangeListeners(ExchangeTypes.Host)
+                .AddTools(configuration)
+                .AddScoped<IConsumeAsync<Profile>, HostScanner>()
+                .AddScoped<IGeoIpService, GeoIpService>();
+        });
 }

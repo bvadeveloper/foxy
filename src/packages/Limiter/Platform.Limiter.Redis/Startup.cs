@@ -6,15 +6,11 @@ using Platform.Limiter.Redis.Models;
 
 namespace Platform.Limiter.Redis
 {
-    public class Startup
+    public static class ServiceCollectionExtensions
     {
-        public Startup(IConfiguration configuration) => Configuration = configuration;
-
-        private IConfiguration Configuration { get; }
-
-        public void ConfigureServices(IServiceCollection services) =>
+        public static IServiceCollection AddRequestLimiter(this IServiceCollection services, IConfiguration configuration) =>
             services
-                .Configure<List<PermissionModel>>(options => Configuration.GetSection("Limiter").Bind(options))
+                .Configure<List<PermissionModel>>(options => configuration.GetSection("Limiter").Bind(options))
                 .AddSingleton<IRequestLimiter, RequestLimiter>()
                 .AddSingleton<IPermissionRepository, PermissionRepository>();
     }
