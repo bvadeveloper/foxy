@@ -19,5 +19,5 @@ internal static class Program
                 .AddExchangeListeners(ExchangeTypes.Report)
                 .AddScoped<IReportBuilder, ReportBuilder>()
                 .AddScoped<IConsumeAsync<Profile>, ReportProcessor>();
-        }, application => { });
+        });
 }

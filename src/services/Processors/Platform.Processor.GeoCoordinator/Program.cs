@@ -18,5 +18,5 @@ internal static class Program
                 .AddSubscriber(configuration)
                 .AddExchangeListeners(ExchangeTypes.GeoCoordinator, ExchangeTypes.GeoSynchronization)
                 .AddScoped<IConsumeAsync<Profile>, CoordinatorConsumer>();
-        }, application => { });
+        });
 }

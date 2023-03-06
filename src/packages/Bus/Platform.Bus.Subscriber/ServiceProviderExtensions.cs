@@ -8,7 +8,7 @@ public static class ServiceProviderExtensions
     public static IServiceCollection AddSubscriber(this IServiceCollection services, IConfiguration configuration) =>
         services
             .AddBusConfiguration(configuration)
-            .AddHostedService<HostedService>()
+            .AddHostedService<SubscriptionService>()
             .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddBus();
 }

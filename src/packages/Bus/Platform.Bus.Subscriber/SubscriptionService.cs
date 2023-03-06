@@ -4,11 +4,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace Platform.Bus.Subscriber
 {
-    public class HostedService : IHostedService
+    public class SubscriptionService : IHostedService
     {
         private readonly IBusSubscriber _busSubscriber;
 
-        public HostedService(IBusSubscriber busSubscriber) => _busSubscriber = busSubscriber;
+        public SubscriptionService(IBusSubscriber busSubscriber) => _busSubscriber = busSubscriber;
 
         public async Task StartAsync(CancellationToken cancellationToken) => await _busSubscriber.Subscribe(cancellationToken);
 

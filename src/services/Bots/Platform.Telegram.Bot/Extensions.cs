@@ -9,15 +9,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Platform.Primitives;
 using Platform.Telegram.Bot.Configuration;
-using Platform.Telegram.Bot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Platform.Telegram.Bot.Extensions
+namespace Platform.Telegram.Bot
 {
-    public static class MessageExtensions
+    public static class Extensions
     {
         internal static IServiceCollection AddTelegramBot(this IServiceCollection services,
             IConfiguration configuration)

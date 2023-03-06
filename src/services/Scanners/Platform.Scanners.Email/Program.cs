@@ -22,5 +22,5 @@ internal static class Program
                 .AddTools(configuration)
                 .AddScoped<IConsumeAsync<Profile>, EmailScanner>()
                 .AddScoped<IGeoIpService, GeoIpService>();
-        }, application => { });
+        });
 }

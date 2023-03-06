@@ -1,5 +1,7 @@
 version: "3.9"
 services:
+  
+  # Rabbit message broker
   rabbitmq:
     image: rabbitmq:3.8-management
     container_name: 'rabbitmq'
@@ -18,10 +20,12 @@ services:
       - RABBITMQ_DEFAULT_PASS=${RMQ_PASS}
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 10s
+      interval: 30s
       timeout: 30s
+      start_period: 20s
       retries: 4
   
+  # Redis
   redis:
     image: redis
     container_name: 'redis'
@@ -31,12 +35,14 @@ services:
     restart: on-failure
     healthcheck:
       test: redis-cli ping
-      interval: 5s
-      timeout: 3s
-      retries: 30
+      interval: 60s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     networks:
       - bot_network
   
+  # Telegram bot
   bot:
     build:
       context: ./src
@@ -61,14 +67,16 @@ services:
       redis:
         condition: service_started
     healthcheck:
-      test: curl --fail http://bot:8080/status || exit 1
-      interval: 5s
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
       timeout: 30s
+      start_period: 10s
       retries: 4
     links:
       - rabbitmq
       - redis
   
+  # Domain scanner
   domain_scanner:
     build:
       context: ./src
@@ -88,11 +96,18 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      bot:
+      coordinator:
         condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     links:
       - rabbitmq
   
+  # Host scanner
   host_scanner:
     build:
       context: ./src
@@ -112,11 +127,18 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      bot:
+      coordinator:
         condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     links:
       - rabbitmq
   
+  # Facebook scanner
   facebook_scanner:
     build:
       context: ./src
@@ -136,11 +158,18 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      bot:
+      coordinator:
         condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     links:
       - rabbitmq
   
+  # Email checker
   email_scanner:
     build:
       context: ./src
@@ -160,11 +189,18 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      bot:
+      coordinator:
         condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     links:
       - rabbitmq
   
+  # Geo coordinator
   coordinator:
     build:
       context: ./src
@@ -186,9 +222,16 @@ services:
         condition: service_healthy
       bot:
         condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     links:
       - rabbitmq
   
+  # Report processor
   reporter:
     build:
       context: ./src
@@ -208,8 +251,14 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      bot:
+      coordinator:
         condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     links:
       - rabbitmq
 

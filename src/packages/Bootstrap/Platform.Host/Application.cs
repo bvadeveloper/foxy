@@ -15,12 +15,11 @@ namespace Platform.Host
 {
     public static class Application
     {
-        public static async Task RunAsync(string[] args, Action<IServiceCollection, ConfigurationManager> configureAction, Action<WebApplication> applicationAction)
+        public static async Task RunAsync(string[] args, Action<IServiceCollection, ConfigurationManager> configureAction, Action<WebApplication>? applicationAction = default)
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.UseKestrel();
             builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
-            //builder.WebHost.UseSetting(WebHostDefaults.ApplicationKey, Assembly.GetEntryAssembly()?.GetName().Name);
             builder.Configuration
                 .SetBasePath(Directory.GetParent(Assembly.GetExecutingAssembly().Location)!.FullName)
                 .AddJsonFile("tools.json", optional: true, reloadOnChange: true)
@@ -50,7 +49,7 @@ namespace Platform.Host
             app.UseMiddleware<VersioningMiddleware>();
 #endif
             // invoke custom application registrations
-            applicationAction(app);
+            applicationAction?.Invoke(app);
 
             await app.RunAsync();
         }

@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSerilogLogger(this IServiceCollection services) =>
         services
-            //.AddLogging(x => x.ClearProviders())
+            .AddLogging(x => x.ClearProviders())
             .AddServiceLogProperty()
             .AddSerilogServices();
 

@@ -9,7 +9,7 @@ docker-down:
 	docker compose down
 
 docker-cleanup: docker-down
-	docker rmi vsp/telegram-bot:$(foxy_image_ver) vsp/reporter:$(foxy_image_ver) vsp/collector:$(foxy_image_ver) vsp/collector:$(foxy_image_ver) vsp/scanner:$(foxy_image_ver)
+	docker rmi $(docker images vsp/* -q)
 	docker rmi rabbitmq:$(rabbit_image_ver)-management
 	docker rmi redis
 

@@ -7,7 +7,6 @@ using Platform.Caching.Redis;
 using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Limiter.Redis;
-using Platform.Telegram.Bot.Extensions;
 using Platform.Validation.Fluent;
 
 namespace Platform.Telegram.Bot;
@@ -18,13 +17,13 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
+                .AddTelegramBot(configuration)
                 .AddPublisher(configuration)
                 .AddSubscriber(configuration)
                 .AddExchangeListeners(ExchangeTypes.Telegram)
                 .AddRedis(configuration)
                 .AddRequestLimiter(configuration)
                 .AddValidation()
-                .AddTelegramBot(configuration)
                 .AddScoped<IConsumeAsync<Profile>, ResponderProcessor>();
-        }, application => { });
+        });
 }
