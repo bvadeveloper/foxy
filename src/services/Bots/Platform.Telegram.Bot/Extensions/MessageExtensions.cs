@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Platform.Contract.Telegram;
 using Platform.Primitives;
 using Platform.Telegram.Bot.Configuration;
 using Platform.Telegram.Bot.Services;
@@ -45,32 +43,6 @@ namespace Platform.Telegram.Bot.Extensions
                 .AddHostedService<PollingMessageService>();
 
             return services;
-        }
-
-        /// <summary>
-        /// Split string by chunk length
-        /// </summary>
-        internal static IEnumerable<string> SplitBy(this string message, int chunkLength)
-        {
-            if (string.IsNullOrEmpty(message))
-            {
-                throw new ArgumentException($"'{nameof(message)}' can't be null or empty");
-            }
-
-            if (chunkLength < 1)
-            {
-                throw new ArgumentException($"'{nameof(chunkLength)}' can't be less than 1");
-            }
-
-            for (var i = 0; i < message.Length; i += chunkLength)
-            {
-                if (chunkLength + i > message.Length)
-                {
-                    chunkLength = message.Length - i;
-                }
-
-                yield return message.Substring(i, chunkLength);
-            }
         }
 
         internal static SessionContext AddChatId(this SessionContext context, long id)

@@ -21,14 +21,22 @@ services:
       interval: 10s
       timeout: 30s
       retries: 4
+  
   redis:
     image: redis
     container_name: 'redis'
     hostname: 'redis'
     ports:
       - "6379:6379"
+    restart: on-failure
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      timeout: 3s
+      retries: 30
     networks:
       - bot_network
+  
   bot:
     build:
       context: ./src
@@ -53,13 +61,14 @@ services:
       redis:
         condition: service_started
     healthcheck:
-      test: curl --fail http://localhost:80 || exit 1
-      interval: 10s
+      test: curl --fail http://bot:8080/status || exit 1
+      interval: 5s
       timeout: 30s
       retries: 4
     links:
       - rabbitmq
       - redis
+  
   domain_scanner:
     build:
       context: ./src
@@ -83,6 +92,7 @@ services:
         condition: service_healthy
     links:
       - rabbitmq
+  
   host_scanner:
     build:
       context: ./src
@@ -106,6 +116,7 @@ services:
         condition: service_healthy
     links:
       - rabbitmq
+  
   facebook_scanner:
     build:
       context: ./src
@@ -129,6 +140,7 @@ services:
         condition: service_healthy
     links:
       - rabbitmq
+  
   email_scanner:
     build:
       context: ./src
@@ -152,6 +164,7 @@ services:
         condition: service_healthy
     links:
       - rabbitmq
+  
   coordinator:
     build:
       context: ./src
@@ -175,6 +188,7 @@ services:
         condition: service_healthy
     links:
       - rabbitmq
+  
   reporter:
     build:
       context: ./src

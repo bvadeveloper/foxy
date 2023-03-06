@@ -15,7 +15,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Logging\Platform.Logging.Host\Platform.Logging.Host.csproj" />
         <ProjectReference Include="..\..\Primitives\Platform.Primitives\Platform.Primitives.csproj" />
-        <ProjectReference Include="..\Platform.Host.Bootstrap\Platform.Host.Bootstrap.csproj" />
     </ItemGroup>
 
 </Project>
