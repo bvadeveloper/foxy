@@ -25,6 +25,9 @@ namespace Platform.Bus.Subscriber
 
         private readonly string _subscriberName;
 
+        private const string EmptyMarker = "*";
+        private const string DefaultMarker = "default";
+
         public BusSubscriber(
             IConnection connection,
             IModel channel,
@@ -56,6 +59,33 @@ namespace Platform.Bus.Subscriber
             _exchangeCollection.Exchanges.ForEach(value =>
             {
                 var exchangeName = value.ExchangeTypes.ToString();
+
+                _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
+                _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
+
+                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKey}'");
+            });
+
+            _channel.BasicConsume(queueName, false, consumer);
+
+            await Task.Yield();
+        }
+
+        /// <summary>
+        /// https://www.rabbitmq.com/tutorials/tutorial-five-dotnet.html
+        /// </summary>
+        /// <param name="marker"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task SubscribeByGeoMarker(string marker, CancellationToken cancellationToken)
+        {
+            var queueName = _channel.QueueDeclare(_subscriberName);
+            var consumer = new AsyncEventingBasicConsumer(_channel);
+            consumer.Received += ConsumerOnReceived;
+
+            _exchangeCollection.Exchanges.ForEach(value =>
+            {
+                var exchangeMarker = string.IsNullOrEmpty(marker) ? EmptyMarker : marker;
+                var exchangeName = $"{DefaultMarker}.{value.ExchangeTypes.ToString().ToLower()}.{exchangeMarker}";
 
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
                 _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
@@ -104,7 +134,7 @@ namespace Platform.Bus.Subscriber
             }
             else
             {
-                _logger.Error($"Something went wrong, the 'fx-session' headers corrupted, '{eventArgs.RoutingKey}' or CRC not valid.");
+                _logger.Error($"Something went wrong, the 'fx-session' headers corrupted or CRC not valid '{eventArgs.RoutingKey}'.");
                 _channel.BasicAck(eventArgs.DeliveryTag, false);
                 // todo: do we need to re-process it, I guess not (need to notify about it to admin channel)
             }

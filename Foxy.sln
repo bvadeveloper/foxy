@@ -92,7 +92,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Primitives", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Contract.Profiles", "src\packages\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj", "{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tool.GeoIp", "src\packages\Tools\Platform.Tool.GeoIp\Platform.Tool.GeoIp.csproj", "{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tool.GeoService", "src\packages\Tools\Platform.Tool.GeoService\Platform.Tool.GeoService.csproj", "{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scanners", "Scanners", "{8BA651B0-7301-4D80-9DDE-F090A37A7088}"
 EndProject

@@ -5,7 +5,8 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Host;
-using Platform.Tool.GeoIp;
+using Platform.Tool.GeoService;
+using Platform.Tool.GeoService.Abstractions;
 using Platform.Tools.Extensions;
 
 namespace Platform.Scanners.Email;
@@ -21,6 +22,6 @@ internal static class Program
                 .AddExchangeListeners(ExchangeTypes.Email)
                 .AddTools(configuration)
                 .AddScoped<IConsumeAsync<Profile>, EmailScanner>()
-                .AddScoped<IGeoIpService, GeoIpService>();
+                .AddScoped<IGeoService, GeoService>();
         });
 }

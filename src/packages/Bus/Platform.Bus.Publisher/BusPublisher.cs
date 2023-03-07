@@ -27,7 +27,7 @@ namespace Platform.Bus.Publisher
             try
             {
                 var sessionBytes = Encoding.UTF8.GetBytes(_sessionContext.ToString());
-                var exchangeName = exchange.ExchangeTypes.ToString();
+                var exchangeName = exchange.ExchangeTypes.ToString().ToLower();
 
                 var props = _channel.CreateBasicProperties();
                 props.DeliveryMode = 1;

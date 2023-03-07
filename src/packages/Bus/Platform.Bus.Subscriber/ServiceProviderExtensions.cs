@@ -11,4 +11,12 @@ public static class ServiceProviderExtensions
             .AddHostedService<SubscriptionService>()
             .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddBus();
+
+    public static IServiceCollection AddScannerSubscriber(this IServiceCollection services, IConfiguration configuration, ExchangeTypes defaultExchangeTypes) =>
+        services
+            .AddBusConfiguration(configuration)
+            .AddHostedService<ScannerSubscriptionService>()
+            .AddScoped<IBusSubscriber, BusSubscriber>()
+            .AddExchangeListeners(defaultExchangeTypes)
+            .AddBus();
 }

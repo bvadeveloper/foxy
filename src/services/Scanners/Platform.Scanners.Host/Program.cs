@@ -5,7 +5,8 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Host;
-using Platform.Tool.GeoIp;
+using Platform.Tool.GeoService;
+using Platform.Tool.GeoService.Abstractions;
 using Platform.Tools.Extensions;
 
 namespace Platform.Scanners.Host;
@@ -21,6 +22,6 @@ internal static class Program
                 .AddExchangeListeners(ExchangeTypes.Host)
                 .AddTools(configuration)
                 .AddScoped<IConsumeAsync<Profile>, HostScanner>()
-                .AddScoped<IGeoIpService, GeoIpService>();
+                .AddScoped<IGeoService, GeoService>();
         });
 }

@@ -8,5 +8,7 @@ namespace Platform.Bus
         Task Subscribe(CancellationToken cancellationToken);
         
         void Unsubscribe(CancellationToken cancellationToken);
+        
+        Task SubscribeByGeoMarker(string marker, CancellationToken cancellationToken);
     }
 }

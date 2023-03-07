@@ -9,7 +9,7 @@ docker-down:
 	docker compose down
 
 docker-cleanup: docker-down
-	docker rmi $(docker images vsp/* -q)
+	docker rmi $$(docker images vsp/* -q) 
 	docker rmi rabbitmq:$(rabbit_image_ver)-management
 	docker rmi redis
 
