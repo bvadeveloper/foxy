@@ -2,21 +2,19 @@ namespace Platform.Tool.GeoService.Stunt
 {
     public static class StunExtensions
     {
-        public static async ValueTask<T> AwaitWithTimeout<T>(this Task<T> task, int timeoutMs)
+        internal static async Task<T> AwaitWithTimeout<T>(this Task<T> task, int timeoutMs)
         {
             await Task.WhenAny(task, Task.Delay(timeoutMs));
 
-            return !task.IsCompleted
-                ? throw new Exception("Task timeout")
-                : await task;
+            return task.IsCompleted
+                ? await task
+                : throw new Exception("Task timeout");
         }
 
         internal static IEnumerable<T> RandomElements<T>(this T[] elements)
         {
             var random = new Random();
-            var index = random.Next(elements.Length);
-
-            yield return elements[index];
+            yield return elements[random.Next(elements.Length)];
         }
     }
 }
