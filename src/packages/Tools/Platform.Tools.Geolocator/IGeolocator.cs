@@ -9,5 +9,5 @@ public interface IGeolocator
     /// </summary>
     /// <param name="ipAddress"></param>
     /// <returns></returns>
-    public Task<string> Find(IPAddress ipAddress);
+    public Task<string> FindCountryCode(IPAddress ipAddress);
 }

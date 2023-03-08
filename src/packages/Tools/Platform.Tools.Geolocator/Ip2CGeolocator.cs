@@ -23,7 +23,7 @@ public class Ip2CGeolocator : IGeolocator
     /// </summary>
     /// <param name="ipAddress"></param>
     /// <returns></returns>
-    public async Task<string> Find(IPAddress ipAddress)
+    public async Task<string> FindCountryCode(IPAddress ipAddress)
     {
         try
         {

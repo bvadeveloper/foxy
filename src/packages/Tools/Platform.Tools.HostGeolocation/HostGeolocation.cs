@@ -33,7 +33,7 @@ public class HostGeolocation : IHostGeolocation
             ipAddress = await RequestAwsExternalIpChecker(AwsCheckIpUrl);
         }
 
-        return await _geolocator.Find(ipAddress);
+        return await _geolocator.FindCountryCode(ipAddress);
     }
 
     /// <summary>
