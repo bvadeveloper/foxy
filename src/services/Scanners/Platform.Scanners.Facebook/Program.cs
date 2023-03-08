@@ -5,8 +5,10 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Host;
+using Platform.Services;
 using Platform.Tools.CoordinatorGeolocator;
 using Platform.Tools.Extensions;
+using Platform.Tools.HostGeolocator;
 
 namespace Platform.Scanners.Facebook;
 
@@ -17,10 +19,9 @@ internal static class Program
         {
             services
                 .AddPublisher(configuration)
-                .AddSubscriber(configuration)
-                .AddExchangeListeners(ExchangeTypes.Facebook)
+                .AddScannerSubscription(configuration, ExchangeTypes.Facebook)
+                .AddHostGeolocator()
                 .AddTools(configuration)
-                .AddScoped<IConsumeAsync<Profile>, FacebookScanner>()
-                .AddScoped<ICoordinatorGeolocator, CoordinatorGeolocator>();
+                .AddScoped<IConsumeAsync<Profile>, FacebookScanner>();
         });
 }

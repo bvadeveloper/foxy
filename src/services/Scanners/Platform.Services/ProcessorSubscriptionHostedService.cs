@@ -1,14 +1,13 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Platform.Bus;
 
-namespace Platform.Bus.Subscriber
+namespace Platform.Services
 {
-    public class SubscriptionService : IHostedService
+    public class ProcessorSubscriptionHostedService : IHostedService
     {
         private readonly IBusSubscriber _busSubscriber;
 
-        public SubscriptionService(IBusSubscriber busSubscriber) => _busSubscriber = busSubscriber;
+        public ProcessorSubscriptionHostedService(IBusSubscriber busSubscriber) => _busSubscriber = busSubscriber;
 
         public async Task StartAsync(CancellationToken cancellationToken) => await _busSubscriber.Subscribe(cancellationToken);
 

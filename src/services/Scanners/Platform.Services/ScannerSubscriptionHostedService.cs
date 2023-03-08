@@ -1,19 +1,17 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Platform.Bus;
 using Platform.Bus.Publisher;
 using Platform.Tools.HostGeolocator;
 
-
-namespace Platform.Bus.Subscriber
+namespace Platform.Services
 {
-    public class ScannerSubscriptionService : IHostedService
+    public class ScannerSubscriptionHostedService : IHostedService
     {
         private readonly IBusSubscriber _busSubscriber;
         private readonly IBusPublisher _busPublisher;
         private readonly IHostGeolocator _hostGeolocator;
 
-        public ScannerSubscriptionService(IBusSubscriber busSubscriber, IHostGeolocator hostGeolocator, IBusPublisher busPublisher)
+        public ScannerSubscriptionHostedService(IBusSubscriber busSubscriber, IHostGeolocator hostGeolocator, IBusPublisher busPublisher)
         {
             _busSubscriber = busSubscriber;
             _busPublisher = busPublisher;
@@ -25,9 +23,9 @@ namespace Platform.Bus.Subscriber
             // todo: re-ran every 1h
             // todo: move ScannerSubscriptionService to another service
 
-            var geoMarker = await _hostGeolocator.FindGeoMarkers();
-            await _busPublisher.PublishToGeoSynchronizationExchange(geoMarker);
-            await _busSubscriber.SubscribeByGeoMarker(geoMarker, cancellationToken);
+            var markers = await _hostGeolocator.FindGeoMarkers();
+            await _busPublisher.PublishToGeoSynchronizationExchange(markers);
+            await _busSubscriber.SubscribeByGeoMarker(markers, cancellationToken);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

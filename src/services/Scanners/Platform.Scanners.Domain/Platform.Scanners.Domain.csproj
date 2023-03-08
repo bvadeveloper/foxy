@@ -25,9 +25,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\packages\Bootstrap\Platform.Host\Platform.Host.csproj" />
-        <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Publisher\Platform.Bus.Publisher.csproj" />
-        <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Subscriber\Platform.Bus.Subscriber.csproj" />
         <ProjectReference Include="..\..\..\packages\Tools\Platform.Tools\Platform.Tools.csproj" />
+        <ProjectReference Include="..\Platform.Services\Platform.Services.csproj" />
     </ItemGroup>
 
 </Project>

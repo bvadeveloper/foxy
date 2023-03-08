@@ -5,6 +5,7 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Host;
+using Platform.Services;
 using Platform.Tools.Extensions;
 using Platform.Tools.HostGeolocator;
 
@@ -17,7 +18,7 @@ internal static class Program
         {
             services
                 .AddPublisher(configuration)
-                .AddScannerSubscriber(configuration, ExchangeTypes.Domain)
+                .AddScannerSubscription(configuration, ExchangeTypes.Domain)
                 .AddHostGeolocator()
                 .AddTools(configuration)
                 .AddScoped<IConsumeAsync<Profile>, DomainScanner>();

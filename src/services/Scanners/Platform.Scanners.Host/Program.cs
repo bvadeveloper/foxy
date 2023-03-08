@@ -5,8 +5,9 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Host;
-using Platform.Tools.CoordinatorGeolocator;
+using Platform.Services;
 using Platform.Tools.Extensions;
+using Platform.Tools.HostGeolocator;
 
 namespace Platform.Scanners.Host;
 
@@ -17,10 +18,9 @@ internal static class Program
         {
             services
                 .AddPublisher(configuration)
-                .AddSubscriber(configuration)
-                .AddExchangeListeners(ExchangeTypes.Host)
+                .AddScannerSubscription(configuration, ExchangeTypes.Host)
+                .AddHostGeolocator()
                 .AddTools(configuration)
-                .AddScoped<IConsumeAsync<Profile>, HostScanner>()
-                .AddScoped<ICoordinatorGeolocator, CoordinatorGeolocator>();
+                .AddScoped<IConsumeAsync<Profile>, HostScanner>();
         });
 }
