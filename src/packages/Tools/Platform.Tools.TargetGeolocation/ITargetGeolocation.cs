@@ -1,8 +1,8 @@
 using System.Net;
 
-namespace Platform.Tools.CoordinatorGeolocator;
+namespace Platform.Tools.TargetGeolocation;
 
-public interface ICoordinatorGeolocator
+public interface ITargetGeolocation
 {
     /// <summary>
     /// Find geo markers for targets

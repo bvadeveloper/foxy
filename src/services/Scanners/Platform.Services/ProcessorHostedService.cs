@@ -3,11 +3,11 @@ using Platform.Bus;
 
 namespace Platform.Services
 {
-    public class ProcessorSubscriptionHostedService : IHostedService
+    public class ProcessorHostedService : IHostedService
     {
         private readonly IBusSubscriber _busSubscriber;
 
-        public ProcessorSubscriptionHostedService(IBusSubscriber busSubscriber) => _busSubscriber = busSubscriber;
+        public ProcessorHostedService(IBusSubscriber busSubscriber) => _busSubscriber = busSubscriber;
 
         public async Task StartAsync(CancellationToken cancellationToken) => await _busSubscriber.Subscribe(cancellationToken);
 

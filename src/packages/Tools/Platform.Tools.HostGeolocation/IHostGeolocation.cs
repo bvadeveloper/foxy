@@ -1,10 +1,10 @@
-namespace Platform.Tools.HostGeolocator;
+namespace Platform.Tools.HostGeolocation;
 
-public interface IHostGeolocator
+public interface IHostGeolocation
 {
     /// <summary>
     /// Find geo markers for scanner applications
     /// </summary>
     /// <returns></returns>
-    Task<string> FindGeoMarkers();
+    Task<string> FindCountryCode();
 }

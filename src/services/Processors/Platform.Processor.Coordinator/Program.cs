@@ -7,7 +7,7 @@ using Platform.Caching.Redis;
 using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Services;
-using Platform.Tools.CoordinatorGeolocator;
+using Platform.Tools.TargetGeolocation;
 
 namespace Platform.Processor.Coordinator;
 
@@ -21,7 +21,7 @@ internal static class Program
                 .AddPublisher(configuration)
                 .AddSubscription(configuration)
                 .AddExchangeListeners(ExchangeTypes.Coordinator, ExchangeTypes.GeoSynchronization)
-                .AddCoordinatorGeolocator()
+                .AddTargetGeolocation()
                 .AddScoped<IConsumeAsync<Profile>, CoordinatorProcessor>();
         });
 }

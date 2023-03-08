@@ -32,7 +32,7 @@ public class Ip2CGeolocator : IGeolocator
 
             if (responseArray[0] == "0" || responseArray[0] == "2")
             {
-                _logger.Warn($"Seems {nameof(Ip2CGeolocator)} can't find a geo marker for '{ipAddress}'");
+                _logger.Warn($"Seems {nameof(Ip2CGeolocator)} can't find a geo marker for '{ipAddress}', response is '{response}'");
                 return string.Empty;
             }
 

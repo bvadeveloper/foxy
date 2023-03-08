@@ -10,14 +10,14 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSubscription(this IServiceCollection services, IConfiguration configuration) =>
         services
             .AddBusConfiguration(configuration)
-            .AddHostedService<ProcessorSubscriptionHostedService>()
+            .AddHostedService<ProcessorHostedService>()
             .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddBus();
 
     public static IServiceCollection AddScannerSubscription(this IServiceCollection services, IConfiguration configuration, ExchangeTypes exchangeType) =>
         services
             .AddBusConfiguration(configuration)
-            .AddHostedService<ScannerSubscriptionHostedService>()
+            .AddHostedService<ScannerHostedService>()
             .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddExchangeListeners(exchangeType)
             .AddBus();

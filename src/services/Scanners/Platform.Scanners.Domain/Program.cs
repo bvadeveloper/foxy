@@ -7,7 +7,7 @@ using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Services;
 using Platform.Tools.Extensions;
-using Platform.Tools.HostGeolocator;
+using Platform.Tools.HostGeolocation;
 
 namespace Platform.Scanners.Domain;
 
@@ -19,7 +19,7 @@ internal static class Program
             services
                 .AddPublisher(configuration)
                 .AddScannerSubscription(configuration, ExchangeTypes.Domain)
-                .AddHostGeolocator()
+                .AddHostGeolocation()
                 .AddTools(configuration)
                 .AddScoped<IConsumeAsync<Profile>, DomainScanner>();
         });

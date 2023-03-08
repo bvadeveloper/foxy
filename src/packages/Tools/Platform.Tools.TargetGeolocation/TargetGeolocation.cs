@@ -3,15 +3,15 @@ using Microsoft.Extensions.Logging;
 using Platform.Caching.Abstractions;
 using Platform.Tools.Geolocator;
 
-namespace Platform.Tools.CoordinatorGeolocator;
+namespace Platform.Tools.TargetGeolocation;
 
-public class CoordinatorGeolocator : ICoordinatorGeolocator
+public class TargetGeolocation : ITargetGeolocation
 {
     private readonly IGeolocator _geolocator;
     private readonly ICacheDataService _cacheDataService;
     private readonly ILogger _logger;
 
-    public CoordinatorGeolocator(IGeolocator geolocator, ICacheDataService cacheDataService, ILogger<CoordinatorGeolocator> logger)
+    public TargetGeolocation(IGeolocator geolocator, ICacheDataService cacheDataService, ILogger<TargetGeolocation> logger)
     {
         _geolocator = geolocator;
         _cacheDataService = cacheDataService;

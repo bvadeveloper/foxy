@@ -2,11 +2,11 @@ using System.Net;
 using Microsoft.Extensions.Logging;
 using Platform.Logging.Extensions;
 using Platform.Tools.Geolocator;
-using Platform.Tools.HostGeolocator.Stun;
+using Platform.Tools.HostGeolocation.Stun;
 
-namespace Platform.Tools.HostGeolocator;
+namespace Platform.Tools.HostGeolocation;
 
-public class HostGeolocator : IHostGeolocator
+public class HostGeolocation : IHostGeolocation
 {
     private const string AwsCheckIpUrl = "https://checkip.amazonaws.com/";
 
@@ -15,7 +15,7 @@ public class HostGeolocator : IHostGeolocator
     private readonly IGeolocator _geolocator;
     private readonly ILogger _logger;
 
-    public HostGeolocator(IStunClient stunClient, IHttpClientFactory clientFactory, IGeolocator geoProvider, ILogger<HostGeolocator> logger)
+    public HostGeolocation(IStunClient stunClient, IHttpClientFactory clientFactory, IGeolocator geoProvider, ILogger<HostGeolocation> logger)
     {
         _stunClient = stunClient;
         _clientFactory = clientFactory;
@@ -23,13 +23,13 @@ public class HostGeolocator : IHostGeolocator
         _logger = logger;
     }
 
-    public async Task<string> FindGeoMarkers()
+    public async Task<string> FindCountryCode()
     {
         var ipAddress = await _stunClient.Send();
 
         if (Equals(ipAddress, IPAddress.None))
         {
-            _logger.Info($"Hmm... The Stun client didn't return any ip address, let's use http endpoint for that '{AwsCheckIpUrl}'");
+            _logger.Info($"Hmm... The Stun client didn't return any ip address, let's use a spare http endpoint for that '{AwsCheckIpUrl}'");
             ipAddress = await RequestAwsExternalIpChecker(AwsCheckIpUrl);
         }
 

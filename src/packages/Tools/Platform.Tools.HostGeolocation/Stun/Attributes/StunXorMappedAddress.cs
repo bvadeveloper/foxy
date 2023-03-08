@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Platform.Tools.HostGeolocator.Stun.Attributes
+namespace Platform.Tools.HostGeolocation.Stun.Attributes
 {
     /// <summary>
     /// The XOR-MAPPED-ADDRESS attribute is identical to the MAPPED-ADDRESS

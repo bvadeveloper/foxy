@@ -92,7 +92,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Primitives", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Contract.Profiles", "src\packages\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj", "{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tools.CoordinatorGeolocator", "src\packages\Tools\Platform.Tools.CoordinatorGeolocator\Platform.Tools.CoordinatorGeolocator.csproj", "{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tools.TargetGeolocation", "src\packages\Tools\Platform.Tools.TargetGeolocation\Platform.Tools.TargetGeolocation.csproj", "{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scanners", "Scanners", "{8BA651B0-7301-4D80-9DDE-F090A37A7088}"
 EndProject
@@ -104,7 +104,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Scanners.Facebook"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Scanners.Email", "src\services\Scanners\Platform.Scanners.Email\Platform.Scanners.Email.csproj", "{C458A1D7-71C4-4E62-896C-07C5A0FD427E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tools.HostGeolocator", "src\packages\Tools\Platform.Tools.HostGeolocator\Platform.Tools.HostGeolocator.csproj", "{61B23BDA-10C4-4B2D-9749-F88908CD4F21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tools.HostGeolocation", "src\packages\Tools\Platform.Tools.HostGeolocation\Platform.Tools.HostGeolocation.csproj", "{61B23BDA-10C4-4B2D-9749-F88908CD4F21}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tools.Geolocator", "src\packages\Tools\Platform.Tools.Geolocator\Platform.Tools.Geolocator.csproj", "{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}"
 EndProject

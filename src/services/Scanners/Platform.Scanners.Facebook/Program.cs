@@ -6,9 +6,8 @@ using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Services;
-using Platform.Tools.CoordinatorGeolocator;
 using Platform.Tools.Extensions;
-using Platform.Tools.HostGeolocator;
+using Platform.Tools.HostGeolocation;
 
 namespace Platform.Scanners.Facebook;
 
@@ -20,7 +19,7 @@ internal static class Program
             services
                 .AddPublisher(configuration)
                 .AddScannerSubscription(configuration, ExchangeTypes.Facebook)
-                .AddHostGeolocator()
+                .AddHostGeolocation()
                 .AddTools(configuration)
                 .AddScoped<IConsumeAsync<Profile>, FacebookScanner>();
         });

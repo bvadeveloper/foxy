@@ -1,6 +1,6 @@
-using Platform.Tools.HostGeolocator.Stun.Attributes;
+using Platform.Tools.HostGeolocation.Stun.Attributes;
 
-namespace Platform.Tools.HostGeolocator.Stun
+namespace Platform.Tools.HostGeolocation.Stun
 {
     /**
      *  0                   1                   2                   3
