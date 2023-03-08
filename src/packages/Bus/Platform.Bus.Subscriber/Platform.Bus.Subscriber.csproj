@@ -18,7 +18,7 @@
         <ProjectReference Include="..\..\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj" />
         <ProjectReference Include="..\..\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
         <ProjectReference Include="..\..\Primitives\Platform.Primitives\Platform.Primitives.csproj" />
-        <ProjectReference Include="..\..\Tools\Platform.Tool.GeoService\Platform.Tool.GeoService.csproj" />
+        <ProjectReference Include="..\..\Tools\Platform.Tools.HostGeolocator\Platform.Tools.HostGeolocator.csproj" />
         <ProjectReference Include="..\Platform.Bus.Publisher\Platform.Bus.Publisher.csproj" />
         <ProjectReference Include="..\Platform.Bus\Platform.Bus.csproj" />
     </ItemGroup>

@@ -5,8 +5,7 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Host;
-using Platform.Tool.GeoService;
-using Platform.Tool.GeoService.Abstractions;
+using Platform.Tools.CoordinatorGeolocator;
 using Platform.Tools.Extensions;
 
 namespace Platform.Scanners.Facebook;
@@ -22,6 +21,6 @@ internal static class Program
                 .AddExchangeListeners(ExchangeTypes.Facebook)
                 .AddTools(configuration)
                 .AddScoped<IConsumeAsync<Profile>, FacebookScanner>()
-                .AddScoped<IGeoService, GeoService>();
+                .AddScoped<ICoordinatorGeolocator, CoordinatorGeolocator>();
         });
 }

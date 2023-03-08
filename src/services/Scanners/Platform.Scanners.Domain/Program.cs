@@ -5,9 +5,8 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Host;
-using Platform.Tool.GeoService;
-using Platform.Tool.GeoService.Abstractions;
 using Platform.Tools.Extensions;
+using Platform.Tools.HostGeolocator;
 
 namespace Platform.Scanners.Domain;
 
@@ -19,8 +18,8 @@ internal static class Program
             services
                 .AddPublisher(configuration)
                 .AddScannerSubscriber(configuration, ExchangeTypes.Domain)
+                .AddHostGeolocator()
                 .AddTools(configuration)
-                .AddScoped<IConsumeAsync<Profile>, DomainScanner>()
-                .AddGeoServices(configuration);
+                .AddScoped<IConsumeAsync<Profile>, DomainScanner>();
         });
 }

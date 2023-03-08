@@ -21,7 +21,7 @@ public static class Extensions
         await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Report));
 
     public static ValueTask PublishToCoordinatorExchange(this IBusPublisher publisher, string message) =>
-        publisher.PublishTo(ExchangeTypes.GeoCoordinator, message);
+        publisher.PublishTo(ExchangeTypes.Coordinator, message);
 
     public static ValueTask PublishToGeoSynchronizationExchange(this IBusPublisher publisher, string route) =>
         publisher.PublishTo(ExchangeTypes.GeoSynchronization, route);

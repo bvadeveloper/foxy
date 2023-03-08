@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace Platform.Tool.GeoService.Stunt
+namespace Platform.Tools.HostGeolocator.Stun
 {
     public class StunMessage
     {

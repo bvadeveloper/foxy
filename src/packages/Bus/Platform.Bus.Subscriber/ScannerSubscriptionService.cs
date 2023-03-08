@@ -2,7 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Platform.Bus.Publisher;
-using Platform.Tool.GeoService.Abstractions;
+using Platform.Tools.HostGeolocator;
+
 
 namespace Platform.Bus.Subscriber
 {
@@ -10,20 +11,21 @@ namespace Platform.Bus.Subscriber
     {
         private readonly IBusSubscriber _busSubscriber;
         private readonly IBusPublisher _busPublisher;
-        private readonly IGeoService _geoService;
+        private readonly IHostGeolocator _hostGeolocator;
 
-        public ScannerSubscriptionService(IBusSubscriber busSubscriber, IGeoService geoService, IBusPublisher busPublisher)
+        public ScannerSubscriptionService(IBusSubscriber busSubscriber, IHostGeolocator hostGeolocator, IBusPublisher busPublisher)
         {
             _busSubscriber = busSubscriber;
             _busPublisher = busPublisher;
-            _geoService = geoService;
+            _hostGeolocator = hostGeolocator;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             // todo: re-ran every 1h
+            // todo: move ScannerSubscriptionService to another service
 
-            var geoMarker = await _geoService.FindLocalGeoMarker();
+            var geoMarker = await _hostGeolocator.FindGeoMarkers();
             await _busPublisher.PublishToGeoSynchronizationExchange(geoMarker);
             await _busSubscriber.SubscribeByGeoMarker(geoMarker, cancellationToken);
         }

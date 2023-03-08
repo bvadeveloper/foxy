@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Platform.Tool.GeoService.Stunt.Attributes
+namespace Platform.Tools.HostGeolocator.Stun.Attributes
 {
     /// <summary>
     /// The SOFTWARE attribute contains a textual description of the software

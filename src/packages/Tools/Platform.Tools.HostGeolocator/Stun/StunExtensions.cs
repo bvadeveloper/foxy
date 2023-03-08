@@ -1,4 +1,4 @@
-namespace Platform.Tool.GeoService.Stunt
+namespace Platform.Tools.HostGeolocator.Stun
 {
     public static class StunExtensions
     {
@@ -11,10 +11,12 @@ namespace Platform.Tool.GeoService.Stunt
                 : throw new Exception("Task timeout");
         }
 
-        internal static IEnumerable<T> RandomElements<T>(this T[] elements)
+        internal static IEnumerable<T> ShuffleElements<T>(this T[] elements)
         {
             var random = new Random();
             yield return elements[random.Next(elements.Length)];
         }
+
+        internal static string ToStunUrl(this string value) => $"stun://{value}";
     }
 }

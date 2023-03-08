@@ -11,7 +11,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
+      <ProjectReference Include="..\..\Caching\src\Platform.Caching.Redis\Platform.Caching.Redis.csproj" />
+      <ProjectReference Include="..\Platform.Tools.Geolocator\Platform.Tools.Geolocator.csproj" />
     </ItemGroup>
+
 
 </Project>

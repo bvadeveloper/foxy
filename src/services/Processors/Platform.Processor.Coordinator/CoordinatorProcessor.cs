@@ -5,14 +5,14 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 
-namespace Platform.Processor.GeoCoordinator;
+namespace Platform.Processor.Coordinator;
 
-public class CoordinatorConsumer : IConsumeAsync<Profile>
+public class CoordinatorProcessor : IConsumeAsync<Profile>
 {
     private readonly IBusPublisher _publisher;
     private readonly ILogger _logger;
 
-    public CoordinatorConsumer(IBusPublisher publisher, ILogger<CoordinatorConsumer> logger)
+    public CoordinatorProcessor(IBusPublisher publisher, ILogger<CoordinatorProcessor> logger)
     {
         _publisher = publisher;
         _logger = logger;

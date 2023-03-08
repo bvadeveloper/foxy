@@ -1,6 +1,6 @@
-using Platform.Tool.GeoService.Stunt.Attributes;
+using Platform.Tools.HostGeolocator.Stun.Attributes;
 
-namespace Platform.Tool.GeoService.Stunt
+namespace Platform.Tools.HostGeolocator.Stun
 {
     /**
      *  0                   1                   2                   3

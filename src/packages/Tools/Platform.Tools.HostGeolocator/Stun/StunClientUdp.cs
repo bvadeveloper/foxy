@@ -1,9 +1,8 @@
-using System.Net;
 using System.Net.Sockets;
 
-namespace Platform.Tool.GeoService.Stunt;
+namespace Platform.Tools.HostGeolocator.Stun;
 
-public static class StunClientTcp
+public class StunClientUdp
 {
     public static async Task<StunMessage> SendRequest(StunMessage request, string stunServer) =>
         await SendRequest(request, new Uri(stunServer));
@@ -20,12 +19,12 @@ public static class StunClientTcp
             throw new ArgumentException("URI must have stun scheme", nameof(stunServer));
         }
 
-        using var tcpClient = new TcpClient(new IPEndPoint(IPAddress.Any, 0));
+        using var udp = new UdpClient(stunServer.Host, stunServer.Port);
         var requestBytes = request.Serialize();
-        await tcpClient.ConnectAsync(stunServer.Host, stunServer.Port);
-        await tcpClient.GetStream().WriteAsync(requestBytes, 0, requestBytes.Length);
-        var stream = tcpClient.GetStream();
+        var byteCount = await udp.SendAsync(requestBytes, requestBytes.Length);
+        var result = await udp.ReceiveAsync();
 
+        using var stream = new MemoryStream(result.Buffer);
         return new StunMessage(stream);
     }
 }

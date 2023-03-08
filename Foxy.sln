@@ -82,7 +82,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Limiter.Redis", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Host.Endpoint", "src\packages\Bootstrap\Platform.Host.Endpoint\Platform.Host.Endpoint.csproj", "{2E1AC902-BE27-405B-BB7C-CF5429F8C019}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Processor.GeoCoordinator", "src\services\Processors\Platform.Processor.GeoCoordinator\Platform.Processor.GeoCoordinator.csproj", "{1E797886-8292-4CE2-B066-B8B6738A49C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Processor.Coordinator", "src\services\Processors\Platform.Processor.Coordinator\Platform.Processor.Coordinator.csproj", "{1E797886-8292-4CE2-B066-B8B6738A49C5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Bus", "src\packages\Bus\Platform.Bus\Platform.Bus.csproj", "{46D11A7C-E1D4-483F-B19C-A3164FA2AAE2}"
 EndProject
@@ -92,7 +92,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Primitives", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Contract.Profiles", "src\packages\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj", "{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tool.GeoService", "src\packages\Tools\Platform.Tool.GeoService\Platform.Tool.GeoService.csproj", "{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tools.CoordinatorGeolocator", "src\packages\Tools\Platform.Tools.CoordinatorGeolocator\Platform.Tools.CoordinatorGeolocator.csproj", "{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scanners", "Scanners", "{8BA651B0-7301-4D80-9DDE-F090A37A7088}"
 EndProject
@@ -103,6 +103,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Scanners.Facebook", "src\services\Scanners\Platform.Scanners.Facebook\Platform.Scanners.Facebook.csproj", "{CAE82E88-9E11-4759-868F-A9E724EC486A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Scanners.Email", "src\services\Scanners\Platform.Scanners.Email\Platform.Scanners.Email.csproj", "{C458A1D7-71C4-4E62-896C-07C5A0FD427E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tools.HostGeolocator", "src\packages\Tools\Platform.Tools.HostGeolocator\Platform.Tools.HostGeolocator.csproj", "{61B23BDA-10C4-4B2D-9749-F88908CD4F21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tools.Geolocator", "src\packages\Tools\Platform.Tools.Geolocator\Platform.Tools.Geolocator.csproj", "{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -210,6 +214,14 @@ Global
 		{C458A1D7-71C4-4E62-896C-07C5A0FD427E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C458A1D7-71C4-4E62-896C-07C5A0FD427E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C458A1D7-71C4-4E62-896C-07C5A0FD427E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61B23BDA-10C4-4B2D-9749-F88908CD4F21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61B23BDA-10C4-4B2D-9749-F88908CD4F21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61B23BDA-10C4-4B2D-9749-F88908CD4F21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61B23BDA-10C4-4B2D-9749-F88908CD4F21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{06AB5CCD-BDE9-44CC-8DE6-EFEAB92D4A48} = {D170892B-9BBB-4E43-AD65-34C765256436}
@@ -251,5 +263,7 @@ Global
 		{F7DAA443-4C22-461F-8725-1E570D7EE6AD} = {8BA651B0-7301-4D80-9DDE-F090A37A7088}
 		{CAE82E88-9E11-4759-868F-A9E724EC486A} = {8BA651B0-7301-4D80-9DDE-F090A37A7088}
 		{C458A1D7-71C4-4E62-896C-07C5A0FD427E} = {8BA651B0-7301-4D80-9DDE-F090A37A7088}
+		{61B23BDA-10C4-4B2D-9749-F88908CD4F21} = {315CE37C-58D8-4D45-B774-CA1F2287E119}
+		{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32} = {315CE37C-58D8-4D45-B774-CA1F2287E119}
 	EndGlobalSection
 EndGlobal

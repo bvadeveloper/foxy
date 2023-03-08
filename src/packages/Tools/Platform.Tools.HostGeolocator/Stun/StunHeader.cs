@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Platform.Tool.GeoService.Stunt
+namespace Platform.Tools.HostGeolocator.Stun
 {
     public enum StunMessageClass : ushort
     {

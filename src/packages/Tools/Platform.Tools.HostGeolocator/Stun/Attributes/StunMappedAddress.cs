@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Platform.Tool.GeoService.Stunt.Attributes
+namespace Platform.Tools.HostGeolocator.Stun.Attributes
 {
     public enum AddressFamily : byte
     {

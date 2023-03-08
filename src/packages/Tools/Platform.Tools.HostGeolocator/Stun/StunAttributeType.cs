@@ -1,4 +1,4 @@
-namespace Platform.Tool.GeoService.Stunt;
+namespace Platform.Tools.HostGeolocator.Stun;
 
 public enum StunAttributeType : ushort
 {

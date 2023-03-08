@@ -17,6 +17,7 @@
         <ProjectReference Include="..\..\..\packages\Bootstrap\Platform.Host\Platform.Host.csproj" />
         <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Publisher\Platform.Bus.Publisher.csproj" />
         <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Subscriber\Platform.Bus.Subscriber.csproj" />
+        <ProjectReference Include="..\..\..\packages\Tools\Platform.Tools.CoordinatorGeolocator\Platform.Tools.CoordinatorGeolocator.csproj" />
     </ItemGroup>
 
 </Project>

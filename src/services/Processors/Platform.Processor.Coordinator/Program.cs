@@ -3,10 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
 using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
+using Platform.Caching.Redis;
 using Platform.Contract.Profiles;
 using Platform.Host;
+using Platform.Tools.CoordinatorGeolocator;
 
-namespace Platform.Processor.GeoCoordinator;
+namespace Platform.Processor.Coordinator;
 
 internal static class Program
 {
@@ -14,9 +16,11 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
+                .AddRedis(configuration)
                 .AddPublisher(configuration)
                 .AddSubscriber(configuration)
-                .AddExchangeListeners(ExchangeTypes.GeoCoordinator, ExchangeTypes.GeoSynchronization)
-                .AddScoped<IConsumeAsync<Profile>, CoordinatorConsumer>();
+                .AddExchangeListeners(ExchangeTypes.Coordinator, ExchangeTypes.GeoSynchronization)
+                .AddCoordinatorGeolocator()
+                .AddScoped<IConsumeAsync<Profile>, CoordinatorProcessor>();
         });
 }
