@@ -4,10 +4,10 @@ using Platform.Bus;
 using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
+using Platform.Geolocation.HostGeolocation;
 using Platform.Host;
 using Platform.Services;
 using Platform.Tools.Extensions;
-using Platform.Tools.HostGeolocation;
 
 namespace Platform.Scanners.Email;
 

@@ -7,7 +7,7 @@ using Platform.Caching.Redis;
 using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Services;
-using Platform.Tools.TargetGeolocation;
+using Platform.Geolocation.TargetGeolocation;
 
 namespace Platform.Processor.Coordinator;
 

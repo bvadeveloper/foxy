@@ -41,5 +41,7 @@ namespace Platform.Bus
             IConfiguration configuration) =>
             services.Configure<BusConfiguration>(options =>
                 configuration.GetSection("Bus").Bind(options));
+
+        public static string ToLower(this ExchangeTypes exchangeType) => exchangeType.ToString().ToLower();
     }
 }

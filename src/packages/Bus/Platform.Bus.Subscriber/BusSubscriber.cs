@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,8 +28,8 @@ namespace Platform.Bus.Subscriber
 
         private readonly string _subscriberName;
 
-        private const string EmptyMarker = "*";
-        private const string DefaultMarker = "default";
+        private const string EmptyLocation = "*";
+        private const string DefaultRoute = "default";
 
         public BusSubscriber(
             IConnection connection,
@@ -50,6 +53,9 @@ namespace Platform.Bus.Subscriber
             return span[(span.LastIndexOf('.') + 1)..].ToString();
         }
 
+
+        public ImmutableList<Exchange> ExchangeBindings { get; set; }
+
         public async Task Subscribe(CancellationToken cancellationToken)
         {
             var queueName = _channel.QueueDeclare(_subscriberName);
@@ -58,7 +64,7 @@ namespace Platform.Bus.Subscriber
 
             _exchangeCollection.Exchanges.ForEach(value =>
             {
-                var exchangeName = value.ExchangeTypes.ToString();
+                var exchangeName = value.ExchangeTypes.ToLower();
 
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
                 _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
@@ -74,29 +80,44 @@ namespace Platform.Bus.Subscriber
         /// <summary>
         /// https://www.rabbitmq.com/tutorials/tutorial-five-dotnet.html
         /// </summary>
-        /// <param name="marker"></param>
+        /// <param name="location"></param>
         /// <param name="cancellationToken"></param>
-        public async Task SubscribeByGeoMarker(string marker, CancellationToken cancellationToken)
+        public async Task SubscribeByGeoLocation(string location, CancellationToken cancellationToken)
         {
             var queueName = _channel.QueueDeclare(_subscriberName);
             var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.Received += ConsumerOnReceived;
 
-            _exchangeCollection.Exchanges.ForEach(value =>
+            ExchangeBindings = BuildLocationRoutingKeys(_exchangeCollection.Exchanges, location);
+            ExchangeBindings.ForEach(exchange =>
             {
-                var exchangeMarker = string.IsNullOrEmpty(marker) ? EmptyMarker : marker;
-                var exchangeName = $"{DefaultMarker}.{value.ExchangeTypes.ToString().ToLower()}.{exchangeMarker}";
-
+                var exchangeName = exchange.ExchangeTypes.ToLower();
+                
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
+                _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: exchange.RoutingKey);
 
-                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKey}'");
+                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{exchange.RoutingKey}'");
             });
 
             _channel.BasicConsume(queueName, false, consumer);
 
             await Task.Yield();
         }
+
+        /// <summary>
+        /// Bindings should look like 'default.scannerExchange.countryCode'
+        /// </summary>
+        /// <param name="exchanges"></param>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        private static ImmutableList<Exchange> BuildLocationRoutingKeys(ImmutableList<Exchange> exchanges, string location) =>
+            exchanges.Select(e =>
+            {
+                var locationRoute = string.IsNullOrEmpty(location) ? EmptyLocation : location;
+                var routingKey = $"{DefaultRoute}.{e.ExchangeTypes.ToLower()}.{locationRoute}";
+                return e with { RoutingKey = routingKey };
+
+            }).ToImmutableList();
 
         public void Unsubscribe(CancellationToken cancellationToken)
         {

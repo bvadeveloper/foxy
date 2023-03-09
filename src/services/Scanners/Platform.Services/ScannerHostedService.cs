@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Platform.Bus;
 using Platform.Bus.Publisher;
-using Platform.Tools.HostGeolocation;
+using Platform.Geolocation.HostGeolocation;
 
 namespace Platform.Services
 {
@@ -20,11 +20,14 @@ namespace Platform.Services
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            // todo: re-ran every 1h
+            // todo: add healthcheck
 
             var countryCode = await _hostGeolocator.FindCountryCode();
+            
+            // examples: default.domain.usa or default.facebook.gb
+            await _busSubscriber.SubscribeByGeoLocation(countryCode, cancellationToken);
+            var bindings = _busSubscriber.ExchangeBindings;
             await _busPublisher.PublishToGeoSynchronizationExchange(countryCode);
-            await _busSubscriber.SubscribeByGeoMarker(countryCode, cancellationToken);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
