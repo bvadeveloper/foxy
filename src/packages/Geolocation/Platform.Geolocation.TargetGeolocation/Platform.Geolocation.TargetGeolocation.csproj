@@ -15,8 +15,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Caching\src\Platform.Caching.Redis\Platform.Caching.Redis.csproj" />
-        <ProjectReference Include="..\..\Geolocation\Platform.Geolocation.Ip2c\Platform.Geolocation.Ip2c.csproj" />
-        <ProjectReference Include="..\..\Geolocation\Platform.Geolocation.Maxmind\Platform.Geolocation.Maxmind.csproj" />
+        <ProjectReference Include="..\Platform.Geolocation.Ip2c\Platform.Geolocation.Ip2c.csproj" />
+        <ProjectReference Include="..\Platform.Geolocation.Maxmind\Platform.Geolocation.Maxmind.csproj" />
         <ProjectReference Include="..\Platform.Geolocation\Platform.Geolocation.csproj" />
     </ItemGroup>
 

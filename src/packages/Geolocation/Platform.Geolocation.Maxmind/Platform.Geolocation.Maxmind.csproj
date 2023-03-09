@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Tools\Platform.Geolocation\Platform.Geolocation.csproj" />
+        <ProjectReference Include="..\Platform.Geolocation\Platform.Geolocation.csproj" />
     </ItemGroup>
 
     <ItemGroup>

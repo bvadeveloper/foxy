@@ -23,7 +23,7 @@ namespace Platform.Services
             // todo: add healthcheck
 
             var countryCode = await _hostGeolocator.FindCountryCode();
-            
+
             // examples: default.domain.usa or default.facebook.gb
             await _busSubscriber.SubscribeByGeoLocation(countryCode, cancellationToken);
             var bindings = _busSubscriber.ExchangeBindings;

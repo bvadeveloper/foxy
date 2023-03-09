@@ -92,8 +92,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Primitives", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Contract.Profiles", "src\packages\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj", "{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Geolocation.TargetGeolocation", "src\packages\Tools\Platform.Geolocation.TargetGeolocation\Platform.Geolocation.TargetGeolocation.csproj", "{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scanners", "Scanners", "{8BA651B0-7301-4D80-9DDE-F090A37A7088}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Scanners.Domain", "src\services\Scanners\Platform.Scanners.Domain\Platform.Scanners.Domain.csproj", "{EC8BC375-464C-46C9-A187-47CA59C91713}"
@@ -103,10 +101,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Scanners.Facebook", "src\services\Scanners\Platform.Scanners.Facebook\Platform.Scanners.Facebook.csproj", "{CAE82E88-9E11-4759-868F-A9E724EC486A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Scanners.Email", "src\services\Scanners\Platform.Scanners.Email\Platform.Scanners.Email.csproj", "{C458A1D7-71C4-4E62-896C-07C5A0FD427E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Geolocation.HostGeolocation", "src\packages\Tools\Platform.Geolocation.HostGeolocation\Platform.Geolocation.HostGeolocation.csproj", "{61B23BDA-10C4-4B2D-9749-F88908CD4F21}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Geolocation", "src\packages\Tools\Platform.Geolocation\Platform.Geolocation.csproj", "{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Services", "src\services\Scanners\Platform.Services\Platform.Services.csproj", "{E0FEA613-2FCB-4BBB-8ADC-C8495271A8FC}"
 EndProject
@@ -119,6 +113,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Geolocation.Maxmind", "src\packages\Geolocation\Platform.Geolocation.Maxmind\Platform.Geolocation.Maxmind.csproj", "{8DB2E98D-056E-40CF-BAA7-C46729C354F9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Geolocators", "Geolocators", "{33CB0A62-7893-4F51-B61A-D8E842D83583}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Geolocation", "src\packages\Geolocation\Platform.Geolocation\Platform.Geolocation.csproj", "{67DECB0C-ACA1-4FF3-8E95-01936458A3E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Geolocation.HostGeolocation", "src\packages\Geolocation\Platform.Geolocation.HostGeolocation\Platform.Geolocation.HostGeolocation.csproj", "{30B95803-9489-4145-B782-9D8520A64B8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Geolocation.TargetGeolocation", "src\packages\Geolocation\Platform.Geolocation.TargetGeolocation\Platform.Geolocation.TargetGeolocation.csproj", "{43D9EFD4-9E9F-491B-8DD9-B7D9525AB1D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -206,10 +206,6 @@ Global
 		{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A929068D-C0A3-4FCA-B998-CCEEBCDB328E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC8BC375-464C-46C9-A187-47CA59C91713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC8BC375-464C-46C9-A187-47CA59C91713}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC8BC375-464C-46C9-A187-47CA59C91713}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -226,14 +222,6 @@ Global
 		{C458A1D7-71C4-4E62-896C-07C5A0FD427E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C458A1D7-71C4-4E62-896C-07C5A0FD427E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C458A1D7-71C4-4E62-896C-07C5A0FD427E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{61B23BDA-10C4-4B2D-9749-F88908CD4F21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{61B23BDA-10C4-4B2D-9749-F88908CD4F21}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{61B23BDA-10C4-4B2D-9749-F88908CD4F21}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{61B23BDA-10C4-4B2D-9749-F88908CD4F21}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E0FEA613-2FCB-4BBB-8ADC-C8495271A8FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E0FEA613-2FCB-4BBB-8ADC-C8495271A8FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0FEA613-2FCB-4BBB-8ADC-C8495271A8FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -246,6 +234,18 @@ Global
 		{8DB2E98D-056E-40CF-BAA7-C46729C354F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DB2E98D-056E-40CF-BAA7-C46729C354F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DB2E98D-056E-40CF-BAA7-C46729C354F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67DECB0C-ACA1-4FF3-8E95-01936458A3E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67DECB0C-ACA1-4FF3-8E95-01936458A3E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67DECB0C-ACA1-4FF3-8E95-01936458A3E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67DECB0C-ACA1-4FF3-8E95-01936458A3E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30B95803-9489-4145-B782-9D8520A64B8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30B95803-9489-4145-B782-9D8520A64B8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30B95803-9489-4145-B782-9D8520A64B8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30B95803-9489-4145-B782-9D8520A64B8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43D9EFD4-9E9F-491B-8DD9-B7D9525AB1D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43D9EFD4-9E9F-491B-8DD9-B7D9525AB1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43D9EFD4-9E9F-491B-8DD9-B7D9525AB1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43D9EFD4-9E9F-491B-8DD9-B7D9525AB1D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{06AB5CCD-BDE9-44CC-8DE6-EFEAB92D4A48} = {D170892B-9BBB-4E43-AD65-34C765256436}
@@ -289,11 +289,11 @@ Global
 		{9E32F491-6C6C-43BE-AC6A-997C4609CA2B} = {BDBDCECF-6856-49A3-A19A-BEC931D1093E}
 		{E0FEA613-2FCB-4BBB-8ADC-C8495271A8FC} = {9E32F491-6C6C-43BE-AC6A-997C4609CA2B}
 		{A69D429A-AD01-4DC7-8F98-3BA4244861A5} = {BDBDCECF-6856-49A3-A19A-BEC931D1093E}
-		{5C19D46D-73D9-4A5F-BE93-2E194D6B0E32} = {A69D429A-AD01-4DC7-8F98-3BA4244861A5}
-		{61B23BDA-10C4-4B2D-9749-F88908CD4F21} = {A69D429A-AD01-4DC7-8F98-3BA4244861A5}
-		{EA9A039C-6EAD-4E01-8E06-B5748ABDF97A} = {A69D429A-AD01-4DC7-8F98-3BA4244861A5}
 		{33CB0A62-7893-4F51-B61A-D8E842D83583} = {A69D429A-AD01-4DC7-8F98-3BA4244861A5}
 		{8DB2E98D-056E-40CF-BAA7-C46729C354F9} = {33CB0A62-7893-4F51-B61A-D8E842D83583}
 		{C497AAAB-729B-4BFB-8ADC-C219EB2F4F74} = {33CB0A62-7893-4F51-B61A-D8E842D83583}
+		{67DECB0C-ACA1-4FF3-8E95-01936458A3E2} = {A69D429A-AD01-4DC7-8F98-3BA4244861A5}
+		{30B95803-9489-4145-B782-9D8520A64B8D} = {A69D429A-AD01-4DC7-8F98-3BA4244861A5}
+		{43D9EFD4-9E9F-491B-8DD9-B7D9525AB1D1} = {A69D429A-AD01-4DC7-8F98-3BA4244861A5}
 	EndGlobalSection
 EndGlobal
