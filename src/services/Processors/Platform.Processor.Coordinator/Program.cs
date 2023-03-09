@@ -8,6 +8,7 @@ using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Services;
 using Platform.Geolocation.TargetGeolocation;
+using Platform.Processor.Coordinator.Processors;
 
 namespace Platform.Processor.Coordinator;
 
@@ -22,6 +23,7 @@ internal static class Program
                 .AddSubscription(configuration)
                 .AddExchangeListeners(ExchangeTypes.Coordinator, ExchangeTypes.Synchronization)
                 .AddTargetGeolocation()
-                .AddScoped<IConsumeAsync<Profile>, CoordinatorProcessor>();
+                .AddScoped<IConsumeAsync<Profile>, CoordinatorProcessor>()
+                .AddScoped<IConsumeAsync<SynchronizationProfile>, SynchronizationProcessor>();
         });
 }

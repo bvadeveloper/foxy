@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 using MemoryPack;
 using Platform.Contract.Profiles;
@@ -23,8 +24,13 @@ public static class Extensions
     public static ValueTask PublishToCoordinatorExchange(this IBusPublisher publisher, string message) =>
         publisher.PublishTo(ExchangeTypes.Coordinator, message);
 
-    public static ValueTask PublishToSynchronizationExchange(this IBusPublisher publisher, string route) =>
-        publisher.PublishTo(ExchangeTypes.Synchronization, route);
+    public static async ValueTask PublishToSynchronizationExchange(this IBusPublisher publisher, string route, Guid hostId)
+    {
+        var exchange = Exchange.Default(ExchangeTypes.Synchronization);
+        var profile = new SynchronizationProfile(route, hostId.ToString());
+
+        await publisher.PublishToExchange(profile, exchange);
+    }
 
     private static async ValueTask PublishTo(this IBusPublisher publisher, ExchangeTypes exchangeTypes, string message)
     {

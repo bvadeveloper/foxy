@@ -5,7 +5,7 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 
-namespace Platform.Processor.Coordinator;
+namespace Platform.Processor.Coordinator.Processors;
 
 public class CoordinatorProcessor : IConsumeAsync<Profile>
 {

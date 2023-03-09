@@ -8,7 +8,7 @@ using Platform.Logging.Extensions;
 
 namespace Platform.Services
 {
-    public class ScannerHostedService : IHostedService
+    public class ScannerHostedService : BackgroundService
     {
         private readonly IBusSubscriber _busSubscriber;
         private readonly IBusPublisher _busPublisher;
@@ -16,6 +16,7 @@ namespace Platform.Services
         private readonly ILogger _logger;
         private readonly TimeSpan _heartbeatInterval;
         private ImmutableList<string> _routingKeys;
+        private readonly Guid _hostId; 
 
         public ScannerHostedService(
             IBusSubscriber busSubscriber,
@@ -28,10 +29,11 @@ namespace Platform.Services
             _hostGeolocator = hostGeolocator;
             _logger = logger;
             _routingKeys = ImmutableList<string>.Empty;
-            _heartbeatInterval = TimeSpan.FromMinutes(10);
+            _heartbeatInterval = TimeSpan.FromSeconds(10);
+            _hostId = Guid.NewGuid();
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             var location = await _hostGeolocator.FindCountryCode();
 
@@ -54,14 +56,14 @@ namespace Platform.Services
 
                 foreach (var routingKey in _routingKeys)
                 {
-                    await _busPublisher.PublishToSynchronizationExchange(routingKey);
+                    await _busPublisher.PublishToSynchronizationExchange(routingKey, _hostId);
                 }
 
                 await Task.Delay(_heartbeatInterval, cancellationToken);
             }
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public override Task StopAsync(CancellationToken cancellationToken)
         {
             _busSubscriber.Unsubscribe(cancellationToken);
             return Task.CompletedTask;
