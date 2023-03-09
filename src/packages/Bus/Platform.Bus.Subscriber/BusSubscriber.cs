@@ -28,7 +28,7 @@ namespace Platform.Bus.Subscriber
 
         private readonly string _subscriberName;
 
-        private const string EmptyLocation = "*";
+        private const string NoLocation = "*";
         private const string DefaultRoute = "default";
 
         public BusSubscriber(
@@ -67,9 +67,9 @@ namespace Platform.Bus.Subscriber
                 var exchangeName = value.ExchangeTypes.ToLower();
 
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
+                value.RoutingKeys.ForEach(routingKey => _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: routingKey));
 
-                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKey}'");
+                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKeys}'");
             });
 
             _channel.BasicConsume(queueName, false, consumer);
@@ -92,11 +92,11 @@ namespace Platform.Bus.Subscriber
             ExchangeBindings.ForEach(exchange =>
             {
                 var exchangeName = exchange.ExchangeTypes.ToLower();
-                
-                _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: exchange.RoutingKey);
 
-                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{exchange.RoutingKey}'");
+                _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
+                exchange.RoutingKeys.ForEach(routingKey => _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: routingKey));
+
+                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{exchange.RoutingKeys}'");
             });
 
             _channel.BasicConsume(queueName, false, consumer);
@@ -106,18 +106,25 @@ namespace Platform.Bus.Subscriber
 
         /// <summary>
         /// Bindings should look like 'default.scannerExchange.countryCode'
+        /// Notice. If no scanners in a particular location we can use ones from other location
         /// </summary>
         /// <param name="exchanges"></param>
         /// <param name="location"></param>
         /// <returns></returns>
         private static ImmutableList<Exchange> BuildLocationRoutingKeys(ImmutableList<Exchange> exchanges, string location) =>
-            exchanges.Select(e =>
-            {
-                var locationRoute = string.IsNullOrEmpty(location) ? EmptyLocation : location;
-                var routingKey = $"{DefaultRoute}.{e.ExchangeTypes.ToLower()}.{locationRoute}";
-                return e with { RoutingKey = routingKey };
-
-            }).ToImmutableList();
+            exchanges.Select(exchange => string.IsNullOrEmpty(location)
+                ? exchange with
+                {
+                    // if we can't determine a location we must process any requests
+                    RoutingKeys = ImmutableList.Create<string>($"{DefaultRoute}.{exchange.ExchangeTypes.ToLower()}.{NoLocation}")
+                }
+                : exchange with
+                {
+                    // by default, we must process any requests by target location and any other cross requests
+                    RoutingKeys = ImmutableList.Create<string>()
+                        .Add($"{DefaultRoute}.{exchange.ExchangeTypes.ToLower()}.{location}")
+                        .Add($"{DefaultRoute}.{exchange.ExchangeTypes.ToLower()}.{NoLocation}")
+                }).ToImmutableList();
 
         public void Unsubscribe(CancellationToken cancellationToken)
         {

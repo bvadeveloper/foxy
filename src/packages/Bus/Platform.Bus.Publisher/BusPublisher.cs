@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -36,7 +37,7 @@ namespace Platform.Bus.Publisher
 
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
                 _channel.BasicPublish(exchange: exchangeName,
-                    routingKey: exchange.RoutingKey,
+                    routingKey: exchange.RoutingKeys.First(), // todo: map from redis!
                     basicProperties: props,
                     body: payload);
             }

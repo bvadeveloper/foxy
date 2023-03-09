@@ -7,4 +7,7 @@ namespace Platform.Bus;
 /// </summary>
 public record ExchangeCollection(ImmutableList<Exchange> Exchanges);
 
-public record Exchange(ExchangeTypes ExchangeTypes, string RoutingKey = "default");
+public record Exchange(ExchangeTypes ExchangeTypes, ImmutableList<string> RoutingKeys)
+{
+    public static Exchange Default(ExchangeTypes exchangeTypes) => new(exchangeTypes, ImmutableList.Create<string>().Add("default"));
+}

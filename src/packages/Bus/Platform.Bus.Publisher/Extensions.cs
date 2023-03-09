@@ -9,16 +9,16 @@ namespace Platform.Bus.Publisher;
 public static class Extensions
 {
     public static async ValueTask PublishToTelegramExchange(this IBusPublisher publisher, Profile profile) =>
-        await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Telegram));
+        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Telegram));
 
     public static async ValueTask PublishToDomainExchange(this IBusPublisher publisher, Profile profile) =>
-        await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Domain));
+        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Domain));
 
     public static async ValueTask PublishToHostExchange(this IBusPublisher publisher, Profile profile) =>
-        await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Host));
+        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Host));
 
     public static async ValueTask PublishToReportExchange(this IBusPublisher publisher, Profile profile) =>
-        await publisher.PublishToExchange(profile, new Exchange(ExchangeTypes.Report));
+        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Report));
 
     public static ValueTask PublishToCoordinatorExchange(this IBusPublisher publisher, string message) =>
         publisher.PublishTo(ExchangeTypes.Coordinator, message);
@@ -28,7 +28,7 @@ public static class Extensions
 
     private static async ValueTask PublishTo(this IBusPublisher publisher, ExchangeTypes exchangeTypes, string message)
     {
-        var exchange = new Exchange(exchangeTypes);
+        var exchange = Exchange.Default(exchangeTypes);
         var profile = new Profile(message);
 
         await publisher.PublishToExchange(profile, exchange);

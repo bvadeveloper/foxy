@@ -15,7 +15,7 @@ public static class Extensions
     /// <param name="exchangeTypes"></param>
     /// <returns></returns>
     public static IServiceCollection AddExchangeListeners(this IServiceCollection services, params ExchangeTypes[] exchangeTypes) =>
-        services.AddExchangeListeners(exchangeTypes.Select(e => new Exchange(e)).ToArray());
+        services.AddExchangeListeners(exchangeTypes.Select(Exchange.Default).ToArray());
 
     public static IServiceCollection AddExchangeListeners(this IServiceCollection services, params Exchange[] exchanges) =>
         services.AddSingleton(new ExchangeCollection(ImmutableList.CreateRange(exchanges)));
