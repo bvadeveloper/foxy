@@ -4,7 +4,7 @@ public enum ExchangeTypes
 {
     Telegram,
     Coordinator,
-    GeoSynchronization,
+    Synchronization,
     Domain,
     Host,
     Facebook,

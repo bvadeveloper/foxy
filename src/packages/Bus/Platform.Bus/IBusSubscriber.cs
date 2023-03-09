@@ -7,11 +7,11 @@ namespace Platform.Bus
     public interface IBusSubscriber
     {
         ImmutableList<Exchange> ExchangeBindings { get; }
-        
+
         Task Subscribe(CancellationToken cancellationToken);
 
-        void Unsubscribe(CancellationToken cancellationToken);
+        Task SubscribeByLocation(string location, CancellationToken cancellationToken);
 
-        Task SubscribeByGeoLocation(string marker, CancellationToken cancellationToken);
+        void Unsubscribe(CancellationToken cancellationToken);
     }
 }

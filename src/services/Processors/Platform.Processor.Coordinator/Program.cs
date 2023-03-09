@@ -20,7 +20,7 @@ internal static class Program
                 .AddRedis(configuration)
                 .AddPublisher(configuration)
                 .AddSubscription(configuration)
-                .AddExchangeListeners(ExchangeTypes.Coordinator, ExchangeTypes.GeoSynchronization)
+                .AddExchangeListeners(ExchangeTypes.Coordinator, ExchangeTypes.Synchronization)
                 .AddTargetGeolocation()
                 .AddScoped<IConsumeAsync<Profile>, CoordinatorProcessor>();
         });

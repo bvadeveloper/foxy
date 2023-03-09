@@ -23,8 +23,8 @@ public static class Extensions
     public static ValueTask PublishToCoordinatorExchange(this IBusPublisher publisher, string message) =>
         publisher.PublishTo(ExchangeTypes.Coordinator, message);
 
-    public static ValueTask PublishToGeoSynchronizationExchange(this IBusPublisher publisher, string route) =>
-        publisher.PublishTo(ExchangeTypes.GeoSynchronization, route);
+    public static ValueTask PublishToSynchronizationExchange(this IBusPublisher publisher, string route) =>
+        publisher.PublishTo(ExchangeTypes.Synchronization, route);
 
     private static async ValueTask PublishTo(this IBusPublisher publisher, ExchangeTypes exchangeTypes, string message)
     {

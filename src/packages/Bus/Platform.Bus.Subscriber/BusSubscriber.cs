@@ -82,7 +82,7 @@ namespace Platform.Bus.Subscriber
         /// </summary>
         /// <param name="location"></param>
         /// <param name="cancellationToken"></param>
-        public async Task SubscribeByGeoLocation(string location, CancellationToken cancellationToken)
+        public async Task SubscribeByLocation(string location, CancellationToken cancellationToken)
         {
             var queueName = _channel.QueueDeclare(_subscriberName);
             var consumer = new AsyncEventingBasicConsumer(_channel);

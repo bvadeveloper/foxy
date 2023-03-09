@@ -19,7 +19,7 @@ public class MaxmindGeolocator : IGeolocator
         var result = string.Empty;
         try
         {
-            using var reader = new DatabaseReader(_dbPath, FileAccessMode.MemoryMapped);
+            using var reader = new DatabaseReader(_dbPath, FileAccessMode.MemoryMapped); // todo: move reader to singleton
             var response = reader.Country(ipAddress);
             result = response.Country.IsoCode ?? string.Empty;
         }
