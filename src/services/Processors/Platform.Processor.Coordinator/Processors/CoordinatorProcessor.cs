@@ -1,25 +1,15 @@
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Platform.Bus;
-using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
+using Platform.Processor.Coordinator.Strategies;
 
 namespace Platform.Processor.Coordinator.Processors;
 
 public class CoordinatorProcessor : IConsumeAsync<Profile>
 {
-    private readonly IBusPublisher _publisher;
-    private readonly ILogger _logger;
+    private readonly IStrategyFactory _strategyFactory;
 
-    public CoordinatorProcessor(IBusPublisher publisher, ILogger<CoordinatorProcessor> logger)
-    {
-        _publisher = publisher;
-        _logger = logger;
-    }
+    public CoordinatorProcessor(IStrategyFactory strategyFactory) => _strategyFactory = strategyFactory;
 
-    public async ValueTask ConsumeAsync(Profile profile)
-    {
-        await _publisher.PublishToDomainExchange(profile);
-    }
+    public async ValueTask ConsumeAsync(Profile profile) => await _strategyFactory.Build(profile.TargetName.ToProcessingType()).Run(profile);
 }

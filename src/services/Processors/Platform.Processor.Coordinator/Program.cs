@@ -9,6 +9,8 @@ using Platform.Host;
 using Platform.Services;
 using Platform.Geolocation.TargetGeolocation;
 using Platform.Processor.Coordinator.Processors;
+using Platform.Processor.Coordinator.Services;
+using Platform.Processor.Coordinator.Strategies;
 
 namespace Platform.Processor.Coordinator;
 
@@ -24,6 +26,14 @@ internal static class Program
                 .AddExchangeListeners(ExchangeTypes.Coordinator, ExchangeTypes.Synchronization)
                 .AddTargetGeolocation()
                 .AddScoped<IConsumeAsync<Profile>, CoordinatorProcessor>()
-                .AddScoped<IConsumeAsync<SynchronizationProfile>, SynchronizationProcessor>();
+                .AddScoped<IConsumeAsync<SynchronizationProfile>, SynchronizationProcessor>()
+                .AddScoped<IHostResolver, HostResolver>()
+
+                // strategies
+                .AddScoped<IProcessingStrategy, DomainProcessingStrategy>()
+                .AddScoped<IProcessingStrategy, HostProcessingStrategy>()
+                .AddScoped<IProcessingStrategy, EmailProcessingStrategy>()
+                .AddScoped<IProcessingStrategy, FacebookProcessingStrategy>()
+                .AddScoped<IStrategyFactory, StrategyFactory>();
         });
 }

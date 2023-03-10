@@ -15,8 +15,8 @@ public static class Extensions
     public static async ValueTask PublishToDomainExchange(this IBusPublisher publisher, Profile profile) =>
         await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Domain));
 
-    public static async ValueTask PublishToHostExchange(this IBusPublisher publisher, Profile profile) =>
-        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Host));
+    public static async ValueTask PublishToHostExchange(this IBusPublisher publisher, Profile profile, string route) =>
+        await publisher.PublishToExchange(profile, Exchange.Make(ExchangeTypes.Host, route));
 
     public static async ValueTask PublishToReportExchange(this IBusPublisher publisher, Profile profile) =>
         await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Report));

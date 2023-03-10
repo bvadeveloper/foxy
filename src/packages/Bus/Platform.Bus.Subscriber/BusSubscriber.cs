@@ -25,11 +25,7 @@ namespace Platform.Bus.Subscriber
         private readonly ILogger _logger;
         private readonly ExchangeCollection _exchangeCollection;
         private readonly IServiceProvider _serviceProvider;
-
         private readonly string _subscriberName;
-
-        private const string NoLocation = "*";
-        private const string DefaultRoute = "default";
 
         public BusSubscriber(
             IConnection connection,
@@ -43,7 +39,6 @@ namespace Platform.Bus.Subscriber
             _logger = logger;
             _serviceProvider = serviceProvider;
             _exchangeCollection = exchangeCollection;
-
             _subscriberName = MakeSubscriberName();
         }
 
@@ -116,14 +111,14 @@ namespace Platform.Bus.Subscriber
                 ? exchange with
                 {
                     // if we can't determine a location we must process any requests
-                    RoutingKeys = ImmutableList.Create<string>($"{DefaultRoute}.{exchange.ExchangeTypes.ToLower()}.{NoLocation}")
+                    RoutingKeys = ImmutableList.Create(exchange.ExchangeTypes.ToDefaultRoute())
                 }
                 : exchange with
                 {
                     // by default, we must process any requests by target location and any other cross requests
                     RoutingKeys = ImmutableList.Create<string>()
-                        .Add($"{DefaultRoute}.{exchange.ExchangeTypes.ToLower()}.{location}")
-                        .Add($"{DefaultRoute}.{exchange.ExchangeTypes.ToLower()}.{NoLocation}")
+                        .Add(exchange.ExchangeTypes.ToLocationRoute(location))
+                        .Add(exchange.ExchangeTypes.ToDefaultRoute())
                 }).ToImmutableList();
 
         public void Unsubscribe(CancellationToken cancellationToken)

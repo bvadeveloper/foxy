@@ -13,7 +13,7 @@ internal class SynchronizationProcessor : IConsumeAsync<SynchronizationProfile>
     private readonly ICacheDataService _cacheDataService;
     private readonly ILogger _logger;
 
-    private readonly TimeSpan _ttl = TimeSpan.FromMinutes(5);
+    private readonly TimeSpan _ttl = TimeSpan.FromMinutes(2);
     private const string HeartbeatPrefix = "hb";
 
     public SynchronizationProcessor(ICacheDataService cacheDataService, ILogger<SynchronizationProcessor> logger)

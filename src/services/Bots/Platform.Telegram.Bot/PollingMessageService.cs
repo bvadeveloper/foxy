@@ -74,7 +74,7 @@ public class PollingMessageService : BackgroundService
                             }
 
                             await publisher.PublishToCoordinatorExchange(item);
-                            await _botClient.Say(message.Chat, "ok", cancellationToken);
+                            await _botClient.Say(message.Chat, $"{item} - processing...", cancellationToken);
                         }
                         else
                         {

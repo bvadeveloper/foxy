@@ -33,7 +33,7 @@ namespace Platform.Services
             _logger = logger;
             _hostIdentifier = Guid.NewGuid().ToString("N");
             _routingKeys = ImmutableList<string>.Empty;
-            _heartbeatInterval = TimeSpan.FromSeconds(2);
+            _heartbeatInterval = TimeSpan.FromMinutes(1);
         }
 
         [SuppressMessage("ReSharper", "FunctionNeverReturns")]

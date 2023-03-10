@@ -36,17 +36,20 @@ namespace Platform.Bus.Publisher
                 props.Headers.Add("fx-session", sessionBytes);
 
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                _channel.BasicPublish(exchange: exchangeName,
-                    routingKey: exchange.RoutingKeys.First(), // todo: map from redis!
-                    basicProperties: props,
-                    body: payload);
+                exchange.RoutingKeys.ForEach(routingKey =>
+                {
+                    _channel.BasicPublish(exchange: exchangeName,
+                        routingKey: routingKey,
+                        basicProperties: props,
+                        body: payload);
+                });
             }
             catch (Exception e)
             {
                 _logger.Error($"An error was thrown while sending a request '{e.Message}'", e, ("exchange", exchange));
                 throw;
             }
-            
+
             return ValueTask.CompletedTask;
         }
     }

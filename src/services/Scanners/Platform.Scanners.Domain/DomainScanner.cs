@@ -65,7 +65,7 @@ namespace Platform.Scanners.Domain
         
         private async Task PublishScanProfile(Profile profile, Dictionary<TargetType, List<string>>? tags = default)
         {
-            await _publisher.PublishToHostExchange(profile);
+            await _publisher.PublishToHostExchange(profile, "");
         }
         
         // private async Task PublishReportProfile(ITarget profile, IEnumerable<OutputModel> outputs)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Net;
 using MemoryPack;
 
 namespace Platform.Contract.Profiles;
@@ -12,6 +13,13 @@ public partial record Profile(string TargetName) : IProfile
     public FileReport FileReport { get; set; }
 
     public ImmutableList<ToolOutput> ToolOutputs { get; set; }
+
+    public ImmutableList<IpLocation> IpLocations { get; set; }
+}
+
+[MemoryPackable]
+public partial record IpLocation(string Location, string IpAddress)
+{
 }
 
 [MemoryPackable]
