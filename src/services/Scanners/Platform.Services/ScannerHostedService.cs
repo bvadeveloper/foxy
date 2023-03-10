@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Platform.Bus;
@@ -14,9 +15,11 @@ namespace Platform.Services
         private readonly IBusPublisher _busPublisher;
         private readonly IHostGeolocation _hostGeolocator;
         private readonly ILogger _logger;
-        private readonly TimeSpan _heartbeatInterval;
         private ImmutableList<string> _routingKeys;
-        private readonly Guid _hostId; 
+        private readonly string _hostIdentifier;
+
+        // heartbeat interval should be shorter than a coordinator cache ttl
+        private readonly TimeSpan _heartbeatInterval;
 
         public ScannerHostedService(
             IBusSubscriber busSubscriber,
@@ -28,17 +31,20 @@ namespace Platform.Services
             _busPublisher = busPublisher;
             _hostGeolocator = hostGeolocator;
             _logger = logger;
+            _hostIdentifier = Guid.NewGuid().ToString("N");
             _routingKeys = ImmutableList<string>.Empty;
-            _heartbeatInterval = TimeSpan.FromSeconds(10);
-            _hostId = Guid.NewGuid();
+            _heartbeatInterval = TimeSpan.FromSeconds(2);
         }
 
+        [SuppressMessage("ReSharper", "FunctionNeverReturns")]
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             var location = await _hostGeolocator.FindCountryCode();
 
             while (true)
             {
+                if (cancellationToken.IsCancellationRequested) break;
+
                 if (_routingKeys.IsEmpty)
                 {
                     try
@@ -56,7 +62,7 @@ namespace Platform.Services
 
                 foreach (var routingKey in _routingKeys)
                 {
-                    await _busPublisher.PublishToSynchronizationExchange(routingKey, _hostId);
+                    await _busPublisher.PublishToSynchronizationExchange(routingKey, _hostIdentifier);
                 }
 
                 await Task.Delay(_heartbeatInterval, cancellationToken);

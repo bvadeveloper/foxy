@@ -24,10 +24,10 @@ public static class Extensions
     public static ValueTask PublishToCoordinatorExchange(this IBusPublisher publisher, string message) =>
         publisher.PublishTo(ExchangeTypes.Coordinator, message);
 
-    public static async ValueTask PublishToSynchronizationExchange(this IBusPublisher publisher, string route, Guid hostId)
+    public static async ValueTask PublishToSynchronizationExchange(this IBusPublisher publisher, string route, string hostId)
     {
         var exchange = Exchange.Default(ExchangeTypes.Synchronization);
-        var profile = new SynchronizationProfile(route, hostId.ToString());
+        var profile = new SynchronizationProfile(route, hostId);
 
         await publisher.PublishToExchange(profile, exchange);
     }
