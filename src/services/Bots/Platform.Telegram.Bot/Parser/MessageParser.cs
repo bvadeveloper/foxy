@@ -12,6 +12,7 @@ namespace Platform.Telegram.Bot.Parser;
 
 internal class MessageParser : IMessageParser
 {
+    private const string RootCommandDescription = "Simple Foxy CLI for Telegram";
     private readonly IValidationFactory _validationFactory;
 
     private readonly Option<string[]> _domainOption;
@@ -61,9 +62,8 @@ internal class MessageParser : IMessageParser
             IsHidden = true
         };
     }
-
-
-    public async Task<MessageHolder> Parse(string input)
+    
+    public async Task<ParseResult> Parse(string input)
     {
         var profiles = new List<CoordinatorProfile>();
 
@@ -76,17 +76,17 @@ internal class MessageParser : IMessageParser
         });
 
         var logger = new ParserLogger();
-        var exitCode = await rootCommand.InvokeAsync(input, logger);
+        var resultCode = await rootCommand.InvokeAsync(input, logger);
         var logOutput = $"{logger.Out}{logger.Error}";
 
-        return new MessageHolder(exitCode == 0 && profiles.Any(), profiles.ToImmutableList(), logOutput);
+        return new ParseResult(resultCode == 0 && profiles.Any(), profiles.ToImmutableList(), logOutput);
     }
 
     private RootCommand Init(Action<string[], string[], string[], string[], string> handle)
     {
         AddValidators();
 
-        var rootCommand = new RootCommand("Simple Foxy CLI for Telegram bot.");
+        var rootCommand = new RootCommand(RootCommandDescription);
         rootCommand.AddOption(_hostOption);
         rootCommand.AddOption(_domainOption);
         rootCommand.AddOption(_emailOption);

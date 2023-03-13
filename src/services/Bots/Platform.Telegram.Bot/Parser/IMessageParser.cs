@@ -4,5 +4,5 @@ namespace Platform.Telegram.Bot.Parser;
 
 public interface IMessageParser
 {
-    Task<MessageHolder> Parse(string input);
+    Task<ParseResult> Parse(string value);
 }
