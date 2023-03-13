@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,10 +7,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Platform.Bus;
 using Platform.Bus.Publisher;
+using Platform.Contract.Profiles;
+using Platform.Contract.Telegram;
 using Platform.Limiter.Redis.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Primitives;
-using Platform.Validation.Fluent;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using static Platform.Telegram.Bot.Extensions;
@@ -22,7 +24,6 @@ public class PollingMessageService : BackgroundService
     private readonly QueuedUpdateReceiver _updateReceiver;
     private readonly ITelegramBotClient _botClient;
     private readonly IRequestLimiter _requestLimiter;
-    private readonly IValidationFactory _validationFactory;
     private readonly ILogger _logger;
 
     public PollingMessageService(
@@ -30,14 +31,12 @@ public class PollingMessageService : BackgroundService
         QueuedUpdateReceiver updateReceiver,
         ITelegramBotClient botClient,
         IRequestLimiter requestLimiter,
-        IValidationFactory validationFactory,
         ILogger<PollingMessageService> logger)
     {
         _serviceProvider = serviceProvider;
         _updateReceiver = updateReceiver;
         _botClient = botClient;
         _requestLimiter = requestLimiter;
-        _validationFactory = validationFactory;
         _logger = logger;
     }
 
@@ -57,15 +56,16 @@ public class PollingMessageService : BackgroundService
 
                 try
                 {
-                    _logger.Trace($"Input '{message.Text}'");
+                    _logger.Trace($"Raw input '{message.Text}'");
 
                     using var scope = _serviceProvider.CreateScope();
                     scope.ServiceProvider.GetRequiredService<SessionContext>().AddChatId(message.Chat.Id);
                     var publisher = scope.ServiceProvider.GetRequiredService<IBusPublisher>();
 
-                    foreach (var item in message.Text!.SplitMessage())
+                    var output = await message.Text!.ParseMessage();
+                    if (output.IsValid)
                     {
-                        if (_validationFactory.Validate(item).IsValid)
+                        foreach (var profile in output.Profiles)
                         {
                             if (await _requestLimiter.Acquire(MakeUserKey(message.From)))
                             {
@@ -73,13 +73,13 @@ public class PollingMessageService : BackgroundService
                                 break;
                             }
 
-                            await publisher.PublishToCoordinatorExchange(item);
-                            await _botClient.Say(message.Chat, $"{item} - processing...", cancellationToken);
+                            await publisher.PublishToCoordinatorExchange(profile);
+                            await _botClient.Say(message.Chat, $"{profile.TargetName} - wait for a while foxy sniffing out smth for you", cancellationToken);
                         }
-                        else
-                        {
-                            await _botClient.Say(message.Chat, $"{item} - validation failed, please use valid domain names or IP address", cancellationToken);
-                        }
+                    }
+                    else
+                    {
+                        await _botClient.Say(message.Chat, output.ValidationInfo, cancellationToken);
                     }
                 }
                 catch (Exception e)

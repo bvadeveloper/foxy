@@ -14,7 +14,7 @@ public class EmailProcessingStrategy : IProcessingStrategy
         _logger = logger;
     }
 
-    public Task Run(Profile profile)
+    public Task Run(CoordinatorProfile profile)
     {
         throw new System.NotImplementedException();
     }

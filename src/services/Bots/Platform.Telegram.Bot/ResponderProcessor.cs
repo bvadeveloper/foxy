@@ -11,7 +11,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace Platform.Telegram.Bot
 {
-    public class ResponderProcessor : IConsumeAsync<Profile>
+    public class ResponderProcessor : IConsumeAsync<ReportProfile>
     {
         private readonly ITelegramBotClient _botClient;
         private readonly ILogger _logger;
@@ -27,7 +27,7 @@ namespace Platform.Telegram.Bot
         }
 
 
-        public async ValueTask ConsumeAsync(Profile profile)
+        public async ValueTask ConsumeAsync(ReportProfile profile)
         {
             await _botClient.SendChatActionAsync(_sessionContext.ChatId, ChatAction.Typing);
             await SendFile(_sessionContext.ChatId, profile.FileReport.FileBody, profile.FileReport.FileName);

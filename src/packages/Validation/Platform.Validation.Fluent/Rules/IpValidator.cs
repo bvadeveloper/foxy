@@ -4,18 +4,19 @@ using Platform.Contract.Telegram;
 
 namespace Platform.Validation.Fluent.Rules
 {
-    public class IpValidator : AbstractValidator<IpMessage>
+    public class HostValidator : AbstractValidator<HostMessage>
     {
-        public IpValidator()
+        public HostValidator()
         {
-            RuleFor(model => model.Name)
+            RuleForEach(model => model.Value)
                 .NotNull()
                 .NotEmpty()
-                .Custom((text, context) =>
+                .Custom((ipAddress, context) =>
                 {
-                    if (string.IsNullOrWhiteSpace(text)
-                        || text.Length > 1024
-                        || IsPrivateIp(text))
+                    var value = ipAddress.ToString();
+                    if (string.IsNullOrWhiteSpace(value)
+                        || value.Length > 1024
+                        || IsPrivateIp(value))
                     {
                         context.AddFailure("not valid symbols caught");
                     }

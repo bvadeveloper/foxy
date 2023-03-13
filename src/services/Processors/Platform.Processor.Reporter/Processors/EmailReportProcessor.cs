@@ -5,34 +5,35 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 
-namespace Platform.Processor.Reporter
+namespace Platform.Processor.Reporter.Processors
 {
-    public class ReportProcessor : IConsumeAsync<Profile>
+    public class EmailReportProcessor : IConsumeAsync<EmailProfile>
     {
         private readonly IBusPublisher _publisher;
         private readonly IReportBuilder _reportBuilder;
         private readonly ILogger _logger;
 
-        public ReportProcessor(
+        public EmailReportProcessor(
             IBusPublisher publisher,
             IReportBuilder reportBuilder,
-            ILogger<ReportProcessor> logger)
+            ILogger<DomainReportProcessor> logger)
         {
             _reportBuilder = reportBuilder;
             _publisher = publisher;
             _logger = logger;
         }
 
-        public async ValueTask ConsumeAsync(Profile profile) =>
+        public async ValueTask ConsumeAsync(EmailProfile profile) =>
             await PublishTelegramProfile(profile);
 
 
-        private async Task PublishTelegramProfile(Profile profile)
+        private async Task PublishTelegramProfile(EmailProfile profile)
         {
+            var domainReport = new ReportProfile(profile.TargetName);
             var (fileName, fileBody) = await _reportBuilder.BuildTextFileReport(profile.TargetName, profile.ToolOutputs);
-            profile.FileReport = new FileReport(fileName, fileBody);
-            
-            await _publisher.PublishToTelegramExchange(profile);
+            domainReport.FileReport = new FileReport(fileName, fileBody);
+
+            await _publisher.PublishToTelegramExchange(domainReport);
         }
     }
 }

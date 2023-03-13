@@ -12,7 +12,7 @@ using Platform.Tools.Models;
 
 namespace Platform.Scanners.Email
 {
-    public class EmailScanner : IConsumeAsync<Profile>
+    public class EmailScanner : IConsumeAsync<EmailProfile>
     {
         private readonly IToolsHolder _toolsHolder;
         private readonly IBusPublisher _publishClient;
@@ -25,7 +25,7 @@ namespace Platform.Scanners.Email
             _logger = logger;
         }
 
-        public async ValueTask ConsumeAsync(Profile profile)
+        public async ValueTask ConsumeAsync(EmailProfile profile)
         {
             // var outputs = await _toolsHolder
             //     .FilterByTargetMarks(profile.Tags)
@@ -34,7 +34,7 @@ namespace Platform.Scanners.Email
             await PublishReportProfile(profile, new OutputModel[] { new() { Output = "test_value", Successful = true, ToolName = "test_value" } });
         }
 
-        private async Task PublishReportProfile(Profile profile, IEnumerable<OutputModel> outputs)
+        private async Task PublishReportProfile(EmailProfile profile, IEnumerable<OutputModel> outputs)
         {
             var reports = outputs
                 .Where(model => model.Successful)

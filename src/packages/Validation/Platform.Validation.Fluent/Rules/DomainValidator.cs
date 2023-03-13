@@ -7,29 +7,30 @@ namespace Platform.Validation.Fluent.Rules
     {
         public DomainValidator()
         {
-            RuleFor(model => model.Name)
+            RuleForEach(model => model.Value)
                 .NotNull()
                 .NotEmpty()
                 .Custom(DomainNameStaticValidator.Validate)
-                .Custom((text, context) =>
+                .Custom((uri, context) =>
                 {
-                    if (string.IsNullOrWhiteSpace(text)
-                        || text.Length > 1024
-                        || text.Contains('%')
-                        || text.Contains('*')
-                        || text.Contains('|')
-                        || text.Contains('\\')
-                        || text.Contains('#')
-                        || text.Contains('&')
-                        || text.Contains('^')
-                        || text.Contains(')')
-                        || text.Contains('(')
-                        || text.Contains('!')
-                        || text.Contains('+')
-                        || text.Contains('~')
-                        || text.Contains('"')
-                        || text.Contains('`')
-                        || text.Contains('$'))
+                    var value = uri.ToString();
+                    if (string.IsNullOrWhiteSpace(value)
+                        || value.Length > 1024
+                        || value.Contains('%')
+                        || value.Contains('*')
+                        || value.Contains('|')
+                        || value.Contains('\\')
+                        || value.Contains('#')
+                        || value.Contains('&')
+                        || value.Contains('^')
+                        || value.Contains(')')
+                        || value.Contains('(')
+                        || value.Contains('!')
+                        || value.Contains('+')
+                        || value.Contains('~')
+                        || value.Contains('"')
+                        || value.Contains('`')
+                        || value.Contains('$'))
                     {
                         context.AddFailure("not valid symbols caught");
                     }

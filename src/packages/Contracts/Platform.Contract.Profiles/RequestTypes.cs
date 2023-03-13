@@ -1,4 +1,4 @@
-namespace Platform.Processor.Coordinator;
+namespace Platform.Contract.Profiles;
 
 public enum ProcessingTypes
 {
@@ -6,5 +6,6 @@ public enum ProcessingTypes
     Host,
     Email,
     Facebook,
+    Bitcoin,
     None
 }

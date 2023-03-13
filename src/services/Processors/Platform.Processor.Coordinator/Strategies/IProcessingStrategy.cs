@@ -7,5 +7,5 @@ public interface IProcessingStrategy
 {
     ProcessingTypes ProcessingType { get; init; }
     
-    Task Run(Profile profile);
+    Task Run(CoordinatorProfile profile);
 }

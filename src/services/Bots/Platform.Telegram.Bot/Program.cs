@@ -25,6 +25,6 @@ internal static class Program
                 .AddRedis(configuration)
                 .AddRequestLimiter(configuration)
                 .AddValidation()
-                .AddScoped<IConsumeAsync<Profile>, ResponderProcessor>();
+                .AddScoped<IConsumeAsync<ReportProfile>, ResponderProcessor>();
         });
 }

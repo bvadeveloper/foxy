@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Immutable;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -28,17 +27,14 @@ public class HostProcessingStrategy : IProcessingStrategy
 
     public ProcessingTypes ProcessingType { get; init; } = ProcessingTypes.Host;
 
-    public async Task Run(Profile profile)
+    public async Task Run(CoordinatorProfile profile)
     {
         var ipAddress = IPAddress.Parse(profile.TargetName);
         var location = await _targetGeolocation.FindGeoMarkers(ipAddress);
         var route = await MakeRoute(location, ExchangeTypes.Host);
 
-        await _publisher.PublishToHostExchange(profile with
-            {
-                IpLocations = ImmutableList.Create(new IpLocation(location, ipAddress.ToString()))
-            },
-            route);
+        var hostProfile = new HostProfile(profile.TargetName, new IpLocation(location, ipAddress.ToString()));
+        await _publisher.PublishToHostExchange(hostProfile, route);
     }
 
     private async Task<string> MakeRoute(string location, ExchangeTypes exchangeType)

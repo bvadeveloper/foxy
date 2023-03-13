@@ -21,6 +21,6 @@ internal static class Program
                 .AddScannerSubscription(configuration, ExchangeTypes.Host)
                 .AddHostGeolocation()
                 .AddTools(configuration)
-                .AddScoped<IConsumeAsync<Profile>, HostScanner>();
+                .AddScoped<IConsumeAsync<HostProfile>, HostScanner>();
         });
 }

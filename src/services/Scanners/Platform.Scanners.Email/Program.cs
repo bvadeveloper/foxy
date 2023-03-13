@@ -21,6 +21,6 @@ internal static class Program
                 .AddScannerSubscription(configuration, ExchangeTypes.Email)
                 .AddHostGeolocation()
                 .AddTools(configuration)
-                .AddScoped<IConsumeAsync<Profile>, EmailScanner>();
+                .AddScoped<IConsumeAsync<EmailProfile>, EmailScanner>();
         });
 }

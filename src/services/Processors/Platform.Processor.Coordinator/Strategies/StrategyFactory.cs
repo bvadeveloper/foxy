@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Platform.Contract.Profiles;
 
 namespace Platform.Processor.Coordinator.Strategies;
 

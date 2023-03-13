@@ -12,7 +12,7 @@ using Platform.Tools.Models;
 
 namespace Platform.Scanners.Facebook
 {
-    public class FacebookScanner : IConsumeAsync<Profile>
+    public class FacebookScanner : IConsumeAsync<FacebookProfile>
     {
         private readonly IToolsHolder _toolsHolder;
         private readonly IBusPublisher _publishClient;
@@ -25,7 +25,7 @@ namespace Platform.Scanners.Facebook
             _logger = logger;
         }
 
-        public async ValueTask ConsumeAsync(Profile profile)
+        public async ValueTask ConsumeAsync(FacebookProfile profile)
         {
             // var outputs = await _toolsHolder
             //     .FilterByTargetMarks(profile.Tags)
@@ -34,7 +34,7 @@ namespace Platform.Scanners.Facebook
             await PublishReportProfile(profile, new OutputModel[] { new() { Output = "test_value", Successful = true, ToolName = "test_value" } });
         }
 
-        private async Task PublishReportProfile(Profile profile, IEnumerable<OutputModel> outputs)
+        private async Task PublishReportProfile(FacebookProfile profile, IEnumerable<OutputModel> outputs)
         {
             var reports = outputs
                 .Where(model => model.Successful)

@@ -21,6 +21,6 @@ internal static class Program
                 .AddScannerSubscription(configuration, ExchangeTypes.Facebook)
                 .AddHostGeolocation()
                 .AddTools(configuration)
-                .AddScoped<IConsumeAsync<Profile>, FacebookScanner>();
+                .AddScoped<IConsumeAsync<FacebookProfile>, FacebookScanner>();
         });
 }

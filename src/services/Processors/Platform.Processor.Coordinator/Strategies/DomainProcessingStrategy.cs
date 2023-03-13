@@ -17,7 +17,7 @@ public class DomainProcessingStrategy : IProcessingStrategy
         _logger = logger;
     }
     
-    public async Task Run(Profile profile)
+    public async Task Run(CoordinatorProfile profile)
     {
         // resolve all host by domain name, try to get real IPs behind CloudFlare
         var ipAddressCollection = await _hostResolver.Resolve(profile.TargetName);

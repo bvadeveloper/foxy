@@ -1,7 +1,8 @@
+using System;
+
 namespace Platform.Contract.Telegram
 {
-    public record DomainMessage(string Name) : IValidationMessage
+    public record DomainMessage(Uri[]? Value) : ITelegramMessage
     {
-        public string Name { get; set; } = Name;
     }
 }

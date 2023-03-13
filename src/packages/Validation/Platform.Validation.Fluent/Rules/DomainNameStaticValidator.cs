@@ -8,29 +8,31 @@ namespace Platform.Validation.Fluent.Rules
 {
     public static class DomainNameStaticValidator
     {
-        public static void Validate<T>(string input, ValidationContext<T> context)
+        public static void Validate<T>(Uri uri, ValidationContext<T> context)
         {
-            var validationContext = input.Validate();
-            foreach (var (property, message) in validationContext)
+            foreach (var (property, message) in uri.Validate())
+            {
                 context.AddFailure(property, message);
+            }
         }
 
-        private static Dictionary<string, string> Validate(this string input)
+        private static Dictionary<string, string> Validate(this Uri input)
         {
+            var value = input.ToString();
             var context = new Dictionary<string, string>();
 
-            if (string.IsNullOrEmpty(input))
+            if (string.IsNullOrEmpty(value))
             {
                 context.Add("domain name", "domain name is required");
                 return context;
             }
 
-            var lowerCased = input.ToLowerInvariant();
+            var lowerCased = value.ToLowerInvariant();
             var split = lowerCased.Split('.');
 
             if (split.Length < 2)
             {
-                context.Add(input, "sld and tld should be provided");
+                context.Add(value, "sld and tld should be provided");
                 return context;
             }
 
@@ -39,41 +41,41 @@ namespace Platform.Validation.Fluent.Rules
 
             if (string.IsNullOrEmpty(tld))
             {
-                context.Add(input, "tld is required");
+                context.Add(value, "tld is required");
                 return context;
             }
 
             if (string.IsNullOrEmpty(sld))
             {
-                context.Add(input, "sld is required");
+                context.Add(value, "sld is required");
                 return context;
             }
-            
+
             // alphanumeric, hyphen, each label less than 64 chars
 
             foreach (var l in split)
             {
                 if (string.IsNullOrEmpty(l))
                 {
-                    context.Add(input, "empty labels are not allowed");
+                    context.Add(value, "empty labels are not allowed");
                     return context;
                 }
 
                 if (l.StartsWith("-"))
                 {
-                    context.Add(input, "domain label can not start with hyphen");
+                    context.Add(value, "domain label can not start with hyphen");
                     return context;
                 }
 
                 if (l.EndsWith("-"))
                 {
-                    context.Add(input, "domain label can not end with hyphen");
+                    context.Add(value, "domain label can not end with hyphen");
                     return context;
                 }
 
                 if (l.Length > 63)
                 {
-                    context.Add(input, "each label should be less or equal 63 characters");
+                    context.Add(value, "each label should be less or equal 63 characters");
                     return context;
                 }
 
@@ -83,12 +85,12 @@ namespace Platform.Validation.Fluent.Rules
                          where c is < '0' or > '9'
                          select c)
                 {
-                    context.Add(input, $"invalid character in domain name: {c}");
+                    context.Add(value, $"invalid character in domain name: {c}");
                     return context;
                 }
             }
 
-            var standardForm = input.DnsForm();
+            var standardForm = value.DnsForm();
             if (standardForm.StartsWith("xn--"))
             {
                 try
@@ -98,7 +100,7 @@ namespace Platform.Validation.Fluent.Rules
                 }
                 catch (Exception)
                 {
-                    context.Add(input, "invalid idn name");
+                    context.Add(value, "invalid idn name");
                 }
             }
 

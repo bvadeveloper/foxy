@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.Results;
@@ -22,17 +21,16 @@ public class ValidationFactory : IValidationFactory
         _types = Assembly.GetExecutingAssembly().GetTypes();
     }
 
-    public ValidationResult Validate(string message)
+    public ValidationResult Validate(ITelegramMessage message)
     {
-        var request = MakeValidationMessage(message);
-        var genericValidationType = typeof(IValidator<>).MakeGenericType(request.GetType());
+        var genericValidationType = typeof(IValidator<>).MakeGenericType(message.GetType());
         var methodInfo = genericValidationType.GetMethod("Validate");
         var validatorType = _types.FirstOrDefault(x =>
             genericValidationType.IsAssignableFrom(x) && x is { IsInterface: false, IsAbstract: false });
         var instance = Activator.CreateInstance(validatorType);
 
         var validationResult = (ValidationResult)methodInfo.Invoke(instance, BindingFlags.Public, null,
-            new[] { request }, CultureInfo.InvariantCulture);
+            new[] { message }, CultureInfo.InvariantCulture);
 
         if (!validationResult.IsValid)
         {
@@ -41,9 +39,4 @@ public class ValidationFactory : IValidationFactory
 
         return validationResult;
     }
-
-    private static IValidationMessage MakeValidationMessage(string message) =>
-        IPAddress.TryParse(message, out var ipAddress)
-            ? new IpMessage(Name: ipAddress.ToString())
-            : new DomainMessage(Name: message);
 }

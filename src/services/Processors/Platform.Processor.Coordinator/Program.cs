@@ -25,7 +25,7 @@ internal static class Program
                 .AddSubscription(configuration)
                 .AddExchangeListeners(ExchangeTypes.Coordinator, ExchangeTypes.Synchronization)
                 .AddTargetGeolocation()
-                .AddScoped<IConsumeAsync<Profile>, CoordinatorProcessor>()
+                .AddScoped<IConsumeAsync<CoordinatorProfile>, CoordinatorProcessor>()
                 .AddScoped<IConsumeAsync<SynchronizationProfile>, SynchronizationProcessor>()
                 .AddScoped<IHostResolver, HostResolver>()
 
