@@ -70,13 +70,14 @@ public class PollingMessageService : BackgroundService
                         {
                             if (await _requestLimiter.Acquire(MakeUserKey(message.From)))
                             {
-                                await _botClient.Say(message.Chat, "request limit reached, please try again in a couple of minutes", cancellationToken);
+                                await _botClient.Say(message.Chat, "Request limit reached, please try again in a couple of minutes", cancellationToken);
                                 break;
                             }
 
                             await publisher.PublishToCoordinatorExchange(profile);
-                            await _botClient.Say(message.Chat, $"{profile.TargetNames} - wait for a while foxy sniffing out smth for you", cancellationToken);
                         }
+
+                        await _botClient.Say(message.Chat, $"Wait for a while foxy sniffing out smth for you", cancellationToken);
                     }
                     else
                     {

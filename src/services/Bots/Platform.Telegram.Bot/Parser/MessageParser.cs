@@ -32,14 +32,12 @@ internal class MessageParser : IMessageParser
             Arity = ArgumentArity.OneOrMore,
         };
 
-
         _hostOption = new Option<string[]>(new[] { "--host", "-h" })
         {
             Description = "Host scan",
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
         };
-
 
         _emailOption = new Option<string[]>(new[] { "--email", "-e" })
         {
@@ -62,17 +60,24 @@ internal class MessageParser : IMessageParser
             IsHidden = true
         };
     }
-    
+
     public async Task<ParseResult> Parse(string input)
     {
         var profiles = new List<CoordinatorProfile>();
-
+        
         var rootCommand = Init((hosts, uris, emails, facebook, options) =>
         {
-            profiles.Add(CoordinatorProfile.Make(hosts, ProcessingTypes.Host, options));
-            profiles.Add(CoordinatorProfile.Make(uris, ProcessingTypes.Domain, options));
-            profiles.Add(CoordinatorProfile.Make(emails, ProcessingTypes.Email, options));
-            profiles.Add(CoordinatorProfile.Make(facebook, ProcessingTypes.Facebook, options));
+            if (hosts.Any())
+                profiles.Add(CoordinatorProfile.Make(hosts, ProcessingTypes.Host, options));
+
+            if (uris.Any())
+                profiles.Add(CoordinatorProfile.Make(uris, ProcessingTypes.Domain, options));
+
+            if (emails.Any())
+                profiles.Add(CoordinatorProfile.Make(emails, ProcessingTypes.Email, options));
+
+            if (facebook.Any())
+                profiles.Add(CoordinatorProfile.Make(facebook, ProcessingTypes.Facebook, options));
         });
 
         var logger = new ParserLogger();

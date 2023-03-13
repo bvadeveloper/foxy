@@ -13,26 +13,25 @@ namespace Platform.Validation.Fluent.Rules
                 .Custom(DomainNameStaticValidator.Validate)
                 .Custom((uri, context) =>
                 {
-                    var value = uri.ToString();
-                    if (string.IsNullOrWhiteSpace(value)
-                        || value.Length > 1024
-                        || value.Contains('%')
-                        || value.Contains('*')
-                        || value.Contains('|')
-                        || value.Contains('\\')
-                        || value.Contains('#')
-                        || value.Contains('&')
-                        || value.Contains('^')
-                        || value.Contains(')')
-                        || value.Contains('(')
-                        || value.Contains('!')
-                        || value.Contains('+')
-                        || value.Contains('~')
-                        || value.Contains('"')
-                        || value.Contains('`')
-                        || value.Contains('$'))
+                    if (string.IsNullOrWhiteSpace(uri)
+                        || uri.Length > 1024
+                        || uri.Contains('%')
+                        || uri.Contains('*')
+                        || uri.Contains('|')
+                        || uri.Contains('\\')
+                        || uri.Contains('#')
+                        || uri.Contains('&')
+                        || uri.Contains('^')
+                        || uri.Contains(')')
+                        || uri.Contains('(')
+                        || uri.Contains('!')
+                        || uri.Contains('+')
+                        || uri.Contains('~')
+                        || uri.Contains('"')
+                        || uri.Contains('`')
+                        || uri.Contains('$'))
                     {
-                        context.AddFailure("not valid symbols caught");
+                        context.AddFailure($"Hmm... I see invalid characters in the domain name: {uri}");
                     }
                 });
         }

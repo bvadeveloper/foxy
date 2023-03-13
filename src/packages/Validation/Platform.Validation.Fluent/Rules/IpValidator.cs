@@ -13,12 +13,11 @@ namespace Platform.Validation.Fluent.Rules
                 .NotEmpty()
                 .Custom((ipAddress, context) =>
                 {
-                    var value = ipAddress.ToString();
-                    if (string.IsNullOrWhiteSpace(value)
-                        || value.Length > 1024
-                        || IsPrivateIp(value))
+                    if (string.IsNullOrWhiteSpace(ipAddress)
+                        || ipAddress.Length > 1024
+                        || IsPrivateIp(ipAddress))
                     {
-                        context.AddFailure("not valid symbols caught");
+                        context.AddFailure($"Hmm... I see not allowed IP address: {ipAddress}");
                     }
                 });
         }
