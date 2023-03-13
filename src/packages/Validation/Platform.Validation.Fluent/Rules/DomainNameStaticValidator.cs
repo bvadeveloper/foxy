@@ -8,7 +8,7 @@ namespace Platform.Validation.Fluent.Rules
 {
     public static class DomainNameStaticValidator
     {
-        public static void Validate<T>(Uri uri, ValidationContext<T> context)
+        public static void Validate<T>(string uri, ValidationContext<T> context)
         {
             foreach (var (property, message) in uri.Validate())
             {
@@ -16,9 +16,8 @@ namespace Platform.Validation.Fluent.Rules
             }
         }
 
-        private static Dictionary<string, string> Validate(this Uri input)
+        private static Dictionary<string, string> Validate(this string value)
         {
-            var value = input.ToString();
             var context = new Dictionary<string, string>();
 
             if (string.IsNullOrEmpty(value))
@@ -107,11 +106,11 @@ namespace Platform.Validation.Fluent.Rules
             return context;
         }
 
-        private static string DnsForm(this string input)
+        private static string DnsForm(this string value)
         {
-            if (string.IsNullOrEmpty(input)) return null!;
+            if (string.IsNullOrEmpty(value)) return null!;
 
-            var split = input.Split('.')
+            var split = value.Split('.')
                 .Where(x => !string.IsNullOrEmpty(x))
                 .Select(x => x.ToLowerInvariant())
                 .ToArray();

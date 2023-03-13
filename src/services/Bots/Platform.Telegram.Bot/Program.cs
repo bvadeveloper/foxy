@@ -8,6 +8,7 @@ using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Limiter.Redis;
 using Platform.Services;
+using Platform.Telegram.Bot.Parser;
 using Platform.Validation.Fluent;
 
 namespace Platform.Telegram.Bot;
@@ -25,6 +26,7 @@ internal static class Program
                 .AddRedis(configuration)
                 .AddRequestLimiter(configuration)
                 .AddValidation()
+                .AddSingleton<IMessageParser, MessageParser>()
                 .AddScoped<IConsumeAsync<ReportProfile>, ResponderProcessor>();
         });
 }

@@ -1,8 +1,6 @@
-using System.Net;
-
 namespace Platform.Contract.Telegram
 {
-    public record HostMessage(IPAddress[]? Value) : ITelegramMessage
+    public record HostMessage(string[]? Value) : ITelegramMessage
     {
     }
 }

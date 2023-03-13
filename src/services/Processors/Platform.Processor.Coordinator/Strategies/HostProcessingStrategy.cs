@@ -29,12 +29,12 @@ public class HostProcessingStrategy : IProcessingStrategy
 
     public async Task Run(CoordinatorProfile profile)
     {
-        var ipAddress = IPAddress.Parse(profile.TargetName);
-        var location = await _targetGeolocation.FindGeoMarkers(ipAddress);
-        var route = await MakeRoute(location, ExchangeTypes.Host);
-
-        var hostProfile = new HostProfile(profile.TargetName, new IpLocation(location, ipAddress.ToString()));
-        await _publisher.PublishToHostExchange(hostProfile, route);
+        // var ipAddress = IPAddress.Parse(profile.TargetNames);
+        // var location = await _targetGeolocation.FindGeoMarkers(ipAddress);
+        // var route = await MakeRoute(location, ExchangeTypes.Host);
+        //
+        // var hostProfile = new HostProfile(profile.TargetNames, new IpLocation(location, ipAddress.ToString()));
+        // await _publisher.PublishToHostExchange(hostProfile, route);
     }
 
     private async Task<string> MakeRoute(string location, ExchangeTypes exchangeType)

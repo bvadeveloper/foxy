@@ -1,84 +1,60 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.CommandLine;
-using System.Net;
+using System.Linq;
+using System.Threading.Tasks;
+using Platform.Contract.Profiles;
 using Platform.Contract.Telegram;
-using Platform.Validation.Fluent.Rules;
+using Platform.Validation.Fluent;
 
 namespace Platform.Telegram.Bot.Parser;
 
-internal static class MessageParser
+internal class MessageParser : IMessageParser
 {
-    private static readonly Option<Uri[]> DomainOption;
-    private static readonly Option<IPAddress[]> HostOption;
-    private static readonly Option<string[]> EmailOption;
-    private static readonly Option<string[]> FacebookOption;
-    private static readonly Option<string> ExtraOption;
+    private readonly IValidationFactory _validationFactory;
 
-    static MessageParser()
+    private readonly Option<string[]> _domainOption;
+    private readonly Option<string[]> _hostOption;
+    private readonly Option<string[]> _emailOption;
+    private readonly Option<string[]> _facebookOption;
+    private readonly Option<string> _extraOption;
+
+    public MessageParser(IValidationFactory validationFactory)
     {
-        DomainOption = new Option<Uri[]>(new[] { "--domain", "-d" })
+        _validationFactory = validationFactory;
+
+        _domainOption = new Option<string[]>(new[] { "--domain", "-d" })
         {
-            Description = "Domains scan",
+            Description = "Domain scan",
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore,
         };
 
-        DomainOption.AddValidator(result =>
-        {
-            try
-            {
-                var domains = result.GetValueForOption(DomainOption);
-                var validate = new DomainValidator().Validate(new DomainMessage(domains));
-                if (!validate.IsValid)
-                {
-                    result.ErrorMessage = validate.ToString();
-                }
-            }
-            catch (InvalidOperationException e)
-            {
-                result.ErrorMessage = e.Message;
-            }
-        });
 
-        HostOption = new Option<IPAddress[]>(new[] { "--host", "-h" })
+        _hostOption = new Option<string[]>(new[] { "--host", "-h" })
         {
-            Description = "Hosts scan",
+            Description = "Host scan",
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
         };
 
-        HostOption.AddValidator(result =>
-        {
-            try
-            {
-                var hosts = result.GetValueForOption(HostOption);
-                var validate = new HostValidator().Validate(new HostMessage(hosts));
-                if (!validate.IsValid)
-                {
-                    result.ErrorMessage = validate.ToString();
-                }
-            }
-            catch (InvalidOperationException e)
-            {
-                result.ErrorMessage = e.Message;
-            }
-        });
 
-        EmailOption = new Option<string[]>(new[] { "--email", "-e" })
+        _emailOption = new Option<string[]>(new[] { "--email", "-e" })
         {
             Description = "Check emails",
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
         };
 
-        FacebookOption = new Option<string[]>(new[] { "--facebook", "-f" })
+        _facebookOption = new Option<string[]>(new[] { "--facebook", "-f" })
         {
             Description = "Parse profile",
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
         };
 
-        ExtraOption = new Option<string>(new[] { "--options", "-o" })
+        _extraOption = new Option<string>(new[] { "--options", "-o" })
         {
             Description = "Additional arguments for command (optional in some special cases).",
             IsRequired = false,
@@ -86,17 +62,76 @@ internal static class MessageParser
         };
     }
 
-    internal static RootCommand MakeCommand(Action<IPAddress[], Uri[], string[], string[], string> handle)
+
+    public async Task<MessageHolder> Parse(string input)
     {
-        var command = new RootCommand("Simple Foxy CLI for Telegram bot.");
-        command.AddOption(HostOption);
-        command.AddOption(DomainOption);
-        command.AddOption(EmailOption);
-        command.AddOption(FacebookOption);
-        command.AddOption(ExtraOption);
+        var profiles = new List<CoordinatorProfile>();
 
-        command.SetHandler(handle, HostOption, DomainOption, EmailOption, FacebookOption, ExtraOption);
+        var rootCommand = Init((hosts, uris, emails, facebook, options) =>
+        {
+            profiles.Add(CoordinatorProfile.Make(hosts, ProcessingTypes.Host, options));
+            profiles.Add(CoordinatorProfile.Make(uris, ProcessingTypes.Domain, options));
+            profiles.Add(CoordinatorProfile.Make(emails, ProcessingTypes.Email, options));
+            profiles.Add(CoordinatorProfile.Make(facebook, ProcessingTypes.Facebook, options));
+        });
 
-        return command;
+        var logger = new ParserLogger();
+        var exitCode = await rootCommand.InvokeAsync(input, logger);
+        var logOutput = $"{logger.Out}{logger.Error}";
+
+        return new MessageHolder(exitCode == 0 && profiles.Any(), profiles.ToImmutableList(), logOutput);
+    }
+
+    private RootCommand Init(Action<string[], string[], string[], string[], string> handle)
+    {
+        AddValidators();
+
+        var rootCommand = new RootCommand("Simple Foxy CLI for Telegram bot.");
+        rootCommand.AddOption(_hostOption);
+        rootCommand.AddOption(_domainOption);
+        rootCommand.AddOption(_emailOption);
+        rootCommand.AddOption(_facebookOption);
+        rootCommand.AddOption(_extraOption);
+
+        rootCommand.SetHandler(handle, _hostOption, _domainOption, _emailOption, _facebookOption, _extraOption);
+
+        return rootCommand;
+    }
+
+    private void AddValidators()
+    {
+        _domainOption.AddValidator(context =>
+        {
+            try
+            {
+                var value = context.GetValueForOption(_domainOption);
+                var validationResult = _validationFactory.Validate(new DomainMessage(value));
+                if (!validationResult.IsValid)
+                {
+                    context.ErrorMessage = validationResult.ToString();
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                context.ErrorMessage = e.Message;
+            }
+        });
+
+        _hostOption.AddValidator(context =>
+        {
+            try
+            {
+                var value = context.GetValueForOption(_hostOption);
+                var validationResult = _validationFactory.Validate(new HostMessage(value));
+                if (!validationResult.IsValid)
+                {
+                    context.ErrorMessage = validationResult.ToString();
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                context.ErrorMessage = e.Message;
+            }
+        });
     }
 }
