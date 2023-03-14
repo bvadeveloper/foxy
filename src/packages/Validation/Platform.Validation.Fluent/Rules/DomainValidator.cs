@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Platform.Contract.Telegram;
+using Platform.Validation.Fluent.Messages;
 
 namespace Platform.Validation.Fluent.Rules
 {
-    public class DomainValidator : AbstractValidator<DomainMessage>
+    public class DomainValidator : AbstractValidator<DomainValidationMessage>
     {
         public DomainValidator()
         {

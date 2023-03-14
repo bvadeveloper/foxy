@@ -1,9 +1,9 @@
 using FluentValidation.Results;
-using Platform.Contract.Telegram;
+using Platform.Validation.Fluent.Messages;
 
 namespace Platform.Validation.Fluent;
 
 public interface IValidationFactory
 {
-    ValidationResult Validate(ITelegramMessageValidation message);
+    ValidationResult Validate(ITelegramValidationMessage message);
 }

@@ -15,7 +15,6 @@
         <ProjectReference Include="..\..\..\packages\Bootstrap\Platform.Host\Platform.Host.csproj" />
         <ProjectReference Include="..\..\..\packages\Limiter\Platform.Limiter.Redis\Platform.Limiter.Redis.csproj" />
         <ProjectReference Include="..\..\..\packages\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
-        <ProjectReference Include="..\..\..\packages\Contracts\Platform.Contract.Telegram\Platform.Contract.Telegram.csproj" />
         <ProjectReference Include="..\..\..\packages\Primitives\Platform.Primitives\Platform.Primitives.csproj" />
         <ProjectReference Include="..\..\..\packages\Validation\Platform.Validation.Fluent\Platform.Validation.Fluent.csproj" />
         <ProjectReference Include="..\..\Scanners\Platform.Services\Platform.Services.csproj" />

@@ -1,10 +1,10 @@
 ﻿using System.Text.RegularExpressions;
 using FluentValidation;
-using Platform.Contract.Telegram;
+using Platform.Validation.Fluent.Messages;
 
 namespace Platform.Validation.Fluent.Rules
 {
-    public class HostValidator : AbstractValidator<HostMessage>
+    public class HostValidator : AbstractValidator<HostValidationMessage>
     {
         public HostValidator()
         {

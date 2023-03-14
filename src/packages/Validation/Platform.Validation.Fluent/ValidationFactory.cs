@@ -5,8 +5,8 @@ using System.Reflection;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using Platform.Contract.Telegram;
 using Platform.Logging.Extensions;
+using Platform.Validation.Fluent.Messages;
 
 namespace Platform.Validation.Fluent;
 
@@ -21,7 +21,7 @@ public class ValidationFactory : IValidationFactory
         _types = Assembly.GetExecutingAssembly().GetTypes();
     }
 
-    public ValidationResult Validate(ITelegramMessageValidation message)
+    public ValidationResult Validate(ITelegramValidationMessage message)
     {
         var genericValidationType = typeof(IValidator<>).MakeGenericType(message.GetType());
         var methodInfo = genericValidationType.GetMethod("Validate");

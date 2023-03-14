@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Contracts\Platform.Contract.Telegram\Platform.Contract.Telegram.csproj" />
         <ProjectReference Include="..\..\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
     </ItemGroup>
 

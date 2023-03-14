@@ -6,13 +6,14 @@ using System.CommandLine.Parsing;
 using System.Linq;
 using System.Threading.Tasks;
 using Platform.Contract.Profiles;
-using Platform.Contract.Telegram;
 using Platform.Validation.Fluent;
+using Platform.Validation.Fluent.Messages;
 
 namespace Platform.Telegram.Bot.Parser;
 
 /// <summary>
 ///  Yep, I know it's ugly, but it works, waiting for new release of System.CommandLine
+/// https://github.com/dotnet/command-line-api
 /// </summary>
 internal class MessageParser : IMessageParser
 {
@@ -131,8 +132,8 @@ internal class MessageParser : IMessageParser
 
     public async Task<ParseResult> Parse(string input)
     {
-        _domainOption.AddValidator(context => Validate<DomainMessage>(context, _domainOption));
-        _hostOption.AddValidator(context => Validate<HostMessage>(context, _hostOption));
+        _domainOption.AddValidator(context => Validate<DomainValidationMessage>(context, _domainOption));
+        _hostOption.AddValidator(context => Validate<HostValidationMessage>(context, _hostOption));
 
         var profiles = new List<CoordinatorProfile>();
         var rootCommand = new RootCommand(UserMessages.RootCommandDescription);
@@ -177,7 +178,7 @@ internal class MessageParser : IMessageParser
         return new ParseResult(resultCode == 0 && profiles.Any(), profiles.ToImmutableList(), logger.CollectOutput());
     }
 
-    private void Validate<T>(OptionResult context, Option<string[]> option) where T : ITelegramMessageValidation
+    private void Validate<T>(OptionResult context, Option<string[]> option) where T : ITelegramValidationMessage
     {
         try
         {
