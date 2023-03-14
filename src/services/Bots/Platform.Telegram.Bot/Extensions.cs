@@ -54,4 +54,15 @@ public static class Extensions
         await botClient.SendChatActionAsync(chat, ChatAction.Typing, cancellationToken: token);
         await botClient.SendTextMessageAsync(chat, message, cancellationToken: token);
     }
+
+    internal static bool IsAny(this string[]? values) =>
+        values switch
+        {
+            null => false,
+            _ => values.Length switch
+            {
+                0 => false,
+                _ => true
+            }
+        };
 }

@@ -6,6 +6,7 @@ public enum ProcessingTypes
     Host,
     Email,
     Facebook,
+    Instagram,
     Bitcoin,
     None
 }

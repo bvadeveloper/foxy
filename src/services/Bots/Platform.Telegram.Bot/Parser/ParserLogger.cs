@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Platform.Telegram.Bot.Parser;
 
-public class ParserLogger : IConsole
+internal class ParserLogger : IConsole
 {
     public ParserLogger()
     {
@@ -17,11 +17,22 @@ public class ParserLogger : IConsole
 
     public IStandardStreamWriter Out { get; }
 
+    private string ErrorMessage => Error.ToString() ?? string.Empty;
+
+    private string OutMessage => Out.ToString() ?? string.Empty;
+
     public bool IsOutputRedirected { get; protected set; }
 
     public bool IsErrorRedirected { get; protected set; }
 
     public bool IsInputRedirected { get; protected set; }
+
+    internal string CollectOutput() =>
+        string.IsNullOrEmpty(ErrorMessage)
+            ? string.IsNullOrEmpty(OutMessage)
+                ? UserMessages.ParseDefaultMessage
+                : OutMessage
+            : ErrorMessage;
 
     private class StandardStreamWriter : TextWriter, IStandardStreamWriter
     {

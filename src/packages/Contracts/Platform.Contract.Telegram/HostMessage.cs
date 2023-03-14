@@ -1,6 +1,6 @@
 namespace Platform.Contract.Telegram
 {
-    public record HostMessage(string[]? Value) : ITelegramMessage
+    public record HostMessage(string[]? Value) : ITelegramMessageValidation
     {
     }
 }

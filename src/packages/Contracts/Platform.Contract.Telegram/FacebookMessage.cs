@@ -1,6 +1,6 @@
 namespace Platform.Contract.Telegram
 {
-    public record FacebookMessage(string Value) : ITelegramMessage
+    public record FacebookMessage(string Value) : ITelegramMessageValidation
     {
     }
 }

@@ -21,7 +21,7 @@ public class ValidationFactory : IValidationFactory
         _types = Assembly.GetExecutingAssembly().GetTypes();
     }
 
-    public ValidationResult Validate(ITelegramMessage message)
+    public ValidationResult Validate(ITelegramMessageValidation message)
     {
         var genericValidationType = typeof(IValidator<>).MakeGenericType(message.GetType());
         var methodInfo = genericValidationType.GetMethod("Validate");

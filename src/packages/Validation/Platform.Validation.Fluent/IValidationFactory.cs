@@ -5,5 +5,5 @@ namespace Platform.Validation.Fluent;
 
 public interface IValidationFactory
 {
-    ValidationResult Validate(ITelegramMessage message);
+    ValidationResult Validate(ITelegramMessageValidation message);
 }
