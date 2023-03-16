@@ -36,4 +36,54 @@ namespace Platform.Validation.Fluent.Rules
                 "|other_stuff_here/gm",
                 RegexOptions.Compiled);
     }
+
+private static bool IsPrivateIp(string text)
+{
+    if (string.IsNullOrWhiteSpace(text))
+        return false;
+
+    if (IPAddress.TryParse(text, out var address))
+    {
+        if (address.AddressFamily == AddressFamily.InterNetwork)
+        {
+            // IPv4
+            var ipv4Regex = new Regex(
+                "(^127\\.)" +
+                "|(^10\\.)" +
+                "|(^172\\.1[6-9]\\.)" +
+                "|(^172\\.2[0-9]\\.)" +
+                "|(^172\\.3[0-1]\\.)" +
+                "|(^192\\.168\\.)" +
+                "|(^169\\.254\\.)" +
+                "|(^100\\.(6[4-9]|[7-9]\\d|1[01]\\d|12[0-7])\\.)" +
+                "|(^192\\.0\\.0\\.)" +
+                "|(^198\\.1[8-9]\\.)" +
+                "|(^198\\.51\\.100\\.)" +
+                "|(^203\\.0\\.113\\.)" +
+                "|(^224\\.)" +
+                "|(^240\\.)" +
+                "|(^0\\.)" +
+                "|(^255\\.255\\.255\\.255$)",
+                RegexOptions.Compiled);
+
+            return ipv4Regex.IsMatch(text);
+        }
+        else if (address.AddressFamily == AddressFamily.InterNetworkV6)
+        {
+            // IPv6
+            var ipv6Regex = new Regex(
+                "^([:fF]{4}(?::[:fF]{4})*)?" + // Matches the optional prefix
+                "(::([:fF]{4}(?::[:fF]{4})*)?)?" + // Matches the optional '::' separator and suffix
+                "(([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})" + // Matches a full IPv6 address with 8 blocks
+                "|(([0-9A-Fa-f]{1,4}:)*[0-9A-Fa-f]{1,4})?" + // Matches a compressed IPv6 address
+                "$",
+                RegexOptions.Compiled);
+
+            return ipv6Regex.IsMatch(text);
+        }
+    }
+
+    return false;
+}
+
 }
