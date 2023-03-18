@@ -31,7 +31,7 @@ namespace Platform.Validation.Fluent.Rules
                         || uri.Contains('`')
                         || uri.Contains('$'))
                     {
-                        context.AddFailure($"Hmm... I see invalid characters in the domain name: {uri}");
+                        context.AddFailure($"I see invalid characters in the domain name: {uri}");
                     }
                 });
         }

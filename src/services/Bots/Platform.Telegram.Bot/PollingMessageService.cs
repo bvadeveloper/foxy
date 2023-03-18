@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BotMessageParser;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,6 @@ using Platform.Bus.Publisher;
 using Platform.Limiter.Redis.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Primitives;
-using Platform.Telegram.Bot.Parser;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using static Platform.Telegram.Bot.Extensions;
@@ -56,15 +56,15 @@ public class PollingMessageService : BackgroundService
             try
             {
                 _logger.Trace($"Raw input '{message.Text}'");
-
-                using var scope = _serviceProvider.CreateScope();
-                scope.ServiceProvider.GetRequiredService<SessionContext>().AddChatId(message.Chat.Id);
-                var publisher = scope.ServiceProvider.GetRequiredService<IBusPublisher>();
-
-                var output = await _messageParser.Parse(message.Text);
-                if (output.IsValid)
+                
+                var parseResult = await _messageParser.Parse(message.Text, cancellationToken);
+                if (parseResult.IsValid)
                 {
-                    foreach (var profile in output.Profiles)
+                    using var scope = _serviceProvider.CreateScope();
+                    scope.ServiceProvider.GetRequiredService<SessionContext>().AddChatId(message.Chat.Id);
+                    var publisher = scope.ServiceProvider.GetRequiredService<IBusPublisher>();
+                    
+                    foreach (var profile in parseResult.Profiles)
                     {
                         if (await _requestLimiter.Acquire(MakeUserKey(message.From)))
                         {
@@ -78,7 +78,7 @@ public class PollingMessageService : BackgroundService
                 }
                 else
                 {
-                    await _botClient.Say(message.Chat, output.ValidationInfo, cancellationToken);
+                    await _botClient.Say(message.Chat, parseResult.ValidationInfo, cancellationToken);
                 }
             }
             catch (Exception e)

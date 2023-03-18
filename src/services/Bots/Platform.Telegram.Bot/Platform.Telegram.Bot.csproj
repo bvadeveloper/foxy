@@ -8,13 +8,13 @@
 
     <ItemGroup>
         <PackageReference Include="Telegram.Bot" Version="18.0.0" />
-        <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\packages\Bootstrap\Platform.Host\Platform.Host.csproj" />
         <ProjectReference Include="..\..\..\packages\Limiter\Platform.Limiter.Redis\Platform.Limiter.Redis.csproj" />
         <ProjectReference Include="..\..\..\packages\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
+        <ProjectReference Include="..\..\..\packages\Parsers\BotMessageParser\BotMessageParser.csproj" />
         <ProjectReference Include="..\..\..\packages\Primitives\Platform.Primitives\Platform.Primitives.csproj" />
         <ProjectReference Include="..\..\..\packages\Validation\Platform.Validation.Fluent\Platform.Validation.Fluent.csproj" />
         <ProjectReference Include="..\..\Scanners\Platform.Services\Platform.Services.csproj" />

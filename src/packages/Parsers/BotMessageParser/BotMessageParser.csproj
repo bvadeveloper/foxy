@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj" />
+      <ProjectReference Include="..\..\Validation\Platform.Validation.Fluent\Platform.Validation.Fluent.csproj" />
+    </ItemGroup>
+    
+</Project>

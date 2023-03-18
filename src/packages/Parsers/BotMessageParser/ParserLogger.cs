@@ -3,7 +3,7 @@ using System.CommandLine.IO;
 using System.IO;
 using System.Text;
 
-namespace Platform.Telegram.Bot.Parser;
+namespace BotMessageParser;
 
 internal class ParserLogger : IConsole
 {
@@ -30,7 +30,7 @@ internal class ParserLogger : IConsole
     internal string CollectOutput() =>
         string.IsNullOrEmpty(ErrorMessage)
             ? string.IsNullOrEmpty(OutMessage)
-                ? UserMessages.ParseDefaultMessage
+                ? CommandMessages.ParseDefaultMessage
                 : OutMessage
             : ErrorMessage;
 

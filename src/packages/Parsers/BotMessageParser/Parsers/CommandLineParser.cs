@@ -4,18 +4,19 @@ using System.Collections.Immutable;
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Platform.Contract.Profiles;
 using Platform.Validation.Fluent;
 using Platform.Validation.Fluent.Messages;
 
-namespace Platform.Telegram.Bot.Parser;
+namespace BotMessageParser.Parsers;
 
 /// <summary>
 ///  Yep, I know it's ugly, but it works, waiting for new release of System.CommandLine
 /// https://github.com/dotnet/command-line-api
 /// </summary>
-internal class MessageParser : IMessageParser
+public class CommandLineParser : IMessageParser
 {
     private readonly IValidationFactory _validationFactory;
 
@@ -31,15 +32,15 @@ internal class MessageParser : IMessageParser
     private readonly Command _searchCommand;
     private readonly Command _parseCommand;
 
-    public MessageParser(IValidationFactory validationFactory)
+    public CommandLineParser(IValidationFactory validationFactory)
     {
         _validationFactory = validationFactory;
 
-        #region Scan section
+        #region Scan
 
         _domainOption = new Option<string[]>(
             aliases: new[] { "--domains", "-d" },
-            description: UserMessages.DomainOptionDescription)
+            description: CommandMessages.DomainOptionDescription)
         {
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
@@ -47,7 +48,7 @@ internal class MessageParser : IMessageParser
 
         _hostOption = new Option<string[]>(
             aliases: new[] { "--ips", "-i" },
-            description: UserMessages.HostOptionDescription)
+            description: CommandMessages.HostOptionDescription)
         {
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
@@ -59,7 +60,7 @@ internal class MessageParser : IMessageParser
 
         _emailOption = new Option<string[]>(
             aliases: new[] { "--emails", "-e" },
-            description: UserMessages.EmailOptionDescription)
+            description: CommandMessages.EmailOptionDescription)
         {
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
@@ -67,7 +68,7 @@ internal class MessageParser : IMessageParser
 
         _bitcoinOption = new Option<string[]>(
             aliases: new[] { "--bitcoins", "-b" },
-            description: UserMessages.BitcoinOptionDescription)
+            description: CommandMessages.BitcoinOptionDescription)
         {
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
@@ -75,11 +76,11 @@ internal class MessageParser : IMessageParser
 
         #endregion
 
-        #region Social media section
+        #region Social media
 
         _facebookOption = new Option<string[]>(
             aliases: new[] { "--facebook", "-f" },
-            description: UserMessages.FacebookOptionDescription)
+            description: CommandMessages.FacebookOptionDescription)
         {
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
@@ -87,7 +88,7 @@ internal class MessageParser : IMessageParser
 
         _instagramOption = new Option<string[]>(
             aliases: new[] { "--instagram", "-i" },
-            description: UserMessages.InstagramOptionDescription)
+            description: CommandMessages.InstagramOptionDescription)
         {
             AllowMultipleArgumentsPerToken = true,
             Arity = ArgumentArity.OneOrMore
@@ -95,11 +96,11 @@ internal class MessageParser : IMessageParser
 
         #endregion
 
-        #region Extra options section
+        #region Extra options
 
         _extraOption = new Option<string>(
             aliases: new[] { "--options", "-o" },
-            description: UserMessages.ExtraOptionsOptionDescription)
+            description: CommandMessages.ExtraOptionsOptionDescription)
         {
             IsRequired = false,
             IsHidden = true
@@ -109,19 +110,19 @@ internal class MessageParser : IMessageParser
 
         #region Commands
 
-        _scanCommand = new Command("scan", UserMessages.ScanCommandDescription)
+        _scanCommand = new Command("scan", CommandMessages.ScanCommandDescription)
         {
             _domainOption,
             _hostOption,
         };
 
-        _searchCommand = new Command("search", UserMessages.SearchCommandDescription)
+        _searchCommand = new Command("search", CommandMessages.SearchCommandDescription)
         {
             _emailOption,
             _bitcoinOption,
         };
 
-        _parseCommand = new Command("parse", UserMessages.ParseCommandDescription)
+        _parseCommand = new Command("parse", CommandMessages.ParseCommandDescription)
         {
             _facebookOption,
             _instagramOption,
@@ -130,13 +131,13 @@ internal class MessageParser : IMessageParser
         #endregion
     }
 
-    public async Task<ParseResult> Parse(string input)
+    public async ValueTask<ParseResult> Parse(string input, CancellationToken cancellationToken)
     {
         _domainOption.AddValidator(context => Validate<DomainValidationMessage>(context, _domainOption));
         _hostOption.AddValidator(context => Validate<HostValidationMessage>(context, _hostOption));
 
         var profiles = new List<CoordinatorProfile>();
-        var rootCommand = new RootCommand(UserMessages.RootCommandDescription);
+        var rootCommand = new RootCommand(CommandMessages.RootCommandDescription);
         rootCommand.AddCommand(_scanCommand);
         rootCommand.AddCommand(_searchCommand);
         rootCommand.AddCommand(_parseCommand);
@@ -162,20 +163,20 @@ internal class MessageParser : IMessageParser
         }, _emailOption, _bitcoinOption, _extraOption);
 
 
-        _parseCommand.SetHandler((facebookProfiles, instagramProfiles, options) =>
+        _parseCommand.SetHandler((facebook, instagram, options) =>
         {
-            if (facebookProfiles.IsAny())
-                profiles.AddRange(facebookProfiles.Select(value => CoordinatorProfile.Make(value, ProcessingTypes.Facebook, options)));
+            if (facebook.IsAny())
+                profiles.AddRange(facebook.Select(value => CoordinatorProfile.Make(value, ProcessingTypes.Facebook, options)));
 
-            if (instagramProfiles.IsAny())
-                profiles.AddRange(instagramProfiles.Select(value => CoordinatorProfile.Make(value, ProcessingTypes.Instagram, options)));
+            if (instagram.IsAny())
+                profiles.AddRange(instagram.Select(value => CoordinatorProfile.Make(value, ProcessingTypes.Instagram, options)));
         }, _facebookOption, _instagramOption, _extraOption);
 
 
         var logger = new ParserLogger();
         var resultCode = await rootCommand.InvokeAsync(input, logger);
 
-        return new ParseResult(resultCode == 0 && profiles.Any(), profiles.ToImmutableList(), logger.CollectOutput());
+        return new ParseResult(resultCode == 0 && profiles.Any(), profiles.ToImmutableArray(), logger.CollectOutput());
     }
 
     private void Validate<T>(OptionResult context, Option<string[]> option) where T : ITelegramValidationMessage
