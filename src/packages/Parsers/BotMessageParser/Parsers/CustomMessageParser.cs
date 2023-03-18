@@ -30,7 +30,7 @@ public class CustomMessageParser : IMessageParser
         _logHolder.Clear();
 
         var items = input.CustomSplit().ToImmutableArray();
-        var command = items[0].ToLower();
+        var command = items[0];
 
         var hasOption = false;
         var option = string.Empty;
@@ -73,11 +73,6 @@ public class CustomMessageParser : IMessageParser
                     }
                 }
 
-                if (hasOption && true) // validate option string
-                {
-                    profiles = profiles.Select(p => p with { Options = option }).ToList();
-                }
-
                 break;
 
             case "search":
@@ -110,11 +105,6 @@ public class CustomMessageParser : IMessageParser
 
                             continue;
                     }
-                }
-
-                if (hasOption && true) // validate option string
-                {
-                    profiles = profiles.Select(p => p with { Options = option }).ToList();
                 }
 
                 break;
@@ -151,11 +141,6 @@ public class CustomMessageParser : IMessageParser
                     }
                 }
 
-                if (hasOption && true) // validate option string
-                {
-                    profiles = profiles.Select(p => p with { Options = option }).ToList();
-                }
-
                 break;
 
             case "--help" or "-h":
@@ -166,6 +151,12 @@ public class CustomMessageParser : IMessageParser
                 _logHolder.Append(CommandMessages.ParseDefaultMessage);
                 break;
         }
+
+        if (hasOption && false) // validate option string
+        {
+            profiles = profiles.Select(p => p with { Options = option }).ToList();
+        }
+
 
         return new ValueTask<ParseResult>(new ParseResult(profiles.Any(), profiles.ToImmutableArray(), _logHolder.ToString()));
     }

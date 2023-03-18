@@ -7,7 +7,7 @@ public static class Extensions
 {
     internal static IEnumerable<string> CustomSplit(this string value)
     {
-        var memory = value.ToLowerInvariant().AsMemory();
+        var memory = value.AsMemory();
 
         var startTokenIndex = 0;
 
