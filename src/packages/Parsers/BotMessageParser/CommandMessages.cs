@@ -5,19 +5,21 @@ namespace BotMessageParser;
 /// </summary>
 internal static class CommandMessages
 {
-    internal const string RootCommandDescription = "Foxy command-line interface for Telegram";
-
-    internal const string DomainOptionDescription = "Collect information about domains.";
-    internal const string HostOptionDescription = "Collect information about hosts.";
-    internal const string EmailOptionDescription = "Collect information about emails.";
-    internal const string BitcoinOptionDescription = "Collect information about bitcoins.";
-    internal const string FacebookOptionDescription = "Collect information about Facebook user profiles.";
-    internal const string InstagramOptionDescription = "Collect information about Instagram user profiles.";
-    internal const string ExtraOptionsOptionDescription = "Additional arguments for the command (optional in some special cases).";
-
-    internal const string ScanCommandDescription = "Collect information about endpoints like domains, IP addresses, etc.";
-    internal const string SearchCommandDescription = "Different search commands for OSINT (under construction).";
-    internal const string ParseCommandDescription = "Collect information from social media profiles (under construction).";
+    internal const string RootCommandDescription = "Foxy command-line interface for Telegram \n\n" +
+                                                             "Options: \n" +
+                                                             "--help, -h    Show help and usage information \n\n" +
+                                                             "Usage: \n" +
+                                                             "  [command] [options] \n\n" +
+                                                             "Commands: \n" +
+                                                             "scan    Collect information about endpoints. \n" +
+                                                             "  --domains, -d foxy.com \n" +
+                                                             "  --hosts, -h 8.8.8.8 \n\n" +
+                                                             "search    Different searches for OSINT (under construction). \n" +
+                                                             "  --emails, -e foxy@foxy.com \n" +
+                                                             "  --bitcoins, -b 1234567890 \n\n" +
+                                                             "parse    Collect information about SMP (under construction).\n" +
+                                                             "  --facebook, -f \n" +
+                                                             "  --instagram, -i \n";
     
-    internal const string ParseDefaultMessage = "A suggestion. Try using --help, it may help you.";
+    internal const string DefaultMessage = "Suggestion for you mate try to use --help for more details.";
 }

@@ -148,11 +148,11 @@ public class CustomMessageParser : IMessageParser
                 break;
 
             default:
-                _logHolder.Append(CommandMessages.ParseDefaultMessage);
+                _logHolder.Append(CommandMessages.DefaultMessage);
                 break;
         }
 
-        if (hasOption && false) // validate option string
+        if (hasOption && _validationFactory.Validate(new OptionValidationMessage(option)).IsValid)
         {
             profiles = profiles.Select(p => p with { Options = option }).ToList();
         }
