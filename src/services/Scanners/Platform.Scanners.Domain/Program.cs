@@ -4,9 +4,9 @@ using Platform.Bus;
 using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
-using Platform.Geolocation.HostGeolocation;
+using Platform.Geolocation.HostLocation;
 using Platform.Host;
-using Platform.Services;
+using Platform.Services.Hosts;
 using Platform.Tools.Extensions;
 
 namespace Platform.Scanners.Domain;
@@ -17,10 +17,11 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
+                .AddHostLocationServices()
                 .AddPublisher(configuration)
-                .AddScannerSubscription(configuration, ExchangeTypes.Domain)
-                .AddHostGeolocation()
+                .AddCollectorSubscription(configuration, ExchangeTypes.DomainExchange)
                 .AddTools(configuration)
+                .AddCollectorInfo(CollectorTypes.DomainScanner)
                 .AddScoped<IConsumeAsync<DomainProfile>, DomainScanner>();
         });
 }

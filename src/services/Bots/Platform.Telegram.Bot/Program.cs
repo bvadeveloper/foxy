@@ -9,7 +9,7 @@ using Platform.Caching.Redis;
 using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Limiter.Redis;
-using Platform.Services;
+using Platform.Services.Hosts;
 using Platform.Validation.Fluent;
 
 namespace Platform.Telegram.Bot;
@@ -22,8 +22,8 @@ internal static class Program
             services
                 .AddTelegramBot(configuration)
                 .AddPublisher(configuration)
-                .AddSubscription(configuration)
-                .AddExchangeListeners(ExchangeTypes.Telegram)
+                .AddProcessorSubscription(configuration)
+                .AddExchangeListeners(ExchangeTypes.TelegramExchange)
                 .AddRedis(configuration)
                 .AddRequestLimiter(configuration)
                 .AddValidation()

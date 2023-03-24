@@ -1,66 +1,51 @@
-using System.Net;
+﻿using System.Net;
 using Microsoft.Extensions.Logging;
+using Platform.Caching.Abstractions;
 using Platform.Logging.Extensions;
-using Platform.Geolocation;
-using Platform.Geolocation.HostGeolocation.Stun;
 
 namespace Platform.Geolocation.HostGeolocation;
 
 public class HostGeolocation : IHostGeolocation
 {
-    private const string AwsCheckIpUrl = "https://checkip.amazonaws.com/";
-
-    private readonly IHttpClientFactory _clientFactory;
-    private readonly IStunClient _stunClient;
     private readonly IEnumerable<IGeolocator> _geolocators;
+    private readonly ICacheDataService _cacheDataService;
     private readonly ILogger _logger;
 
-    public HostGeolocation(IStunClient stunClient, IHttpClientFactory clientFactory, IEnumerable<IGeolocator> geolocators, ILogger<HostGeolocation> logger)
+    private readonly TimeSpan _ttl = TimeSpan.FromDays(1);
+    private const string LocationKey = "geolocation";
+
+    public HostGeolocation(IEnumerable<IGeolocator> geolocators, ICacheDataService cacheDataService, ILogger<HostGeolocation> logger)
     {
-        _stunClient = stunClient;
-        _clientFactory = clientFactory;
         _geolocators = geolocators;
+        _cacheDataService = cacheDataService;
         _logger = logger;
     }
 
-    public async Task<string> FindCountryCode()
-    {
-        var ipAddress = await _stunClient.Send();
-
-        if (Equals(ipAddress, IPAddress.None))
-        {
-            _logger.Info($"Hmm... The Stun client didn't return any ip address, let's use a spare http endpoint for that '{AwsCheckIpUrl}'");
-            ipAddress = await RequestAwsExternalIpChecker(AwsCheckIpUrl);
-        }
-
-        return await _geolocators.Find(ipAddress);
-    }
-
     /// <summary>
-    /// Just a second option for testing purposes
+    /// Build geolocation like 'countryCode_city'
     /// </summary>
-    /// <param name="endpoint"></param>
+    /// <param name="ipAddress"></param>
     /// <returns></returns>
-    private async Task<IPAddress> RequestAwsExternalIpChecker(string endpoint)
+    public async ValueTask<string> FindGeolocation(IPAddress ipAddress)
     {
-        try
-        {
-            var ips = await CallEndpoint(endpoint);
-            var ip = ips.Split(";")[0].Trim(); // can be more than one ip address
+        var cacheKey = MakeKey(ipAddress);
+        var countryCode = await _cacheDataService.GetHashValue(LocationKey, cacheKey);
 
-            return IPAddress.Parse(ip);
-        }
-        catch (Exception e)
+        if (string.IsNullOrEmpty(countryCode))
         {
-            _logger.Error($"External http call to endpoint '{endpoint}' throw an exception '{e.Message}'", e);
-            return IPAddress.None;
+            foreach (var geolocator in _geolocators)
+            {
+                countryCode = (await geolocator.FindCountryCode(ipAddress)).ToLowerInvariant();
+                if (!string.IsNullOrWhiteSpace(countryCode)) break;
+            }
+
+            await _cacheDataService.SetHashValue(LocationKey, cacheKey, countryCode, true);
+            await _cacheDataService.SetExpiry(LocationKey, _ttl, true);
         }
+
+        _logger.Trace($"Mapping '{cacheKey}' -> '{countryCode}'");
+        return countryCode;
     }
 
-    private async Task<string> CallEndpoint(string endpoint)
-    {
-        using var client = _clientFactory.CreateClient();
-        var response = await client.GetAsync(endpoint);
-        return await response.Content.ReadAsStringAsync();
-    }
+    private static string MakeKey(IPAddress ipAddress) => ipAddress.ToString();
 }

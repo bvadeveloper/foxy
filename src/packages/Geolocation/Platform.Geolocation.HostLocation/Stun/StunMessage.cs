@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace Platform.Geolocation.HostGeolocation.Stun
+namespace Platform.Geolocation.HostLocation.Stun
 {
     public class StunMessage
     {

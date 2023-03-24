@@ -1,10 +1,12 @@
+using System.Net;
+
 namespace Platform.Geolocation.HostGeolocation;
 
 public interface IHostGeolocation
 {
     /// <summary>
-    /// Find geo markers for scanner applications
+    /// Find geo markers for host
     /// </summary>
     /// <returns></returns>
-    Task<string> FindCountryCode();
+    ValueTask<string> FindGeolocation(IPAddress ipAddress);
 }

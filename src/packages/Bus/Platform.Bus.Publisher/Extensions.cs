@@ -9,24 +9,24 @@ namespace Platform.Bus.Publisher;
 public static class Extensions
 {
     public static async ValueTask PublishToTelegramExchange(this IBusPublisher publisher, ReportProfile profile) =>
-        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Telegram));
+        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.TelegramExchange));
 
     public static async ValueTask PublishToDomainExchange(this IBusPublisher publisher, DomainProfile profile) =>
-        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Domain));
+        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.DomainExchange));
 
     public static async ValueTask PublishToHostExchange(this IBusPublisher publisher, HostProfile profile, string route) =>
-        await publisher.PublishToExchange(profile, Exchange.Make(ExchangeTypes.Host, route));
+        await publisher.PublishToExchange(profile, Exchange.Make(ExchangeTypes.HostExchange, route));
 
     public static async ValueTask PublishToReportExchange(this IBusPublisher publisher, IProfile profile) =>
-        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Report));
+        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.ReportExchange));
 
     public static async ValueTask PublishToCoordinatorExchange(this IBusPublisher publisher, CoordinatorProfile profile) =>
-        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.Coordinator));
+        await publisher.PublishToExchange(profile, Exchange.Default(ExchangeTypes.CoordinatorExchange));
 
-    public static async ValueTask PublishToSynchronizationExchange(this IBusPublisher publisher, string route, string hostId)
+    public static async ValueTask PublishToSyncExchange(this IBusPublisher publisher, CollectorInfo collectorInfo, byte[] ipAddressBytes, byte[] publicKey)
     {
-        var exchange = Exchange.Default(ExchangeTypes.Synchronization);
-        var profile = new SynchronizationProfile(route, hostId);
+        var exchange = Exchange.Default(ExchangeTypes.SynchronizationExchange);
+        var profile = new SynchronizationProfile(collectorInfo, ipAddressBytes, publicKey);
 
         await publisher.PublishToExchange(profile, exchange);
     }

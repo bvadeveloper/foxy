@@ -7,8 +7,8 @@ namespace Platform.Bus;
 /// </summary>
 public record ExchangeCollection(ImmutableList<Exchange> Exchanges);
 
-public record Exchange(ExchangeTypes ExchangeTypes, ImmutableList<string> RoutingKeys)
+public record Exchange(ExchangeTypes ExchangeTypes, string RoutingKey)
 {
-    public static Exchange Default(ExchangeTypes exchangeTypes) => new(exchangeTypes, ImmutableList.Create<string>().Add("default"));
-    public static Exchange Make(ExchangeTypes exchangeTypes, string route) => new(exchangeTypes, ImmutableList.Create<string>().Add(route));
+    public static Exchange Default(ExchangeTypes exchangeTypes) => new(exchangeTypes, "default");
+    public static Exchange Make(ExchangeTypes exchangeTypes, string route) => new(exchangeTypes, route);
 }

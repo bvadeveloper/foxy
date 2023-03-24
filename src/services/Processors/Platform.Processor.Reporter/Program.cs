@@ -6,7 +6,7 @@ using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Processor.Reporter.Processors;
-using Platform.Services;
+using Platform.Services.Hosts;
 
 namespace Platform.Processor.Reporter;
 
@@ -17,8 +17,8 @@ internal static class Program
         {
             services
                 .AddPublisher(configuration)
-                .AddSubscription(configuration)
-                .AddExchangeListeners(ExchangeTypes.Report)
+                .AddProcessorSubscription(configuration)
+                .AddExchangeListeners(ExchangeTypes.ReportExchange)
                 .AddScoped<IReportBuilder, ReportBuilder>()
                 
                 // report processors

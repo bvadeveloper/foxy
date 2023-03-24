@@ -9,9 +9,6 @@ namespace Platform.Bus
 {
     public static class Extensions
     {
-        private const string DefaultRoute = "default";
-        private const string NoLocation = "*";
-
         /// <summary>
         /// Just like connections, channels are meant to be long-lived. 
         /// </summary>
@@ -45,10 +42,6 @@ namespace Platform.Bus
             services.Configure<BusConfiguration>(options =>
                 configuration.GetSection("Bus").Bind(options));
 
-        public static string ToLower(this ExchangeTypes exchangeType) => exchangeType.ToString().ToLower();
-
-        public static string ToLocationRoute(this ExchangeTypes exchangeType, string location) => $"{DefaultRoute}.{exchangeType.ToLower()}.{location}";
-
-        public static string ToDefaultRoute(this ExchangeTypes exchangeType) => $"{DefaultRoute}.{exchangeType.ToLower()}.{NoLocation}";
+        public static string ToLower(this Enum exchangeType) => exchangeType.ToString().ToLower();
     }
 }

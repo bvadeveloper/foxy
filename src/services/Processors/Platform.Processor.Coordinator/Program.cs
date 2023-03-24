@@ -5,12 +5,11 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Caching.Redis;
 using Platform.Contract.Profiles;
+using Platform.Geolocation.HostGeolocation;
 using Platform.Host;
-using Platform.Services;
-using Platform.Geolocation.TargetGeolocation;
 using Platform.Processor.Coordinator.Processors;
-using Platform.Processor.Coordinator.Services;
 using Platform.Processor.Coordinator.Strategies;
+using Platform.Services.Hosts;
 
 namespace Platform.Processor.Coordinator;
 
@@ -22,12 +21,11 @@ internal static class Program
             services
                 .AddRedis(configuration)
                 .AddPublisher(configuration)
-                .AddSubscription(configuration)
-                .AddExchangeListeners(ExchangeTypes.Coordinator, ExchangeTypes.Synchronization)
-                .AddTargetGeolocation()
+                .AddProcessorSubscription(configuration)
+                .AddExchangeListeners(ExchangeTypes.CoordinatorExchange, ExchangeTypes.SynchronizationExchange)
+                .AddHostGeolocation()
                 .AddScoped<IConsumeAsync<CoordinatorProfile>, CoordinatorProcessor>()
                 .AddScoped<IConsumeAsync<SynchronizationProfile>, SynchronizationProcessor>()
-                .AddScoped<IHostResolver, HostResolver>()
 
                 // strategies
                 .AddScoped<IProcessingStrategy, DomainProcessingStrategy>()

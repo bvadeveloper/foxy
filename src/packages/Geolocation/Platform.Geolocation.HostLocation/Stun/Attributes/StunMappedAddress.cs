@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Platform.Geolocation.HostGeolocation.Stun.Attributes
+namespace Platform.Geolocation.HostLocation.Stun.Attributes
 {
     public enum AddressFamily : byte
     {

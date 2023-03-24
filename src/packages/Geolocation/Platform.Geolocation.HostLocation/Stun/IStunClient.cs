@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Platform.Geolocation.HostGeolocation.Stun;
+namespace Platform.Geolocation.HostLocation.Stun;
 
 public interface IStunClient
 {

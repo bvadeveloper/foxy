@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Platform.Host
 {
-    public static class HostExtension
+    public static class PlatformExtensions
     {
         /// <summary>
         /// Increase minimum number of worker threads in ThreadPool to overcome performance issue in Redis client and possibly other areas

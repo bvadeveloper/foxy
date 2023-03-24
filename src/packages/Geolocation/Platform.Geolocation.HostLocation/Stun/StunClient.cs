@@ -1,9 +1,9 @@
 using System.Net;
 using Microsoft.Extensions.Logging;
 using Platform.Logging.Extensions;
-using Platform.Geolocation.HostGeolocation.Stun.Attributes;
+using Platform.Geolocation.HostLocation.Stun.Attributes;
 
-namespace Platform.Geolocation.HostGeolocation.Stun;
+namespace Platform.Geolocation.HostLocation.Stun;
 
 public class StunClient : IStunClient
 {

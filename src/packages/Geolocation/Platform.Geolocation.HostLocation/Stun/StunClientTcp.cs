@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace Platform.Geolocation.HostGeolocation.Stun;
+namespace Platform.Geolocation.HostLocation.Stun;
 
 public static class StunClientTcp
 {

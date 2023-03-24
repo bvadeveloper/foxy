@@ -188,7 +188,7 @@ namespace Platform.Caching.Redis
         public async Task<List<string>> KeyScan(string match, int count)
         {
             var schemas = new List<string>();
-            int nextCursor = 0;
+            var nextCursor = 0;
             do
             {
                 var redisResult = await Database.ExecuteAsync("SCAN", nextCursor.ToString(), "MATCH", match, "COUNT", count.ToString());

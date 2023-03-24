@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Platform.Geolocation.HostGeolocation.Stun;
 using Platform.Geolocation.Ip2c;
 using Platform.Geolocation.Maxmind;
 
@@ -9,8 +8,7 @@ public static class Extensions
 {
     public static IServiceCollection AddHostGeolocation(this IServiceCollection services) =>
         services.AddHttpClient()
-            .AddScoped<IGeolocator, MaxmindGeolocator>()
+            .AddScoped<IGeolocator, MaxmindGeolocator>() // in this place you can specify the priority for searching sources
             .AddScoped<IGeolocator, Ip2CGeolocator>()
-            .AddScoped<IHostGeolocation, HostGeolocation>()
-            .AddScoped<IStunClient, StunClient>();
+            .AddScoped<IHostGeolocation, HostGeolocation>();
 }

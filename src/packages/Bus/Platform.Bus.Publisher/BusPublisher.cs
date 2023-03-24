@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -36,13 +35,10 @@ namespace Platform.Bus.Publisher
                 props.Headers.Add("fx-session", sessionBytes);
 
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                exchange.RoutingKeys.ForEach(routingKey =>
-                {
-                    _channel.BasicPublish(exchange: exchangeName,
-                        routingKey: routingKey,
-                        basicProperties: props,
-                        body: payload);
-                });
+                _channel.BasicPublish(exchange: exchangeName,
+                    routingKey: exchange.RoutingKey,
+                    basicProperties: props,
+                    body: payload);
             }
             catch (Exception e)
             {

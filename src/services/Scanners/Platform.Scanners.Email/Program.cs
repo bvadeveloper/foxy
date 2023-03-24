@@ -4,9 +4,9 @@ using Platform.Bus;
 using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
-using Platform.Geolocation.HostGeolocation;
+using Platform.Geolocation.HostLocation;
 using Platform.Host;
-using Platform.Services;
+using Platform.Services.Hosts;
 using Platform.Tools.Extensions;
 
 namespace Platform.Scanners.Email;
@@ -18,8 +18,8 @@ internal static class Program
         {
             services
                 .AddPublisher(configuration)
-                .AddScannerSubscription(configuration, ExchangeTypes.Email)
-                .AddHostGeolocation()
+                .AddCollectorSubscription(configuration, ExchangeTypes.EmailExchange)
+                .AddHostLocationServices()
                 .AddTools(configuration)
                 .AddScoped<IConsumeAsync<EmailProfile>, EmailScanner>();
         });

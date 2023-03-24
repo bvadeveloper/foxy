@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,11 +42,12 @@ namespace Platform.Bus.Subscriber
         private static string MakeSubscriberName()
         {
             var span = AppDomain.CurrentDomain.FriendlyName.AsSpan();
-            return span[(span.LastIndexOf('.') + 1)..].ToString();
+            var slice = span[(span.LastIndexOf('.') + 1)..];
+            var spanSliced = new Span<char>(new char[slice.Length]);
+            slice.ToLowerInvariant(spanSliced);
+            
+            return spanSliced.ToString();
         }
-
-
-        public ImmutableList<Exchange> ExchangeBindings { get; set; }
 
         public async Task Subscribe(CancellationToken cancellationToken)
         {
@@ -62,9 +60,9 @@ namespace Platform.Bus.Subscriber
                 var exchangeName = value.ExchangeTypes.ToLower();
 
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                value.RoutingKeys.ForEach(routingKey => _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: routingKey));
+                _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
 
-                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKeys}'");
+                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKey}'");
             });
 
             _channel.BasicConsume(queueName, false, consumer);
@@ -75,51 +73,28 @@ namespace Platform.Bus.Subscriber
         /// <summary>
         /// https://www.rabbitmq.com/tutorials/tutorial-five-dotnet.html
         /// </summary>
-        /// <param name="location"></param>
+        /// <param name="routingKey"></param>
         /// <param name="cancellationToken"></param>
-        public async Task SubscribeByLocation(string location, CancellationToken cancellationToken)
+        public async Task SubscribeByHostIdentifier(string routingKey, CancellationToken cancellationToken)
         {
             var queueName = _channel.QueueDeclare(_subscriberName);
             var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.Received += ConsumerOnReceived;
 
-            ExchangeBindings = BuildLocationRoutingKeys(_exchangeCollection.Exchanges, location);
-            ExchangeBindings.ForEach(exchange =>
+            _exchangeCollection.Exchanges.ForEach(exchange =>
             {
                 var exchangeName = exchange.ExchangeTypes.ToLower();
 
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                exchange.RoutingKeys.ForEach(routingKey => _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: routingKey));
+                _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: routingKey);
 
-                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{exchange.RoutingKeys}'");
+                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{exchange.RoutingKey}'");
             });
 
             _channel.BasicConsume(queueName, false, consumer);
 
             await Task.Yield();
         }
-
-        /// <summary>
-        /// Bindings should look like 'default.scannerExchange.countryCode'
-        /// Notice. If no scanners in a particular location we can use ones from other location
-        /// </summary>
-        /// <param name="exchanges"></param>
-        /// <param name="location"></param>
-        /// <returns></returns>
-        private static ImmutableList<Exchange> BuildLocationRoutingKeys(ImmutableList<Exchange> exchanges, string location) =>
-            exchanges.Select(exchange => string.IsNullOrEmpty(location)
-                ? exchange with
-                {
-                    // if we can't determine a location we must process any requests
-                    RoutingKeys = ImmutableList.Create(exchange.ExchangeTypes.ToDefaultRoute())
-                }
-                : exchange with
-                {
-                    // by default, we must process any requests by target location and any other cross requests
-                    RoutingKeys = ImmutableList.Create<string>()
-                        .Add(exchange.ExchangeTypes.ToLocationRoute(location))
-                        .Add(exchange.ExchangeTypes.ToDefaultRoute())
-                }).ToImmutableList();
 
         public void Unsubscribe(CancellationToken cancellationToken)
         {
