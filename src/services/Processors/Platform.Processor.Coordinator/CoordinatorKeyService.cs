@@ -8,7 +8,7 @@ namespace Platform.Processor.Coordinator
 {
     public class CoordinatorKeyService : IHostedService
     {
-        private const string CacheKey = "coordinator:keys";
+        private const string CacheKey = "processor:keypair";
 
         private readonly ICacheDataService _cacheDataService;
         private readonly DiffieHellmanKeyMaker _diffieHellmanKeyMaker;
