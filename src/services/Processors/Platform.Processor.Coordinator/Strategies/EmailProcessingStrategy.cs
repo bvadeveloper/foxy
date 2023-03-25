@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Enums;
 
 namespace Platform.Processor.Coordinator.Strategies;
 

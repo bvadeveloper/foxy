@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Enums;
 using Platform.Logging.Extensions;
 using Platform.Validation.Fluent;
 using Platform.Validation.Fluent.Messages;

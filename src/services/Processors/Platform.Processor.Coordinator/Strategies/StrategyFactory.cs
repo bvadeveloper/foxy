@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Enums;
 
 namespace Platform.Processor.Coordinator.Strategies;
 

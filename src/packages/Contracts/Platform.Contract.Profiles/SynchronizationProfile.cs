@@ -1,5 +1,6 @@
 using System;
 using MemoryPack;
+using Platform.Contract.Profiles.Enums;
 
 namespace Platform.Contract.Profiles;
 
@@ -12,14 +13,5 @@ public partial record SynchronizationProfile(CollectorInfo CollectorInfo, [prope
 [MemoryPackable]
 public partial record CollectorInfo(string Identifier, string Version, CollectorTypes CollectorTypes)
 {
-    public override string ToString() => $"{CollectorTypes.ToString().ToLowerInvariant()}:{Identifier}";
-}
-
-public enum CollectorTypes
-{
-    DomainScanner,
-    HostScanner,
-    EmailChecker,
-    FacebookParser,
-    InstagramParser
+    public override string ToString() => $"{CollectorTypes.ToLower()}:{Identifier}";
 }

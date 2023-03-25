@@ -1,0 +1,22 @@
+{
+  "profiles": {
+    "Platform.Collector.Domain": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5001",
+      "environmentVariables": {
+
+        "Bus:Host": "localhost",
+        "Bus:Port": "5672",
+        "Bus:UserName": "rmquser",
+        "Bus:Password": "rmquser",
+        "Bus:VirtualHost": "/",
+        "Bus:PrefetchCount": "1",
+        "Bus:Timeout": "6000",
+       
+        "Logging:LogLevel:Microsoft": "Trace",
+        "Logging:LogLevel:System": "Trace",
+        "Logging:LogLevel:Default": "Trace"
+      }
+    }
+  }
+}

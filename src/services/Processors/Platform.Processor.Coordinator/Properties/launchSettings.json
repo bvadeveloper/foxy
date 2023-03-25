@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Platform.Processor.GeoCoordinator": {
+    "Platform.Processor.Coordinator": {
       "commandName": "Project",
       "applicationUrl": "http://localhost:5004",
       "environmentVariables": {
