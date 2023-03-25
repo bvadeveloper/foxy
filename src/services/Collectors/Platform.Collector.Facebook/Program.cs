@@ -22,7 +22,7 @@ internal static class Program
                 .AddCollectorSubscriber(configuration, ExchangeTypes.FacebookExchange)
                 .AddPublicIpResolver()
                 .AddTools(configuration)
-                .AddCollectorInfo(CollectorTypes.FacebookParser)
+                .AddCollectorInfo(ProcessingTypes.Facebook)
                 .AddScoped<IConsumeAsync<FacebookProfile>, FacebookScanner>();
         });
 }

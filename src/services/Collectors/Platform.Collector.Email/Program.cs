@@ -22,7 +22,7 @@ internal static class Program
                 .AddCollectorSubscriber(configuration, ExchangeTypes.EmailExchange)
                 .AddPublicIpResolver()
                 .AddTools(configuration)
-                .AddCollectorInfo(CollectorTypes.EmailFinder)
+                .AddCollectorInfo(ProcessingTypes.Email)
                 .AddScoped<IConsumeAsync<EmailProfile>, EmailScanner>();
         });
 }

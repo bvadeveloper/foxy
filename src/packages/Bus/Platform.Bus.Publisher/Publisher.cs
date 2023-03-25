@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Platform.Bus.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Primitives;
 using RabbitMQ.Client;
 
 namespace Platform.Bus.Publisher
 {
-    public class BusPublisher : IBusPublisher
+    public class Publisher : IBusPublisher
     {
         private readonly IModel _channel;
         private readonly ILogger _logger;
         private readonly SessionContext _sessionContext;
 
-        public BusPublisher(IModel channel, SessionContext sessionContext, ILogger<BusPublisher> logger)
+        public Publisher(IModel channel, SessionContext sessionContext, ILogger<Publisher> logger)
         {
             _channel = channel;
             _sessionContext = sessionContext;

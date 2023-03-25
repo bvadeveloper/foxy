@@ -31,6 +31,7 @@ internal static class Program
                 
                 .AddScoped<IConsumeAsync<CoordinatorProfile>, CoordinatorProcessor>()
                 .AddScoped<IConsumeAsync<SynchronizationProfile>, SynchronizationProcessor>()
+                .AddHostedService<CoordinatorKeyService>()
 
                 // strategies
                 .AddScoped<IProcessingStrategy, DomainProcessingStrategy>()

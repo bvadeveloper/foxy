@@ -6,7 +6,7 @@ using Platform.Primitives;
 
 namespace Platform.Bus.Subscriber;
 
-public static class Extensions
+public static class BootstrapExtensions
 {
     /// <summary>
     /// For default routing keys

@@ -14,6 +14,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj" />
+      <ProjectReference Include="..\..\Cryptography\Platform.Cryptography\Platform.Cryptography.csproj" />
       <ProjectReference Include="..\..\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
       <ProjectReference Include="..\..\Primitives\Platform.Primitives\Platform.Primitives.csproj" />
       <ProjectReference Include="..\Platform.Bus\Platform.Bus.csproj" />

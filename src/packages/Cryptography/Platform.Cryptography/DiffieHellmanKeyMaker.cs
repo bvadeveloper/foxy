@@ -1,23 +1,67 @@
 ﻿using System.Security.Cryptography;
+using Microsoft.Extensions.Logging;
+using Platform.Logging.Extensions;
 
 namespace Platform.Cryptography;
 
+/// <summary>
+/// Use singleton scope for this instance
+/// </summary>
 public class DiffieHellmanKeyMaker : IDisposable
 {
-    private readonly ECDiffieHellman _ecdh;
+    private static readonly ECDiffieHellman Ecdh = ECDiffieHellman.Create();
 
-    public byte[] PublicKey => _ecdh.PublicKey.ExportSubjectPublicKeyInfo();
+    private readonly ILogger _logger;
 
-    public DiffieHellmanKeyMaker() => _ecdh = ECDiffieHellman.Create();
+    public DiffieHellmanKeyMaker(ILogger<DiffieHellmanKeyMaker> logger)
+    {
+        _logger = logger;
+    }
 
-    public void Dispose() => _ecdh.Dispose();
+    public byte[] PublicKey => Ecdh.PublicKey.ExportSubjectPublicKeyInfo();
+
+    public byte[] PrivateKey => Ecdh.ExportPkcs8PrivateKey();
+
+    public string PublicKeyBase64 => Convert.ToBase64String(PublicKey, Base64FormattingOptions.None);
+
+    public string PrivateKeyBase64 => Convert.ToBase64String(PrivateKey, Base64FormattingOptions.None);
+
+    public string KeyPairBase64 => $"{PublicKeyBase64}:{PrivateKeyBase64}";
+
 
     public byte[] MakeDerivedSecret(byte[] publicKey)
     {
         using var ecdh = ECDiffieHellman.Create();
         ecdh.ImportSubjectPublicKeyInfo(publicKey, out _);
-        return _ecdh.DeriveKeyFromHash(ecdh.PublicKey, HashAlgorithmName.SHA256);
+        return Ecdh.DeriveKeyFromHash(ecdh.PublicKey, HashAlgorithmName.SHA256);
     }
+
+    public bool TrySetKeyPair(string keyPair)
+    {
+        var span = keyPair.AsSpan();
+        var delimiter = span.IndexOf(':');
+        var publicKeyBase64 = span[..delimiter].ToString();
+        var privateKeyBase64 = span[(delimiter + 1)..].ToString();
+
+        var publicKeySpan = new Span<byte>();
+        var privateKeySpan = new Span<byte>();
+
+        if (Convert.TryFromBase64String(publicKeyBase64, publicKeySpan, out _) && Convert.TryFromBase64String(privateKeyBase64, privateKeySpan, out _))
+        {
+        
+            _logger.Info("Key pair successfully set");
+            Ecdh.ImportSubjectPublicKeyInfo(publicKeySpan, out _);
+            Ecdh.ImportPkcs8PrivateKey(privateKeySpan, out _);
+
+            return true;
+        }
+
+        _logger.Error($"Cannot set key pair '{keyPair}'");
+        
+        return true;
+    }
+
+    public void Dispose() => Ecdh.Dispose();
 }
 
 

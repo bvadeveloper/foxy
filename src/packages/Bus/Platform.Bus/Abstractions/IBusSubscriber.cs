@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Platform.Bus
+namespace Platform.Bus.Abstractions
 {
     public interface IBusSubscriber
     {

@@ -34,7 +34,7 @@ internal class SynchronizationProcessor : IConsumeAsync<SynchronizationProfile>
 
             if (!await _cacheDataService.KeyExists(cacheKey))
             {
-                var encodedPublicKey = Convert.ToBase64String(profile.PublicKey);
+                var encodedPublicKey = Convert.ToBase64String(profile.PublicKey, Base64FormattingOptions.None);
                 await _cacheDataService.SetValue(cacheKey, encodedPublicKey, _ttl, true);
 
 #if DEBUG

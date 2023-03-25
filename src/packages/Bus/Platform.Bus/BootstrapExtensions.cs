@@ -7,7 +7,7 @@ using RabbitMQ.Client;
 
 namespace Platform.Bus
 {
-    public static class Extensions
+    public static class BootstrapExtensions
     {
         /// <summary>
         /// Just like connections, channels are meant to be long-lived. 

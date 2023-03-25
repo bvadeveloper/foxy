@@ -27,7 +27,7 @@ internal static class Program
                 .AddCryptographicServices()
                 .AddTools(configuration)
                 
-                .AddCollectorInfo(CollectorTypes.HostScanner)
+                .AddCollectorInfo(ProcessingTypes.Host)
                 .AddScoped<IConsumeAsync<HostProfile>, HostScanner>();
         });
 }

@@ -22,7 +22,7 @@ internal static class Program
                 .AddPublisher(configuration)
                 .AddCollectorSubscriber(configuration, ExchangeTypes.DomainExchange)
                 .AddTools(configuration)
-                .AddCollectorInfo(CollectorTypes.DomainScanner)
+                .AddCollectorInfo(ProcessingTypes.Domain)
                 .AddScoped<IConsumeAsync<DomainProfile>, DomainScanner>();
         });
 }

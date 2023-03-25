@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Hosting;
 using Platform.Bus;
+using Platform.Bus.Abstractions;
 
 namespace Platform.Services.Background.BackgroundServices
 {

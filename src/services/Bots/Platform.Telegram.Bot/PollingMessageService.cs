@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Platform.Bus;
+using Platform.Bus.Abstractions;
 using Platform.Bus.Publisher;
 using Platform.Limiter.Redis.Abstractions;
 using Platform.Logging.Extensions;

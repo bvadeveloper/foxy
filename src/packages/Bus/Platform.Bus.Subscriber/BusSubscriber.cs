@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 using MemoryPack;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Platform.Bus.Abstractions;
 using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Extensions;
+using Platform.Cryptography;
 using Platform.Logging.Extensions;
 using Platform.Primitives;
 using RabbitMQ.Client;
@@ -22,6 +25,7 @@ namespace Platform.Bus.Subscriber
         private readonly ILogger _logger;
         private readonly ExchangeCollection _exchangeCollection;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ICryptographicService _cryptographicService;
         private readonly string _subscriberName;
 
         public BusSubscriber(
@@ -29,11 +33,13 @@ namespace Platform.Bus.Subscriber
             IModel channel,
             ExchangeCollection exchangeCollection,
             IServiceProvider serviceProvider,
+            ICryptographicService cryptographicService,
             ILogger<BusSubscriber> logger)
         {
             _connection = connection;
             _channel = channel;
             _logger = logger;
+            _cryptographicService = cryptographicService;
             _serviceProvider = serviceProvider;
             _exchangeCollection = exchangeCollection;
             _subscriberName = MakeSubscriberName();
@@ -124,7 +130,7 @@ namespace Platform.Bus.Subscriber
                 }
                 catch (Exception e)
                 {
-                    _logger.Error($"A processing error has occurred, '{eventArgs.RoutingKey}'", e);
+                    _logger.Error($"A request processing error has occurred, '{eventArgs.RoutingKey}'", e);
                 }
 
                 _channel.BasicAck(eventArgs.DeliveryTag, false);

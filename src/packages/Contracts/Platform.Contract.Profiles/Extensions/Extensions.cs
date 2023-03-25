@@ -1,6 +1,6 @@
 using System;
 
-namespace Platform.Contract.Profiles;
+namespace Platform.Contract.Profiles.Extensions;
 
 public static class Extensions
 {
