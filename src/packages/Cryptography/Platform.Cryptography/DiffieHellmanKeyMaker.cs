@@ -58,7 +58,7 @@ public class DiffieHellmanKeyMaker : IDisposable
 
         _logger.Error($"Cannot set key pair '{keyPair}'");
         
-        return true;
+        return false;
     }
 
     public void Dispose() => Ecdh.Dispose();
