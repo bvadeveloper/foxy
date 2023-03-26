@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Abstractions;
+using Platform.Contract.Profiles.Extensions;
 using Platform.Cryptography;
 using Platform.Logging.Extensions;
 using Platform.Primitives;
@@ -14,29 +15,43 @@ namespace Platform.Bus.Publisher
     public class Publisher : IBusPublisher
     {
         private readonly IModel _channel;
-        private readonly ILogger _logger;
         private readonly ICryptographicService _cryptographicService;
-        private readonly SessionContext _sessionContext;
+        private readonly ILogger _logger;
+
+        private readonly Dictionary<string, object> _defaultHeaders;
 
         public Publisher(IModel channel, SessionContext sessionContext, ICryptographicService cryptographicService, ILogger<Publisher> logger)
         {
             _channel = channel;
-            _sessionContext = sessionContext;
             _cryptographicService = cryptographicService;
             _logger = logger;
+
+            _defaultHeaders = MakeDefaultHeaders(sessionContext);
+        }
+        
+        
+        public ValueTask Publish(byte[] payload, Exchange exchange) => Publish(payload, exchange, _defaultHeaders);
+
+        public async ValueTask Publish(byte[] payload, Exchange exchange, byte[] publicKeyBob)
+        {
+            var publicKeyAlice = _cryptographicService.GetPublicKey();
+            var encryptedPayload = await _cryptographicService.Encrypt(payload, publicKeyBob, out byte[] iv);
+
+            _defaultHeaders.Add("fx-iv", iv);
+            _defaultHeaders.Add("fx-key", publicKeyAlice);
+
+            await Publish(encryptedPayload, exchange, _defaultHeaders);
         }
 
-        public ValueTask Publish(byte[] payload, Exchange exchange)
+        private ValueTask Publish(byte[] payload, Exchange exchange, IDictionary<string, object> headers)
         {
             try
             {
-                var sessionBytes = Encoding.UTF8.GetBytes(_sessionContext.ToString());
-                var exchangeName = exchange.ExchangeTypes.ToString().ToLower();
+                var exchangeName = exchange.ExchangeTypes.ToLower();
 
                 var props = _channel.CreateBasicProperties();
                 props.DeliveryMode = 1;
-                props.Headers = new Dictionary<string, object>();
-                props.Headers.Add("fx-session", sessionBytes);
+                props.Headers = headers;
 
                 _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
                 _channel.BasicPublish(exchange: exchangeName,
@@ -53,10 +68,7 @@ namespace Platform.Bus.Publisher
             return ValueTask.CompletedTask;
         }
 
-        public ValueTask Publish(byte[] payload, Exchange exchange, byte[] publicKey)
-        {
-            var encryptedPayload = _cryptographicService.Encrypt(payload, publicKey, out byte[] iv);
-            return Publish(payload, exchange);
-        }
+        private static Dictionary<string, object> MakeDefaultHeaders(SessionContext sessionContext) =>
+            new() { { "fx-session", Encoding.UTF8.GetBytes(sessionContext.ToString()) } };
     }
 }

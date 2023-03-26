@@ -6,10 +6,10 @@ public interface ICryptographicService : IDisposable
     /// Encrypt data with generated Diffie-Hellman's derived secret key
     /// </summary>
     /// <param name="data"></param>
-    /// <param name="publicKey"></param>
+    /// <param name="publicKeyBob"></param>
     /// <param name="iv"></param>
     /// <returns></returns>
-    ValueTask<byte[]> Encrypt(byte[] data, byte[] publicKey, out byte[] iv);
+    ValueTask<byte[]> Encrypt(byte[] data, byte[] publicKeyBob, out byte[] iv);
 
     ValueTask<byte[]> Decrypt(byte[] data, byte[] key, byte[] iv);
 
