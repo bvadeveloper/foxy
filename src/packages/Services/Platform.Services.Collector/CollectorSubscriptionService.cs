@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Platform.Bus.Abstractions;
+using Platform.Bus;
 using Platform.Bus.Publisher;
 using Platform.Contract.Profiles;
 using Platform.Cryptography;

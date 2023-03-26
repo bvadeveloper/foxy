@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Hosting;
-using Platform.Bus.Abstractions;
+using Platform.Bus;
 
 namespace Platform.Services.Processor;
 

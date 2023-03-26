@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Platform.Bus.Abstractions;
 
 namespace Platform.Bus.Publisher;
 

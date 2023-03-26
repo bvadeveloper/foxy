@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using MemoryPack;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Platform.Bus.Abstractions;
 using Platform.Contract.Profiles;
 using Platform.Contract.Profiles.Extensions;
 using Platform.Cryptography;
@@ -18,23 +17,24 @@ using static Force.Crc32.Crc32CAlgorithm;
 
 namespace Platform.Bus.Subscriber
 {
-    public class BusSubscriber : IBusSubscriber
+    public class Subscriber : IBusSubscriber
     {
-        private readonly IConnection _connection;
         private readonly IModel _channel;
-        private readonly ILogger _logger;
+        private readonly IConnection _connection;
         private readonly ExchangeCollection _exchangeCollection;
         private readonly IServiceProvider _serviceProvider;
         private readonly ICryptographicService _cryptographicService;
-        private readonly string _subscriberName;
+        private readonly ILogger _logger;
 
-        public BusSubscriber(
+        private readonly string _queueName;
+
+        public Subscriber(
             IConnection connection,
             IModel channel,
             ExchangeCollection exchangeCollection,
             IServiceProvider serviceProvider,
             ICryptographicService cryptographicService,
-            ILogger<BusSubscriber> logger)
+            ILogger<Subscriber> logger)
         {
             _connection = connection;
             _channel = channel;
@@ -42,22 +42,14 @@ namespace Platform.Bus.Subscriber
             _cryptographicService = cryptographicService;
             _serviceProvider = serviceProvider;
             _exchangeCollection = exchangeCollection;
-            _subscriberName = MakeSubscriberName();
+
+            _queueName = MakeQueueName();
         }
 
-        private static string MakeSubscriberName()
-        {
-            var span = AppDomain.CurrentDomain.FriendlyName.AsSpan();
-            var slice = span[(span.LastIndexOf('.') + 1)..];
-            var spanSliced = new Span<char>(new char[slice.Length]);
-            slice.ToLowerInvariant(spanSliced);
-            
-            return spanSliced.ToString();
-        }
 
         public async Task Subscribe(CancellationToken cancellationToken)
         {
-            var queueName = _channel.QueueDeclare(_subscriberName);
+            var queueName = _channel.QueueDeclare(_queueName);
             var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.Received += ConsumerOnReceived;
 
@@ -83,7 +75,7 @@ namespace Platform.Bus.Subscriber
         /// <param name="cancellationToken"></param>
         public async Task SubscribeByHostIdentifier(string routingKey, CancellationToken cancellationToken)
         {
-            var queueName = _channel.QueueDeclare(_subscriberName);
+            var queueName = _channel.QueueDeclare(_queueName);
             var consumer = new AsyncEventingBasicConsumer(_channel);
             consumer.Received += ConsumerOnReceived;
 
@@ -112,10 +104,10 @@ namespace Platform.Bus.Subscriber
         {
             var payload = eventArgs.Body.ToArray();
 
-            if (eventArgs.BasicProperties.Headers.TryGetValue("fx-session", out var sessionBytes)
+            if (eventArgs.BasicProperties.Headers.TryGetValue(HeaderConstants.Session, out var sessionBytes)
                 && IsValidWithCrcAtEnd(payload))
             {
-                using var scope = _serviceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope(); // run execution with internal service scope
                 scope.ServiceProvider.GetRequiredService<SessionContext>().AddContext((byte[])sessionBytes);
 
                 try
@@ -138,10 +130,20 @@ namespace Platform.Bus.Subscriber
             }
             else
             {
-                _logger.Error($"Something went wrong, the 'fx-session' headers corrupted or CRC not valid '{eventArgs.RoutingKey}'.");
+                _logger.Error($"Something went wrong, the '{HeaderConstants.Session}' headers corrupted or CRC not valid '{eventArgs.RoutingKey}'.");
                 _channel.BasicAck(eventArgs.DeliveryTag, false);
                 // todo: do we need to re-process it, I guess not (need to notify about it to admin channel)
             }
+        }
+
+        private static string MakeQueueName()
+        {
+            var span = AppDomain.CurrentDomain.FriendlyName.AsSpan();
+            var slice = span[(span.LastIndexOf('.') + 1)..];
+            var spanSliced = new Span<char>(new char[slice.Length]);
+            slice.ToLowerInvariant(spanSliced);
+
+            return spanSliced.ToString();
         }
     }
 }

@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
-using Platform.Bus.Abstractions;
 using Platform.Bus.Subscriber;
 
 namespace Platform.Services.Processor;
@@ -12,6 +11,6 @@ public static class BootstrapExtensions
         services
             .AddBusConfiguration(configuration)
             .AddHostedService<ProcessorSubscriptionService>()
-            .AddScoped<IBusSubscriber, BusSubscriber>()
+            .AddScoped<IBusSubscriber, Subscriber>()
             .AddBus();
 }

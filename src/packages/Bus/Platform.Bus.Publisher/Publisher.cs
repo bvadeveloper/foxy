@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Platform.Bus.Abstractions;
 using Platform.Contract.Profiles.Extensions;
 using Platform.Cryptography;
 using Platform.Logging.Extensions;
@@ -28,8 +27,8 @@ namespace Platform.Bus.Publisher
 
             _defaultHeaders = MakeDefaultHeaders(sessionContext);
         }
-        
-        
+
+
         public ValueTask Publish(byte[] payload, Exchange exchange) => Publish(payload, exchange, _defaultHeaders);
 
         public async ValueTask Publish(byte[] payload, Exchange exchange, byte[] publicKeyBob)
@@ -37,8 +36,8 @@ namespace Platform.Bus.Publisher
             var publicKeyAlice = _cryptographicService.GetPublicKey();
             var encryptedPayload = await _cryptographicService.Encrypt(payload, publicKeyBob, out byte[] iv);
 
-            _defaultHeaders.Add("fx-iv", iv);
-            _defaultHeaders.Add("fx-key", publicKeyAlice);
+            _defaultHeaders.Add(HeaderConstants.Iv, iv);
+            _defaultHeaders.Add(HeaderConstants.Key, publicKeyAlice);
 
             await Publish(encryptedPayload, exchange, _defaultHeaders);
         }
@@ -69,6 +68,6 @@ namespace Platform.Bus.Publisher
         }
 
         private static Dictionary<string, object> MakeDefaultHeaders(SessionContext sessionContext) =>
-            new() { { "fx-session", Encoding.UTF8.GetBytes(sessionContext.ToString()) } };
+            new() { { HeaderConstants.Session, Encoding.UTF8.GetBytes(sessionContext.ToString()) } };
     }
 }
