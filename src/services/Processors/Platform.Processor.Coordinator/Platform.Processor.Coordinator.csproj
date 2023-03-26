@@ -16,7 +16,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\packages\Bootstrap\Platform.Host\Platform.Host.csproj" />
         <ProjectReference Include="..\..\..\packages\Geolocation\Platform.Geolocation.HostGeolocation\Platform.Geolocation.HostGeolocation.csproj" />
-        <ProjectReference Include="..\..\..\packages\Services\Platform.Services.Background\Platform.Services.Background.csproj" />
+        <ProjectReference Include="..\..\..\packages\Services\Platform.Services.Processor\Platform.Services.Processor.csproj" />
     </ItemGroup>
 
 </Project>

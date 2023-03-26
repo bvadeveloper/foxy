@@ -6,7 +6,7 @@ using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Processor.Reporter.Processors;
-using Platform.Services.Background;
+using Platform.Services.Processor;
 
 namespace Platform.Processor.Reporter;
 

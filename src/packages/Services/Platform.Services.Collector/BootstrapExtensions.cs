@@ -6,19 +6,11 @@ using Platform.Bus.Abstractions;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Contract.Profiles.Enums;
-using Platform.Services.Background.BackgroundServices;
 
-namespace Platform.Services.Background;
+namespace Platform.Services.Collector;
 
-public static class Extensions
+public static class BootstrapExtensions
 {
-    public static IServiceCollection AddProcessorSubscriber(this IServiceCollection services, IConfiguration configuration) =>
-        services
-            .AddBusConfiguration(configuration)
-            .AddHostedService<ProcessorSubscriptionService>()
-            .AddScoped<IBusSubscriber, BusSubscriber>()
-            .AddBus();
-
     public static IServiceCollection AddCollectorSubscriber(this IServiceCollection services, IConfiguration configuration, ExchangeTypes exchangeType) =>
         services
             .AddBusConfiguration(configuration)

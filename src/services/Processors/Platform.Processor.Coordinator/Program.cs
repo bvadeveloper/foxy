@@ -10,7 +10,7 @@ using Platform.Geolocation.HostGeolocation;
 using Platform.Host;
 using Platform.Processor.Coordinator.Processors;
 using Platform.Processor.Coordinator.Strategies;
-using Platform.Services.Background;
+using Platform.Services.Processor;
 
 namespace Platform.Processor.Coordinator;
 
@@ -20,18 +20,15 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
-                
                 .AddPublisher(configuration)
                 .AddProcessorSubscriber(configuration)
                 .AddExchangeListeners(ExchangeTypes.CoordinatorExchange, ExchangeTypes.SynchronizationExchange)
-                
                 .AddRedis(configuration)
                 .AddHostGeolocation()
                 .AddCryptographicServices()
-                
                 .AddScoped<IConsumeAsync<CoordinatorProfile>, CoordinatorProcessor>()
                 .AddScoped<IConsumeAsync<SynchronizationProfile>, SynchronizationProcessor>()
-                .AddHostedService<CoordinatorKeyService>()
+                .AddHostedService<ProcessorKeyService>()
 
                 // strategies
                 .AddScoped<IProcessingStrategy, DomainProcessingStrategy>()

@@ -9,7 +9,7 @@ using Platform.Caching.Redis;
 using Platform.Contract.Profiles;
 using Platform.Host;
 using Platform.Limiter.Redis;
-using Platform.Services.Background;
+using Platform.Services.Processor;
 using Platform.Validation.Fluent;
 
 namespace Platform.Telegram.Bot;

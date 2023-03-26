@@ -1,22 +1,20 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Platform.Caching.Abstractions;
 using Platform.Cryptography;
 
-namespace Platform.Processor.Coordinator
+namespace Platform.Services.Processor
 {
-    public class CoordinatorKeyService : IHostedService
+    public class ProcessorKeyService : IHostedService
     {
         private const string CacheKey = "processor:keypair";
 
         private readonly ICacheDataService _cacheDataService;
-        private readonly DiffieHellmanKeyMaker _diffieHellmanKeyMaker;
+        private readonly ICryptographicService _cryptographicService;
 
-        public CoordinatorKeyService(ICacheDataService cacheDataService, DiffieHellmanKeyMaker diffieHellmanKeyMaker)
+        public ProcessorKeyService(ICacheDataService cacheDataService, ICryptographicService cryptographicService)
         {
             _cacheDataService = cacheDataService;
-            _diffieHellmanKeyMaker = diffieHellmanKeyMaker;
+            _cryptographicService = cryptographicService;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -26,11 +24,11 @@ namespace Platform.Processor.Coordinator
                 var keyPair = await _cacheDataService.GetValue(CacheKey);
                 if (string.IsNullOrEmpty(keyPair))
                 {
-                    await _cacheDataService.SetValue(CacheKey, _diffieHellmanKeyMaker.KeyPairBase64, default, true);
+                    await _cacheDataService.SetValue(CacheKey, _cryptographicService.GetKeyPair(), default, true);
                     break;
                 }
 
-                if (_diffieHellmanKeyMaker.TrySetKeyPair(keyPair))
+                if (_cryptographicService.TrySetKeyPair(keyPair))
                 {
                     break;
                 }

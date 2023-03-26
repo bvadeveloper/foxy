@@ -16,8 +16,8 @@
         <ProjectReference Include="..\..\..\packages\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
         <ProjectReference Include="..\..\..\packages\Parsers\BotMessageParser\BotMessageParser.csproj" />
         <ProjectReference Include="..\..\..\packages\Primitives\Platform.Primitives\Platform.Primitives.csproj" />
+        <ProjectReference Include="..\..\..\packages\Services\Platform.Services.Processor\Platform.Services.Processor.csproj" />
         <ProjectReference Include="..\..\..\packages\Validation\Platform.Validation.Fluent\Platform.Validation.Fluent.csproj" />
-        <ProjectReference Include="..\..\..\packages\Services\Platform.Services.Background\Platform.Services.Background.csproj" />
     </ItemGroup>
 
     <ItemGroup>

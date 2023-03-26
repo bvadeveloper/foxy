@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Abstractions;
+using Platform.Cryptography;
 using Platform.Logging.Extensions;
 using Platform.Primitives;
 using RabbitMQ.Client;
@@ -14,12 +15,14 @@ namespace Platform.Bus.Publisher
     {
         private readonly IModel _channel;
         private readonly ILogger _logger;
+        private readonly ICryptographicService _cryptographicService;
         private readonly SessionContext _sessionContext;
 
-        public Publisher(IModel channel, SessionContext sessionContext, ILogger<Publisher> logger)
+        public Publisher(IModel channel, SessionContext sessionContext, ICryptographicService cryptographicService, ILogger<Publisher> logger)
         {
             _channel = channel;
             _sessionContext = sessionContext;
+            _cryptographicService = cryptographicService;
             _logger = logger;
         }
 
@@ -48,6 +51,12 @@ namespace Platform.Bus.Publisher
             }
 
             return ValueTask.CompletedTask;
+        }
+
+        public ValueTask Publish(byte[] payload, Exchange exchange, byte[] publicKey)
+        {
+            var encryptedPayload = _cryptographicService.Encrypt(payload, publicKey, out byte[] iv);
+            return Publish(payload, exchange);
         }
     }
 }

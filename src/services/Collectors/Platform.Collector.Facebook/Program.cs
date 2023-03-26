@@ -7,7 +7,7 @@ using Platform.Contract.Profiles;
 using Platform.Contract.Profiles.Enums;
 using Platform.Geolocation.IpResolver;
 using Platform.Host;
-using Platform.Services.Background;
+using Platform.Services.Collector;
 using Platform.Tools.Extensions;
 
 namespace Platform.Collector.Facebook;
