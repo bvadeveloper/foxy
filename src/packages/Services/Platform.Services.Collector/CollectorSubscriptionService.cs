@@ -38,16 +38,16 @@ public class CollectorSubscriptionService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        var ipAddressBytes = (await _hostLocation.FindPublicIpAddress()).GetAddressBytes();
-        var publicKeyBytes = _cryptographicService.GetPublicKey();
+        var ipAddress = (await _hostLocation.FindPublicIpAddress()).GetAddressBytes();
+        var publicKey = _cryptographicService.GetPublicKey();
 
-        await _busSubscriber.SubscribeByHostIdentifier(_collectorInfo.Identifier, cancellationToken);
+        _busSubscriber.SubscribeByHostIdentifier(_collectorInfo.Identifier, cancellationToken);
 
         while (true)
         {
             if (cancellationToken.IsCancellationRequested) break;
 
-            await _busPublisher.PublishToSyncExchange(_collectorInfo, ipAddressBytes, publicKeyBytes);
+            await _busPublisher.PublishToSyncExchange(_collectorInfo, ipAddress, publicKey);
             await Task.Delay(_heartbeatInterval, cancellationToken);
         }
     }

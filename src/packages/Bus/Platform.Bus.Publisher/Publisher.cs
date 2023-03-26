@@ -29,20 +29,24 @@ namespace Platform.Bus.Publisher
         }
 
 
-        public ValueTask Publish(byte[] payload, Exchange exchange) => Publish(payload, exchange, _defaultHeaders);
+        public ValueTask Publish(byte[] payload, Exchange exchange)
+        {
+            Publish(payload, exchange, _defaultHeaders);
+            return ValueTask.CompletedTask;
+        }
 
         public async ValueTask Publish(byte[] payload, Exchange exchange, byte[] publicKeyBob)
         {
             var publicKeyAlice = _cryptographicService.GetPublicKey();
-            var encryptedPayload = await _cryptographicService.Encrypt(payload, publicKeyBob, out byte[] iv);
+            var (encryptedData, iv) = await _cryptographicService.Encrypt(payload, publicKeyBob);
 
             _defaultHeaders.Add(HeaderConstants.Iv, iv);
             _defaultHeaders.Add(HeaderConstants.Key, publicKeyAlice);
 
-            await Publish(encryptedPayload, exchange, _defaultHeaders);
+            Publish(encryptedData, exchange, _defaultHeaders);
         }
 
-        private ValueTask Publish(byte[] payload, Exchange exchange, IDictionary<string, object> headers)
+        private void Publish(byte[] payload, Exchange exchange, IDictionary<string, object> headers)
         {
             try
             {
@@ -63,8 +67,6 @@ namespace Platform.Bus.Publisher
                 _logger.Error($"An error was thrown while sending a request '{e.Message}'", e, ("exchange", exchange));
                 throw;
             }
-
-            return ValueTask.CompletedTask;
         }
 
         private static Dictionary<string, object> MakeDefaultHeaders(SessionContext sessionContext) =>

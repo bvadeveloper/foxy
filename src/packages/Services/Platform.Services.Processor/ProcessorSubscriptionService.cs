@@ -9,7 +9,11 @@ public class ProcessorSubscriptionService : IHostedService
 
     public ProcessorSubscriptionService(IBusSubscriber busSubscriber) => _busSubscriber = busSubscriber;
 
-    public async Task StartAsync(CancellationToken cancellationToken) => await _busSubscriber.Subscribe(cancellationToken);
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        _busSubscriber.Subscribe(cancellationToken);
+        return Task.CompletedTask;
+    }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {

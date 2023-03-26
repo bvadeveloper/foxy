@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Force.Crc32;
 using MemoryPack;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,137 +14,151 @@ using Platform.Logging.Extensions;
 using Platform.Primitives;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using static Force.Crc32.Crc32CAlgorithm;
 
-namespace Platform.Bus.Subscriber
+namespace Platform.Bus.Subscriber;
+
+public class Subscriber : IBusSubscriber
 {
-    public class Subscriber : IBusSubscriber
+    private readonly IModel _channel;
+    private readonly IConnection _connection;
+    private readonly ExchangeCollection _exchangeCollection;
+    private readonly ICryptographicService _cryptographicService;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger _logger;
+
+    private readonly string _queueName;
+
+    public Subscriber(
+        IConnection connection,
+        IModel channel,
+        ExchangeCollection exchangeCollection,
+        ICryptographicService cryptographicService,
+        IServiceProvider serviceProvider,
+        ILogger<Subscriber> logger)
     {
-        private readonly IModel _channel;
-        private readonly IConnection _connection;
-        private readonly ExchangeCollection _exchangeCollection;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ICryptographicService _cryptographicService;
-        private readonly ILogger _logger;
+        _connection = connection;
+        _channel = channel;
+        _exchangeCollection = exchangeCollection;
+        _cryptographicService = cryptographicService;
+        _serviceProvider = serviceProvider;
+        _logger = logger;
 
-        private readonly string _queueName;
+        _queueName = MakeQueueName();
+    }
 
-        public Subscriber(
-            IConnection connection,
-            IModel channel,
-            ExchangeCollection exchangeCollection,
-            IServiceProvider serviceProvider,
-            ICryptographicService cryptographicService,
-            ILogger<Subscriber> logger)
+
+    public void Subscribe(CancellationToken cancellationToken)
+    {
+        var queueName = _channel.QueueDeclare(_queueName);
+        var consumer = new AsyncEventingBasicConsumer(_channel);
+        consumer.Received += ConsumeEventAsync;
+
+        _exchangeCollection.Exchanges.ForEach(value =>
         {
-            _connection = connection;
-            _channel = channel;
-            _logger = logger;
-            _cryptographicService = cryptographicService;
-            _serviceProvider = serviceProvider;
-            _exchangeCollection = exchangeCollection;
+            var exchangeName = value.ExchangeTypes.ToLower();
 
-            _queueName = MakeQueueName();
-        }
+            _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
+            _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
 
+            _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKey}'");
+        });
 
-        public async Task Subscribe(CancellationToken cancellationToken)
+        _channel.BasicConsume(queueName, false, consumer);
+    }
+
+    /// <summary>
+    /// https://www.rabbitmq.com/tutorials/tutorial-five-dotnet.html
+    /// </summary>
+    /// <param name="routingKey"></param>
+    /// <param name="cancellationToken"></param>
+    public void SubscribeByHostIdentifier(string routingKey, CancellationToken cancellationToken)
+    {
+        var queueName = _channel.QueueDeclare(_queueName);
+        var eventConsumer = new AsyncEventingBasicConsumer(_channel);
+        eventConsumer.Received += ConsumeEventAsync;
+
+        _exchangeCollection.Exchanges.ForEach(exchange =>
         {
-            var queueName = _channel.QueueDeclare(_queueName);
-            var consumer = new AsyncEventingBasicConsumer(_channel);
-            consumer.Received += ConsumerOnReceived;
+            var exchangeName = exchange.ExchangeTypes.ToLower();
 
-            _exchangeCollection.Exchanges.ForEach(value =>
+            _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
+            _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: routingKey);
+
+            _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{exchange.RoutingKey}'");
+        });
+
+        _channel.BasicConsume(queueName, false, eventConsumer);
+    }
+
+    public void Unsubscribe(CancellationToken cancellationToken)
+    {
+        _channel.Close();
+        _connection.Close();
+    }
+
+    private async Task ConsumeEventAsync(object sender, BasicDeliverEventArgs arguments)
+    {
+        if (arguments.TryGetHeader<byte[]>(HeaderConstants.Session, out var sessionBytes))
+        {
+            var payload = arguments.Body.ToArray();
+
+            if (arguments.TryGetHeader<byte[]>(HeaderConstants.Iv, out var iv)
+                && arguments.TryGetHeader<byte[]>(HeaderConstants.Key, out var alicePublicKey))
             {
-                var exchangeName = value.ExchangeTypes.ToLower();
+                payload = await _cryptographicService.Decrypt(payload, alicePublicKey, iv);
+            }
 
-                _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
-
-                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKey}'");
-            });
-
-            _channel.BasicConsume(queueName, false, consumer);
-
-            await Task.Yield();
-        }
-
-        /// <summary>
-        /// https://www.rabbitmq.com/tutorials/tutorial-five-dotnet.html
-        /// </summary>
-        /// <param name="routingKey"></param>
-        /// <param name="cancellationToken"></param>
-        public async Task SubscribeByHostIdentifier(string routingKey, CancellationToken cancellationToken)
-        {
-            var queueName = _channel.QueueDeclare(_queueName);
-            var consumer = new AsyncEventingBasicConsumer(_channel);
-            consumer.Received += ConsumerOnReceived;
-
-            _exchangeCollection.Exchanges.ForEach(exchange =>
+            if (Crc32CAlgorithm.IsValidWithCrcAtEnd(payload))
             {
-                var exchangeName = exchange.ExchangeTypes.ToLower();
-
-                _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-                _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: routingKey);
-
-                _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{exchange.RoutingKey}'");
-            });
-
-            _channel.BasicConsume(queueName, false, consumer);
-
-            await Task.Yield();
-        }
-
-        public void Unsubscribe(CancellationToken cancellationToken)
-        {
-            _channel.Close();
-            _connection.Close();
-        }
-
-        private async Task ConsumerOnReceived(object sender, BasicDeliverEventArgs eventArgs)
-        {
-            var payload = eventArgs.Body.ToArray();
-
-            if (eventArgs.BasicProperties.Headers.TryGetValue(HeaderConstants.Session, out var sessionBytes)
-                && IsValidWithCrcAtEnd(payload))
-            {
-                using var scope = _serviceProvider.CreateScope(); // run execution with internal service scope
-                scope.ServiceProvider.GetRequiredService<SessionContext>().AddContext((byte[])sessionBytes);
-
                 try
                 {
-                    var profile = MemoryPackSerializer.Deserialize<IProfile>(payload.AsSpan()[..(payload.Length - 4)])
-                                  ?? throw new InvalidOperationException("A deserialization error has occurred, profile can't be null.");
-
-                    var consumerInstance = scope.ServiceProvider.GetRequiredService(typeof(IConsumeAsync<>).MakeGenericType(profile.GetType()));
-                    var methodInfo = consumerInstance.GetType().GetMethod(nameof(IConsumeAsync<IProfile>.ConsumeAsync));
-
-                    await (ValueTask)methodInfo.Invoke(consumerInstance, BindingFlags.Public, null, new[] { profile }, CultureInfo.InvariantCulture);
+                    await Process(sessionBytes, payload.TrimEndBytes(4)); // trim from the end of 4 bytes crc32 value
                 }
                 catch (Exception e)
                 {
-                    _logger.Error($"A request processing error has occurred, '{eventArgs.RoutingKey}'", e);
+                    _logger.Error($"A request processing error has occurred, '{arguments.RoutingKey}'", e);
                 }
 
-                _channel.BasicAck(eventArgs.DeliveryTag, false);
+                _channel.BasicAck(arguments.DeliveryTag, false);
                 await Task.Yield();
-            }
-            else
-            {
-                _logger.Error($"Something went wrong, the '{HeaderConstants.Session}' headers corrupted or CRC not valid '{eventArgs.RoutingKey}'.");
-                _channel.BasicAck(eventArgs.DeliveryTag, false);
-                // todo: do we need to re-process it, I guess not (need to notify about it to admin channel)
+
+                return;
             }
         }
 
-        private static string MakeQueueName()
-        {
-            var span = AppDomain.CurrentDomain.FriendlyName.AsSpan();
-            var slice = span[(span.LastIndexOf('.') + 1)..];
-            var spanSliced = new Span<char>(new char[slice.Length]);
-            slice.ToLowerInvariant(spanSliced);
+        // todo: do we need to re-process it? I guess not now (need notify to admin bot channel)
 
-            return spanSliced.ToString();
-        }
+        _logger.Error($"Something went wrong, the '{HeaderConstants.Session}' headers corrupted or CRC not valid '{arguments.RoutingKey}'.");
+        _channel.BasicAck(arguments.DeliveryTag, false);
+    }
+
+    /// <summary>
+    /// Process request on internal service scope
+    /// </summary>
+    /// <param name="sessionBytes"></param>
+    /// <param name="payloadBytes"></param>
+    /// <exception cref="InvalidOperationException"></exception>
+    private async Task Process(byte[] sessionBytes, byte[] payloadBytes)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        scope.ServiceProvider.GetRequiredService<SessionContext>().AddContext(sessionBytes);
+
+        var profile = MemoryPackSerializer.Deserialize<IProfile>(payloadBytes)
+                      ?? throw new InvalidOperationException("A deserialization error has occurred, profile can't be null.");
+
+        var consumerInstance = scope.ServiceProvider.GetRequiredService(typeof(IConsumeAsync<>).MakeGenericType(profile.GetType()));
+        var methodInfo = consumerInstance.GetType().GetMethod(nameof(IConsumeAsync<IProfile>.ConsumeAsync));
+
+        await (ValueTask)methodInfo.Invoke(consumerInstance, BindingFlags.Public, null, new[] { profile }, CultureInfo.InvariantCulture);
+    }
+
+    private static string MakeQueueName()
+    {
+        var assemblyName = AppDomain.CurrentDomain.FriendlyName.AsSpan();
+        var croppedName = assemblyName[(assemblyName.LastIndexOf('.') + 1)..];
+        var buffer = new Span<char>(new char[croppedName.Length]);
+        croppedName.ToLowerInvariant(buffer);
+
+        return buffer.ToString();
     }
 }

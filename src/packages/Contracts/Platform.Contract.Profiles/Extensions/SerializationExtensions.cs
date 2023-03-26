@@ -24,4 +24,7 @@ public static class SerializationExtensions
 
         return crcBytes;
     }
+
+    public static byte[] TrimEndBytes(this byte[] value, int length) =>
+        value.AsSpan()[..(value.Length - length)].ToArray();
 }
