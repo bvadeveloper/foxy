@@ -4,14 +4,14 @@ using Platform.Cryptography;
 
 namespace Platform.Services.Processor
 {
-    public class ProcessorKeyService : IHostedService
+    public class CryptographicKeySynchronizationService : IHostedService
     {
         private const string CacheKey = "processor:keypair";
 
         private readonly ICacheDataService _cacheDataService;
         private readonly ICryptographicService _cryptographicService;
 
-        public ProcessorKeyService(ICacheDataService cacheDataService, ICryptographicService cryptographicService)
+        public CryptographicKeySynchronizationService(ICacheDataService cacheDataService, ICryptographicService cryptographicService)
         {
             _cacheDataService = cacheDataService;
             _cryptographicService = cryptographicService;

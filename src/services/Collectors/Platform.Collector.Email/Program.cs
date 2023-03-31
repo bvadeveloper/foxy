@@ -19,7 +19,7 @@ internal static class Program
         {
             services
                 .AddPublisher(configuration)
-                .AddCollectorSubscriber(configuration, ExchangeTypes.EmailExchange)
+                .AddSubscription(configuration, ExchangeTypes.Email)
                 .AddPublicIpResolver()
                 .AddTools(configuration)
                 .AddCollectorInfo(ProcessingTypes.Email)

@@ -19,7 +19,7 @@ internal static class Program
         {
             services
                 .AddPublisher(configuration)
-                .AddCollectorSubscriber(configuration, ExchangeTypes.FacebookExchange)
+                .AddSubscription(configuration, ExchangeTypes.Facebook)
                 .AddPublicIpResolver()
                 .AddTools(configuration)
                 .AddCollectorInfo(ProcessingTypes.Facebook)

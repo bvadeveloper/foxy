@@ -47,6 +47,10 @@ public class Subscriber : IBusSubscriber
     }
 
 
+    /// <summary>
+    /// https://www.rabbitmq.com/tutorials/tutorial-five-dotnet.html
+    /// </summary>
+    /// <param name="cancellationToken"></param>
     public void Subscribe(CancellationToken cancellationToken)
     {
         var queueName = _channel.QueueDeclare(_queueName);
@@ -64,30 +68,6 @@ public class Subscriber : IBusSubscriber
         });
 
         _channel.BasicConsume(queueName, false, consumer);
-    }
-
-    /// <summary>
-    /// https://www.rabbitmq.com/tutorials/tutorial-five-dotnet.html
-    /// </summary>
-    /// <param name="routingKey"></param>
-    /// <param name="cancellationToken"></param>
-    public void SubscribeByHostIdentifier(string routingKey, CancellationToken cancellationToken)
-    {
-        var queueName = _channel.QueueDeclare(_queueName);
-        var eventConsumer = new AsyncEventingBasicConsumer(_channel);
-        eventConsumer.Received += ConsumeEventAsync;
-
-        _exchangeCollection.Exchanges.ForEach(exchange =>
-        {
-            var exchangeName = exchange.ExchangeTypes.ToLower();
-
-            _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-            _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: routingKey);
-
-            _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{exchange.RoutingKey}'");
-        });
-
-        _channel.BasicConsume(queueName, false, eventConsumer);
     }
 
     public void Unsubscribe(CancellationToken cancellationToken)

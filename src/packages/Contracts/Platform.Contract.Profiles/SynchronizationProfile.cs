@@ -12,7 +12,7 @@ public partial record SynchronizationProfile(CollectorInfo CollectorInfo, [prope
 }
 
 [MemoryPackable]
-public partial record CollectorInfo(string Identifier, string Version, ProcessingTypes ProcessingTypes)
+public partial record CollectorInfo(string RouteInfo, string Version, ProcessingTypes ProcessingTypes)
 {
-    public override string ToString() => $"{ProcessingTypes.ToLower()}:{Identifier}";
+    public override string ToString() => $"{ProcessingTypes.ToLower()}:{RouteInfo}";
 }

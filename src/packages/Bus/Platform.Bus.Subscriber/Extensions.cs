@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -10,15 +11,32 @@ namespace Platform.Bus.Subscriber;
 public static class BootstrapExtensions
 {
     /// <summary>
-    /// For default routing keys
+    /// Add exchanges and routing key
     /// </summary>
     /// <param name="services"></param>
     /// <param name="exchangeTypes"></param>
     /// <returns></returns>
-    public static IServiceCollection AddExchangeListeners(this IServiceCollection services, params ExchangeTypes[] exchangeTypes) =>
-        services.AddExchangeListeners(exchangeTypes.Select(Exchange.Default).ToArray());
+    public static IServiceCollection AddExchangesAndRoute(this IServiceCollection services, params ExchangeTypes[] exchangeTypes) =>
+        services.AddSingleton(provider =>
+        {
+            var exchangeRoute = provider.GetRequiredService<ExchangeRoute>();
+            var exchanges = exchangeTypes
+                .Select(type => Exchange.Make(type, exchangeRoute.Value))
+                .ToImmutableList();
 
-    public static IServiceCollection AddExchangeListeners(this IServiceCollection services, params Exchange[] exchanges) =>
+            return new ExchangeCollection(exchanges);
+        }).AddSingleton(new ExchangeRoute(Guid.NewGuid().ToString("N")));
+
+    /// <summary>
+    /// Add exchanges with default route
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="exchangeTypes"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddExchanges(this IServiceCollection services, params ExchangeTypes[] exchangeTypes) =>
+        services.AddExchanges(exchangeTypes.Select(Exchange.Default).ToArray());
+
+    private static IServiceCollection AddExchanges(this IServiceCollection services, params Exchange[] exchanges) =>
         services.AddSingleton(new ExchangeCollection(ImmutableList.CreateRange(exchanges)));
 }
 

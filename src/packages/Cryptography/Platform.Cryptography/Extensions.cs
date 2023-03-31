@@ -4,9 +4,13 @@ namespace Platform.Cryptography;
 
 public static class BootstrapExtensions
 {
-    public static IServiceCollection AddCryptographicServices(this IServiceCollection services) =>
+    public static IServiceCollection AddAesCryptographicServices(this IServiceCollection services) =>
         services
             .AddSingleton<ICryptographicService, AesCryptographicService>();
+    
+    public static IServiceCollection AddMockCryptographicServices(this IServiceCollection services) =>
+        services
+            .AddSingleton<ICryptographicService, MockCryptographicService>();
 }
 
 public static class Extensions

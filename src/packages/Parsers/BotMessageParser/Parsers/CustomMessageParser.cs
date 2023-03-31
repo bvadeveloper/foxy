@@ -14,13 +14,13 @@ using Platform.Validation.Fluent.Messages;
 
 namespace BotMessageParser.Parsers;
 
-public class CustomMessageParser : IMessageParser
+public class SimpleMessageParser : IMessageParser
 {
     private readonly IValidationFactory _validationFactory;
     private readonly ILogger _logger;
     private readonly StringBuilder _logHolder = new();
 
-    public CustomMessageParser(IValidationFactory validationFactory, ILogger<CustomMessageParser> logger)
+    public SimpleMessageParser(IValidationFactory validationFactory, ILogger<SimpleMessageParser> logger)
     {
         _validationFactory = validationFactory;
         _logger = logger;

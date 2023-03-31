@@ -20,9 +20,9 @@ internal static class Program
             services
                 .AddPublicIpResolver()
                 .AddPublisher(configuration)
-                .AddCollectorSubscriber(configuration, ExchangeTypes.DomainExchange)
-                .AddTools(configuration)
+                .AddSubscription(configuration, ExchangeTypes.Domain)
                 .AddCollectorInfo(ProcessingTypes.Domain)
+                .AddTools(configuration)
                 .AddScoped<IConsumeAsync<DomainProfile>, DomainScanner>();
         });
 }

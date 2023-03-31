@@ -10,21 +10,21 @@ namespace Platform.Services.Collector;
 
 public static class BootstrapExtensions
 {
-    public static IServiceCollection AddCollectorSubscriber(this IServiceCollection services, IConfiguration configuration, ExchangeTypes exchangeType) =>
+    public static IServiceCollection AddSubscription(this IServiceCollection services, IConfiguration configuration, ExchangeTypes exchangeType) =>
         services
             .AddBusConfiguration(configuration)
             .AddHostedService<CollectorSubscriptionService>()
             .AddScoped<IBusSubscriber, Subscriber>()
-            .AddExchangeListeners(exchangeType)
+            .AddExchangesAndRoute(exchangeType)
             .AddBus();
 
     public static IServiceCollection AddCollectorInfo(this IServiceCollection services, ProcessingTypes processingTypes) =>
-        services.AddSingleton<CollectorInfo>(_ =>
+        services.AddSingleton<CollectorInfo>(provider =>
         {
             var attribute = Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
             var version = attribute?.InformationalVersion ?? "undefined";
-            var hostIdentifier = Guid.NewGuid().ToString("N");
+            var exchangeRoute = provider.GetRequiredService<ExchangeRoute>();
 
-            return new CollectorInfo(hostIdentifier, version, processingTypes);
+            return new CollectorInfo(exchangeRoute.Value, version, processingTypes);
         });
 }

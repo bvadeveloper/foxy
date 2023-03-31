@@ -18,7 +18,7 @@ internal static class Program
             services
                 .AddPublisher(configuration)
                 .AddProcessorSubscriber(configuration)
-                .AddExchangeListeners(ExchangeTypes.ReportExchange)
+                .AddExchanges(ExchangeTypes.Report)
                 .AddScoped<IReportBuilder, ReportBuilder>()
                 
                 // report processors

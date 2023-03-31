@@ -2,6 +2,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus;
+using Platform.Bus.Publisher;
 using Platform.Caching.Abstractions;
 using Platform.Contract.Profiles;
 using Platform.Contract.Profiles.Enums;
@@ -20,7 +21,7 @@ public class HostProcessingStrategy : IProcessingStrategy
         IBusPublisher publisher,
         ICacheDataService cacheDataService,
         IHostGeolocation geolocation,
-        ILogger logger)
+        ILogger<HostProcessingStrategy> logger)
     {
         _publisher = publisher;
         _cacheDataService = cacheDataService;
@@ -33,6 +34,9 @@ public class HostProcessingStrategy : IProcessingStrategy
     public async Task Run(CoordinatorProfile profile)
     {
         var ipAddress = IPAddress.Parse(profile.TargetNames);
+
+        // await _publisher.PublishToHostExchange();
+        
         // var location = await _targetGeolocation.FindGeoMarkers(ipAddress);
         // var route = await MakeRoute(location, ExchangeTypes.Host);
         //

@@ -20,11 +20,11 @@ internal static class Program
         {
             services
                 .AddPublisher(configuration)
-                .AddCollectorSubscriber(configuration, ExchangeTypes.HostExchange)
+                .AddSubscription(configuration, ExchangeTypes.Host)
                 
                 .AddPublicIpResolver()
                 
-                .AddCryptographicServices()
+                .AddAesCryptographicServices()
                 .AddTools(configuration)
                 
                 .AddCollectorInfo(ProcessingTypes.Host)

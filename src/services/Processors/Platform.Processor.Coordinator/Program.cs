@@ -22,13 +22,13 @@ internal static class Program
             services
                 .AddPublisher(configuration)
                 .AddProcessorSubscriber(configuration)
-                .AddExchangeListeners(ExchangeTypes.CoordinatorExchange, ExchangeTypes.SynchronizationExchange)
+                .AddExchanges(ExchangeTypes.Coordinator, ExchangeTypes.Synchronization)
                 .AddRedis(configuration)
                 .AddHostGeolocation()
-                .AddCryptographicServices()
+                .AddAesCryptographicServices()
                 .AddScoped<IConsumeAsync<CoordinatorProfile>, CoordinatorProcessor>()
                 .AddScoped<IConsumeAsync<SynchronizationProfile>, SynchronizationProcessor>()
-                .AddHostedService<ProcessorKeyService>()
+                .AddHostedService<CryptographicKeySynchronizationService>()
 
                 // strategies
                 .AddScoped<IProcessingStrategy, DomainProcessingStrategy>()

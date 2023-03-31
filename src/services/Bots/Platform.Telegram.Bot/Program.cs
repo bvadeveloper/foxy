@@ -7,6 +7,7 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Caching.Redis;
 using Platform.Contract.Profiles;
+using Platform.Cryptography;
 using Platform.Host;
 using Platform.Limiter.Redis;
 using Platform.Services.Processor;
@@ -23,11 +24,12 @@ internal static class Program
                 .AddTelegramBot(configuration)
                 .AddPublisher(configuration)
                 .AddProcessorSubscriber(configuration)
-                .AddExchangeListeners(ExchangeTypes.TelegramExchange)
+                .AddExchanges(ExchangeTypes.Telegram)
                 .AddRedis(configuration)
                 .AddRequestLimiter(configuration)
                 .AddValidation()
-                .AddSingleton<IMessageParser, CustomMessageParser>()
+                .AddMockCryptographicServices()
+                .AddSingleton<IMessageParser, SimpleMessageParser>()
                 .AddScoped<IConsumeAsync<ReportProfile>, ResponderProcessor>();
         });
 }

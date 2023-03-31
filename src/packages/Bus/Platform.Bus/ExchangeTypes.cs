@@ -2,13 +2,13 @@ namespace Platform.Bus;
 
 public enum ExchangeTypes
 {
-    TelegramExchange,
-    CoordinatorExchange,
-    SynchronizationExchange,
-    DomainExchange,
-    HostExchange,
-    FacebookExchange,
-    InstagramExchange,
-    EmailExchange,
-    ReportExchange
+    Telegram,
+    Coordinator,
+    Synchronization,
+    Domain,
+    Host,
+    Facebook,
+    Instagram,
+    Email,
+    Report
 }

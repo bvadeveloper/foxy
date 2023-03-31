@@ -5,6 +5,7 @@ using Platform.Bus.Publisher;
 using Platform.Contract.Profiles;
 using Platform.Cryptography;
 using Platform.Geolocation.IpResolver;
+using Platform.Logging.Extensions;
 
 namespace Platform.Services.Collector;
 
@@ -41,10 +42,11 @@ public class CollectorSubscriptionService : BackgroundService
         var ipAddress = (await _hostLocation.FindPublicIpAddress()).GetAddressBytes();
         var publicKey = _cryptographicService.GetPublicKey();
 
-        _busSubscriber.SubscribeByHostIdentifier(_collectorInfo.Identifier, cancellationToken);
+        _busSubscriber.Subscribe(cancellationToken);
 
         while (true)
         {
+            _logger.Trace($"Send heartbeat '{_collectorInfo.ProcessingTypes}' '{_collectorInfo.RouteInfo}'");
             if (cancellationToken.IsCancellationRequested) break;
 
             await _busPublisher.PublishToSyncExchange(_collectorInfo, ipAddress, publicKey);
