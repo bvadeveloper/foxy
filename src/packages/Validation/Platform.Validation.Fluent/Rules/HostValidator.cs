@@ -16,9 +16,13 @@ public class HostValidator : AbstractValidator<HostValidationMessage>
             .NotEmpty()
             .Custom((ipAddress, context) =>
             {
-                if (string.IsNullOrWhiteSpace(ipAddress)
-                    || ipAddress.Length > 1024
-                    || IsPrivateIp(ipAddress))
+                if (!IPAddress.TryParse(ipAddress, out _))
+                {
+                    context.AddFailure($"Hmm... I see incorrect IP address: {ipAddress}");
+                    return;
+                }
+
+                if (IsPrivateIp(ipAddress))
                 {
                     context.AddFailure($"Hmm... I see not allowed IP address: {ipAddress}");
                 }
@@ -27,9 +31,6 @@ public class HostValidator : AbstractValidator<HostValidationMessage>
 
     private static bool IsPrivateIp(string text)
     {
-        if (string.IsNullOrWhiteSpace(text))
-            return false;
-
         if (IPAddress.TryParse(text, out var address))
         {
             switch (address.AddressFamily)

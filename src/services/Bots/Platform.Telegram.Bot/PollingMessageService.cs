@@ -55,9 +55,9 @@ public class PollingMessageService : BackgroundService
 
             try
             {
-                _logger.Trace($"Raw input '{message.Text}'");
+                _logger.Trace($"Raw text '{message.Text}'");
                 
-                var parseResult = await _messageParser.Parse(message.Text, cancellationToken);
+                var parseResult = await _messageParser.Parse(message.Text!);
                 if (parseResult.IsValid)
                 {
                     using var scope = _serviceProvider.CreateScope();

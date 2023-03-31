@@ -26,11 +26,11 @@ public class SimpleMessageParser : IMessageParser
         _logger = logger;
     }
 
-    public ValueTask<ParseResult> Parse(string input, CancellationToken cancellationToken)
+    public ValueTask<ParseResult> Parse(string value)
     {
         _logHolder.Clear();
 
-        var items = input.CustomSplit().ToImmutableArray();
+        var items = value.CustomSplit().ToImmutableArray();
         var command = items[0];
 
         var hasOption = false;
@@ -41,7 +41,7 @@ public class SimpleMessageParser : IMessageParser
 
         switch (command)
         {
-            case "scan":
+            case "/scan" or "scan":
 
                 foreach (var arg in items.Skip(1))
                 {
@@ -76,7 +76,7 @@ public class SimpleMessageParser : IMessageParser
 
                 break;
 
-            case "search":
+            case "/search" or "search":
 
                 foreach (var arg in items.Skip(1))
                 {
@@ -110,7 +110,7 @@ public class SimpleMessageParser : IMessageParser
 
                 break;
 
-            case "parse":
+            case "/parse" or "parse":
 
                 foreach (var arg in items.Skip(1))
                 {
@@ -144,7 +144,7 @@ public class SimpleMessageParser : IMessageParser
 
                 break;
 
-            case "--help" or "-h":
+            case "/help":
                 _logHolder.Append(CommandMessages.RootCommandDescription);
                 break;
 
