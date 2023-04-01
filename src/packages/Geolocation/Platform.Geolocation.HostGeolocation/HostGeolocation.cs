@@ -26,7 +26,7 @@ public class HostGeolocation : IHostGeolocation
     /// </summary>
     /// <param name="ipAddress"></param>
     /// <returns></returns>
-    public async ValueTask<string> FindGeolocation(IPAddress ipAddress)
+    public async ValueTask<string> FindCountryCode(IPAddress ipAddress)
     {
         var cacheKey = MakeKey(ipAddress);
         var countryCode = await _cacheDataService.GetHashValue(LocationKey, cacheKey);

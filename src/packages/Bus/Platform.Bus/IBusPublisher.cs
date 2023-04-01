@@ -6,6 +6,6 @@ namespace Platform.Bus
     {
         ValueTask Publish(byte[] payload, Exchange exchange);
 
-        public ValueTask Publish(byte[] payload, Exchange exchange, byte[] publicKey);
+        ValueTask Publish(byte[] payload, Exchange exchange, byte[] publicKey);
     }
 }

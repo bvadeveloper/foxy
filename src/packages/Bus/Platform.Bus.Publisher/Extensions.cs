@@ -17,11 +17,11 @@ public static class Extensions
 
     
     
-    public static async ValueTask PublishToDomainExchange(this IBusPublisher publisher, DomainProfile profile) =>
+    public static async ValueTask PublishToDomainExchange(this IBusPublisher publisher, DomainProfile profile, byte[] publicKey) =>
         await publisher.Publish(profile.ToBytes(), Exchange.Default(ExchangeTypes.Domain));
 
-    public static async ValueTask PublishToHostExchange(this IBusPublisher publisher, HostProfile profile, string route) =>
-        await publisher.Publish(profile.ToBytes(), Exchange.Make(ExchangeTypes.Host, route));
+    public static async ValueTask PublishToHostExchange(this IBusPublisher publisher, HostProfile profile, string route, byte[] publicKey) =>
+        await publisher.Publish(profile.ToBytes(), Exchange.Make(ExchangeTypes.Host, route), publicKey);
     
     
     

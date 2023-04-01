@@ -83,9 +83,9 @@ public class Subscriber : IBusSubscriber
             var payload = arguments.Body.ToArray();
 
             if (arguments.TryGetHeader<byte[]>(HeaderConstants.Iv, out var iv)
-                && arguments.TryGetHeader<byte[]>(HeaderConstants.Key, out var alicePublicKey))
+                && arguments.TryGetHeader<byte[]>(HeaderConstants.Key, out var publicKeyAlice))
             {
-                payload = await _cryptographicService.Decrypt(payload, alicePublicKey, iv);
+                payload = await _cryptographicService.Decrypt(payload, publicKeyAlice, iv);
             }
 
             if (Crc32CAlgorithm.IsValidWithCrcAtEnd(payload))
@@ -100,7 +100,6 @@ public class Subscriber : IBusSubscriber
                 }
 
                 _channel.BasicAck(arguments.DeliveryTag, false);
-                await Task.Yield();
 
                 return;
             }
@@ -134,8 +133,8 @@ public class Subscriber : IBusSubscriber
 
     private static string MakeQueueName()
     {
-        var assemblyName = AppDomain.CurrentDomain.FriendlyName.AsSpan();
-        var croppedName = assemblyName[(assemblyName.LastIndexOf('.') + 1)..];
+        var assemblyNameSpan = AppDomain.CurrentDomain.FriendlyName.AsSpan();
+        var croppedName = assemblyNameSpan[(assemblyNameSpan.LastIndexOf('.') + 1)..];
         var buffer = new Span<char>(new char[croppedName.Length]);
         croppedName.ToLowerInvariant(buffer);
 

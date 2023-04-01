@@ -3,44 +3,45 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus;
 using Platform.Bus.Publisher;
-using Platform.Caching.Abstractions;
 using Platform.Contract.Profiles;
 using Platform.Contract.Profiles.Enums;
 using Platform.Geolocation.HostGeolocation;
+using Platform.Logging.Extensions;
+using Platform.Processor.Coordinator.Repository;
 
 namespace Platform.Processor.Coordinator.Strategies;
 
 public class HostProcessingStrategy : IProcessingStrategy
 {
+    private readonly ICollectorInfoRepository _routeResolver;
     private readonly IHostGeolocation _geolocation;
-    private readonly ICacheDataService _cacheDataService;
     private readonly IBusPublisher _publisher;
     private readonly ILogger _logger;
 
     public HostProcessingStrategy(
-        IBusPublisher publisher,
-        ICacheDataService cacheDataService,
+        ICollectorInfoRepository routeResolver,
         IHostGeolocation geolocation,
+        IBusPublisher publisher,
         ILogger<HostProcessingStrategy> logger)
     {
-        _publisher = publisher;
-        _cacheDataService = cacheDataService;
+        _routeResolver = routeResolver;
         _geolocation = geolocation;
+        _publisher = publisher;
         _logger = logger;
     }
 
     public ProcessingTypes ProcessingType { get; init; } = ProcessingTypes.Host;
 
-    public async Task Run(CoordinatorProfile profile)
+    public async Task Run(CoordinatorProfile coordinatorProfile)
     {
-        var ipAddress = IPAddress.Parse(profile.TargetNames);
+        var countryCode = await _geolocation.FindCountryCode(IPAddress.Parse(coordinatorProfile.TargetNames));
+        var (publicKey, route) = await _routeResolver.FindByCountryCode(ProcessingType, countryCode);
 
-        // await _publisher.PublishToHostExchange();
-        
-        // var location = await _targetGeolocation.FindGeoMarkers(ipAddress);
-        // var route = await MakeRoute(location, ExchangeTypes.Host);
-        //
-        // var hostProfile = new HostProfile(profile.TargetNames, new IpLocation(location, ipAddress.ToString()));
-        // await _publisher.PublishToHostExchange(hostProfile, route);
+        var ipLocation = new IpLocation(countryCode, coordinatorProfile.TargetNames);
+        var hostProfile = new HostProfile(coordinatorProfile.TargetNames, ipLocation);
+
+        _logger.Trace($"Publish target '{coordinatorProfile.TargetNames}' to {ProcessingType} collector with route '{route}' and country code '{countryCode}'");
+
+        await _publisher.PublishToHostExchange(hostProfile, route, publicKey);
     }
 }

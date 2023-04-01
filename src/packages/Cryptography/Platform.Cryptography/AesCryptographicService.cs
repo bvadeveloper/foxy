@@ -26,18 +26,18 @@ public class AesCryptographicService : ICryptographicService
 
     public async ValueTask<(byte[] encryptedData, byte[] iv)> Encrypt(byte[] data, byte[] publicKey)
     {
-        using var aesAlg = Aes.Create();
-        aesAlg.Key = MakeDerivedKey(publicKey);
-        aesAlg.GenerateIV();
+        using var aes = Aes.Create();
+        aes.Key = MakeDerivedKey(publicKey);
+        aes.GenerateIV();
 
-        using var memoryStream = new MemoryStream();
-        await using (var cryptoStream = new CryptoStream(memoryStream, aesAlg.CreateEncryptor(), CryptoStreamMode.Write))
+        using var memoryStreamEncrypt = new MemoryStream();
+        await using (var cryptoStream = new CryptoStream(memoryStreamEncrypt, aes.CreateEncryptor(), CryptoStreamMode.Write))
         {
             await cryptoStream.WriteAsync(data, 0, data.Length);
             await cryptoStream.FlushFinalBlockAsync();
         }
 
-        return (memoryStream.ToArray(), aesAlg.IV);
+        return (memoryStreamEncrypt.ToArray(), aes.IV);
     }
 
     public async ValueTask<byte[]> Decrypt(byte[] data, byte[] publicKey, byte[] iv)
@@ -46,21 +46,25 @@ public class AesCryptographicService : ICryptographicService
         aes.Key = MakeDerivedKey(publicKey);
         aes.IV = iv;
 
-        using var memoryStream = new MemoryStream(data);
-        await using var cryptoStream = new CryptoStream(memoryStream, aes.CreateDecryptor(), CryptoStreamMode.Read);
-        var decryptedBytes = new byte[data.Length];
-        var decryptedByteCount = await cryptoStream.ReadAsync(decryptedBytes, 0, decryptedBytes.Length);
-        Array.Resize(ref decryptedBytes, decryptedByteCount);
+        using var memoryStreamDecrypt = new MemoryStream(data);
+        await using var cryptoStream = new CryptoStream(memoryStreamDecrypt, aes.CreateDecryptor(), CryptoStreamMode.Read);
+        using var memoryStreamOutput = new MemoryStream();
+        var buffer = new byte[data.Length];
+        int bytesRead;
+        while ((bytesRead = await cryptoStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        {
+            await memoryStreamOutput.WriteAsync(buffer, 0, bytesRead);
+        }
 
-        return decryptedBytes;
+        return memoryStreamOutput.ToArray();
     }
 
     public bool TrySetKeyPair(string keyPair)
     {
-        var span = keyPair.AsSpan();
-        var delimiter = span.IndexOf(':');
-        var publicKeyBase64 = span[..delimiter].ToString();
-        var privateKeyBase64 = span[(delimiter + 1)..].ToString();
+        var keyPairSpan = keyPair.AsSpan();
+        var delimiterIndex = keyPairSpan.IndexOf(':');
+        var publicKeyBase64 = keyPairSpan[..delimiterIndex].ToString();
+        var privateKeyBase64 = keyPairSpan[(delimiterIndex + 1)..].ToString();
 
         var publicKeySpan = new Span<byte>();
         var privateKeySpan = new Span<byte>();
@@ -68,14 +72,15 @@ public class AesCryptographicService : ICryptographicService
         if (Convert.TryFromBase64String(publicKeyBase64, publicKeySpan, out _)
             && Convert.TryFromBase64String(privateKeyBase64, privateKeySpan, out _))
         {
-            _logger.Info("Key pair successfully set");
-            Ecdh.ImportSubjectPublicKeyInfo(publicKeySpan, out _);
-            Ecdh.ImportPkcs8PrivateKey(privateKeySpan, out _);
+            Ecdh.ImportSubjectPublicKeyInfo(publicKeySpan, out int publicKeyBytesRead);
+            Ecdh.ImportPkcs8PrivateKey(privateKeySpan, out int privateKeyBytesRead);
+
+            _logger.Info($"Key pair successfully set, public key bytes read '{publicKeyBytesRead}', private key bytes read '{privateKeyBytesRead}'");
 
             return true;
         }
 
-        _logger.Error($"Cannot set key pair, value exist: '{!string.IsNullOrEmpty(keyPair)}'");
+        _logger.Error($"Cannot set key pair, is value exist: '{!string.IsNullOrEmpty(keyPair)}'");
 
         return false;
     }

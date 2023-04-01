@@ -8,5 +8,5 @@ public interface IHostGeolocation
     /// Find geo markers for host
     /// </summary>
     /// <returns></returns>
-    ValueTask<string> FindGeolocation(IPAddress ipAddress);
+    ValueTask<string> FindCountryCode(IPAddress ipAddress);
 }

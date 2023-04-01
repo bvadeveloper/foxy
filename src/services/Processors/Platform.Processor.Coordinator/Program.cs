@@ -9,6 +9,7 @@ using Platform.Cryptography;
 using Platform.Geolocation.HostGeolocation;
 using Platform.Host;
 using Platform.Processor.Coordinator.Processors;
+using Platform.Processor.Coordinator.Repository;
 using Platform.Processor.Coordinator.Strategies;
 using Platform.Services.Processor;
 
@@ -28,6 +29,7 @@ internal static class Program
                 .AddAesCryptographicServices()
                 .AddScoped<IConsumeAsync<CoordinatorProfile>, CoordinatorProcessor>()
                 .AddScoped<IConsumeAsync<SynchronizationProfile>, SynchronizationProcessor>()
+                .AddScoped<ICollectorInfoRepository, CollectorInfoRepository>()
                 .AddHostedService<CryptographicKeySynchronizationService>()
 
                 // strategies

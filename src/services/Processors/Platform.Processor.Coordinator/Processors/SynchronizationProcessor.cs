@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Platform.Bus.Subscriber;
 using Platform.Caching.Abstractions;
 using Platform.Contract.Profiles;
+using Platform.Cryptography;
 using Platform.Geolocation.HostGeolocation;
 using Platform.Logging.Extensions;
 
@@ -30,13 +31,13 @@ internal class SynchronizationProcessor : IConsumeAsync<SynchronizationProfile>
         try
         {
             _logger.Trace($"Sync request from '{profile.CollectorInfo.ProcessingTypes}' '{profile.CollectorInfo.RouteInfo}'");
-            var location = await _hostGeolocation.FindGeolocation(new IPAddress(profile.IpAddress));
+            var location = await _hostGeolocation.FindCountryCode(new IPAddress(profile.IpAddress));
             var cacheKey = MakeKey(profile.CollectorInfo, location);
 
             if (!await _cacheDataService.KeyExists(cacheKey))
             {
-                var encodedPublicKey = Convert.ToBase64String(profile.PublicKey, Base64FormattingOptions.None);
-                await _cacheDataService.SetValue(cacheKey, encodedPublicKey, _ttl, true);
+                var cacheValue = $"{profile.PublicKey.ToBase64String()}:{profile.CollectorInfo.RouteInfo}";
+                await _cacheDataService.SetValue(cacheKey, cacheValue, _ttl, true);
 
 #if DEBUG
                 await _cacheDataService.SetValue(profile.CollectorInfo.RouteInfo, profile.CollectorInfo.Version, _ttl, true);
