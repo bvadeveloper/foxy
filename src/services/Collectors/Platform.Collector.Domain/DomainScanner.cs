@@ -9,6 +9,7 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Enums;
 using Platform.Contract.Profiles;
+using Platform.Cryptography;
 using Platform.Tools;
 using Platform.Tools.Abstractions;
 using Platform.Tools.Models;
@@ -19,16 +20,19 @@ namespace Platform.Collector.Domain
     {
         private readonly IToolsHolder _toolsHolder;
         private readonly IBusPublisher _busPublisher;
+        private readonly PublicKeyHolder _keyHolder;
         private readonly ILogger _logger;
 
         public DomainScanner(
             IToolsHolder toolsHolder,
             IBusPublisher busPublisher,
+            PublicKeyHolder keyHolder,
             ILogger<DomainScanner> logger)
         {
             _toolsHolder = toolsHolder;
             _busPublisher = busPublisher;
             _logger = logger;
+            _keyHolder = keyHolder;
         }
 
         public async ValueTask ConsumeAsync(DomainProfile profile)
@@ -90,7 +94,7 @@ namespace Platform.Collector.Domain
                 .ToImmutableList();
 
             profile.ToolOutputs = reports;
-            await _busPublisher.PublishToReportExchange(profile);
+            await _busPublisher.PublishToReportExchange(profile, _keyHolder.Value);
         }
 
         private async Task<(OutputModel[], Dictionary<TargetType, List<string>>)> CollectTargetTags(string target)

@@ -7,6 +7,7 @@ using Platform.Bus;
 using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
+using Platform.Cryptography;
 using Platform.Tools.Abstractions;
 using Platform.Tools.Models;
 
@@ -16,13 +17,15 @@ namespace Platform.Collector.Facebook
     {
         private readonly IToolsHolder _toolsHolder;
         private readonly IBusPublisher _publishClient;
+        private readonly PublicKeyHolder _keyHolder;
         private readonly ILogger _logger;
 
-        public FacebookScanner(IToolsHolder toolsHolder, IBusPublisher publishClient, ILogger<FacebookScanner> logger)
+        public FacebookScanner(IToolsHolder toolsHolder, IBusPublisher publishClient, PublicKeyHolder keyHolder, ILogger<FacebookScanner> logger)
         {
             _toolsHolder = toolsHolder;
             _publishClient = publishClient;
             _logger = logger;
+            _keyHolder = keyHolder;
         }
 
         public async ValueTask ConsumeAsync(FacebookProfile profile)
@@ -42,7 +45,7 @@ namespace Platform.Collector.Facebook
                 .ToImmutableList();
 
             profile.ToolOutputs = reports;
-            await _publishClient.PublishToReportExchange(profile);
+            await _publishClient.PublishToReportExchange(profile, _keyHolder.Value);
         }
     }
 }

@@ -34,7 +34,6 @@ public class AesCryptographicService : ICryptographicService
         await using (var cryptoStream = new CryptoStream(memoryStreamEncrypt, aes.CreateEncryptor(), CryptoStreamMode.Write))
         {
             await cryptoStream.WriteAsync(data, 0, data.Length);
-            await cryptoStream.FlushFinalBlockAsync();
         }
 
         return (memoryStreamEncrypt.ToArray(), aes.IV);
@@ -66,8 +65,8 @@ public class AesCryptographicService : ICryptographicService
         var publicKeyBase64 = keyPairSpan[..delimiterIndex].ToString();
         var privateKeyBase64 = keyPairSpan[(delimiterIndex + 1)..].ToString();
 
-        var publicKeySpan = new Span<byte>();
-        var privateKeySpan = new Span<byte>();
+        Span<byte> publicKeySpan = stackalloc byte[publicKeyBase64.Length];
+        Span<byte> privateKeySpan = stackalloc byte[privateKeyBase64.Length];
 
         if (Convert.TryFromBase64String(publicKeyBase64, publicKeySpan, out _)
             && Convert.TryFromBase64String(privateKeyBase64, privateKeySpan, out _))

@@ -5,6 +5,7 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Contract.Profiles.Enums;
+using Platform.Cryptography;
 using Platform.Geolocation.IpResolver;
 using Platform.Host;
 using Platform.Services.Collector;
@@ -23,6 +24,10 @@ internal static class Program
                 .AddPublicIpResolver()
                 .AddTools(configuration)
                 .AddCollectorInfo(ProcessingTypes.Facebook)
+                
+                .AddAesCryptographicServices()
+                .AddScoped<PublicKeyHolder>()
+                
                 .AddScoped<IConsumeAsync<FacebookProfile>, FacebookScanner>();
         });
 }

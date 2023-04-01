@@ -18,11 +18,11 @@ public static class SerializationExtensions
 
     private static byte[] AddCrc32(this Memory<byte> memory)
     {
-        var crcBytes = new byte[memory.Length + 4]; // magic numbers for crc32 value in payload
-        memory.CopyTo(crcBytes);
-        ComputeAndWriteToEnd(crcBytes);
+        var buffer = new byte[memory.Length + 4]; // magic numbers for crc32 value in payload
+        memory.CopyTo(buffer);
+        ComputeAndWriteToEnd(buffer);
 
-        return crcBytes;
+        return buffer;
     }
 
     public static byte[] TrimEndBytes(this byte[] value, int length) =>

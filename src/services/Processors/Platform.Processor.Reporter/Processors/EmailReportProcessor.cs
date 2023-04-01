@@ -16,7 +16,7 @@ namespace Platform.Processor.Reporter.Processors
         public EmailReportProcessor(
             IBusPublisher publisher,
             IReportBuilder reportBuilder,
-            ILogger<DomainReportProcessor> logger)
+            ILogger<EmailReportProcessor> logger)
         {
             _reportBuilder = reportBuilder;
             _publisher = publisher;

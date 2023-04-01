@@ -22,7 +22,7 @@ internal static class Program
         {
             services
                 .AddPublisher(configuration)
-                .AddProcessorSubscriber(configuration)
+                .AddProcessorSubscription(configuration)
                 .AddExchanges(ExchangeTypes.Coordinator, ExchangeTypes.Synchronization)
                 .AddRedis(configuration)
                 .AddHostGeolocation()

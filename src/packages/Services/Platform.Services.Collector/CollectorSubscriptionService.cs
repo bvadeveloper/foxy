@@ -19,7 +19,7 @@ public class CollectorSubscriptionService : BackgroundService
     private readonly ILogger _logger;
 
     // heartbeat interval should be shorter than a coordinator cache ttl
-    private readonly TimeSpan _heartbeatInterval = TimeSpan.FromMinutes(1);
+    private readonly TimeSpan _heartbeatInterval = TimeSpan.FromSeconds(10);
 
     public CollectorSubscriptionService(
         IBusSubscriber busSubscriber,

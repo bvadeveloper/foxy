@@ -10,6 +10,7 @@ namespace Platform.Contract.Profiles;
 [MemoryPackUnion(3, typeof(HostProfile))]
 [MemoryPackUnion(4, typeof(EmailProfile))]
 [MemoryPackUnion(5, typeof(FacebookProfile))]
+[MemoryPackUnion(6, typeof(ReportProfile))]
 public partial interface IProfile
 {
     DateTime CreationDateUtc { get; set; }

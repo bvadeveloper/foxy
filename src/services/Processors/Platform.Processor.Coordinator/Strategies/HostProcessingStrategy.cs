@@ -35,13 +35,13 @@ public class HostProcessingStrategy : IProcessingStrategy
     public async Task Run(CoordinatorProfile coordinatorProfile)
     {
         var countryCode = await _geolocation.FindCountryCode(IPAddress.Parse(coordinatorProfile.TargetNames));
-        var (publicKey, route) = await _routeResolver.FindByCountryCode(ProcessingType, countryCode);
+        var (publicKeyBob, route) = await _routeResolver.FindByCountryCode(ProcessingType, countryCode);
 
         var ipLocation = new IpLocation(countryCode, coordinatorProfile.TargetNames);
         var hostProfile = new HostProfile(coordinatorProfile.TargetNames, ipLocation);
 
         _logger.Trace($"Publish target '{coordinatorProfile.TargetNames}' to {ProcessingType} collector with route '{route}' and country code '{countryCode}'");
 
-        await _publisher.PublishToHostExchange(hostProfile, route, publicKey);
+        await _publisher.PublishToHostExchange(hostProfile, route, publicKeyBob);
     }
 }

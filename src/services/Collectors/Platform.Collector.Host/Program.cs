@@ -21,12 +21,12 @@ internal static class Program
             services
                 .AddPublisher(configuration)
                 .AddSubscription(configuration, ExchangeTypes.Host)
-                
                 .AddPublicIpResolver()
                 
                 .AddAesCryptographicServices()
-                .AddTools(configuration)
+                .AddScoped<PublicKeyHolder>()
                 
+                .AddTools(configuration)
                 .AddCollectorInfo(ProcessingTypes.Host)
                 .AddScoped<IConsumeAsync<HostProfile>, HostScanner>();
         });

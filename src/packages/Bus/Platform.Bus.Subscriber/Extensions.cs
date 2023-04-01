@@ -3,6 +3,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using Platform.Contract.Profiles.Extensions;
+using Platform.Cryptography;
 using Platform.Primitives;
 using RabbitMQ.Client.Events;
 
@@ -40,16 +42,18 @@ public static class BootstrapExtensions
         services.AddSingleton(new ExchangeCollection(ImmutableList.CreateRange(exchanges)));
 }
 
-public static class Extensions
+internal static class Extensions
 {
-    public static void AddContext(this SessionContext sessionContext, byte[] bytes)
+    internal static void AddContext(this SessionContext sessionContext, byte[] bytes)
     {
-        var sessionPayload = Encoding.UTF8.GetString(bytes).Split(':');
-        sessionContext.TraceId = sessionPayload[0];
-        sessionContext.ChatId = sessionPayload[1];
+        var (traceId, chatId) = Encoding.UTF8.GetString(bytes).SplitValue();
+        sessionContext.TraceId = traceId;
+        sessionContext.ChatId = chatId;
     }
 
-    public static bool TryGetHeader<T>(this BasicDeliverEventArgs eventArgs, string key, out T? value)
+    internal static void AddPublicKey(this PublicKeyHolder keyHolder, byte[] publicKey) => keyHolder.Value = publicKey;
+
+    internal static bool TryGetHeader<T>(this BasicDeliverEventArgs eventArgs, string key, out T? value)
     {
         var hasValue = eventArgs.BasicProperties.Headers.TryGetValue(key, out var @object);
         value = (T)@object!;

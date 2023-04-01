@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
 using Platform.Bus.Subscriber;
+using Platform.Bus.Subscriber.EventProcessors;
 using Platform.Contract.Profiles;
 using Platform.Contract.Profiles.Enums;
 
@@ -15,6 +16,7 @@ public static class BootstrapExtensions
             .AddBusConfiguration(configuration)
             .AddHostedService<CollectorSubscriptionService>()
             .AddScoped<IBusSubscriber, Subscriber>()
+            .AddScoped<IEventProcessor, DecryptEventProcessor>()
             .AddExchangesAndRoute(exchangeType)
             .AddBus();
 

@@ -16,7 +16,7 @@ namespace Platform.Processor.Reporter.Processors
         public HostReportProcessor(
             IBusPublisher publisher,
             IReportBuilder reportBuilder,
-            ILogger<DomainReportProcessor> logger)
+            ILogger<HostReportProcessor> logger)
         {
             _reportBuilder = reportBuilder;
             _publisher = publisher;

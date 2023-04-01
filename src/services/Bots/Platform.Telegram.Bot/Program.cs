@@ -23,7 +23,7 @@ internal static class Program
             services
                 .AddTelegramBot(configuration)
                 .AddPublisher(configuration)
-                .AddProcessorSubscriber(configuration)
+                .AddProcessorSubscription(configuration)
                 .AddExchanges(ExchangeTypes.Telegram)
                 .AddRedis(configuration)
                 .AddRequestLimiter(configuration)

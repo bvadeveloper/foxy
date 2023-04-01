@@ -16,7 +16,7 @@ namespace Platform.Processor.Reporter.Processors
         public FacebookReportProcessor(
             IBusPublisher publisher,
             IReportBuilder reportBuilder,
-            ILogger<DomainReportProcessor> logger)
+            ILogger<FacebookReportProcessor> logger)
         {
             _reportBuilder = reportBuilder;
             _publisher = publisher;
