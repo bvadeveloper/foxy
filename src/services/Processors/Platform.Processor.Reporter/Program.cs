@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
-using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
-using Platform.Caching.Redis;
+using Platform.Bus.Subscriber.EventProcessors;
 using Platform.Contract.Profiles;
 using Platform.Cryptography;
 using Platform.Host;
@@ -18,16 +17,19 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
-                .AddPublisher(configuration)
-                .AddReporterSubscription(configuration)
-                .AddExchanges(ExchangeTypes.Report)
+
+                // bus
+                .AddSubscriptions(configuration, ExchangeTypes.Report)
+                .AddScoped<IEventProcessor, DecryptEventProcessor>()
+
+                // services
                 .AddAesCryptographicServices()
-                .AddRedis(configuration)
-                .AddScoped<IReportBuilder, ReportBuilder>()
                 .AddHostedService<CryptographicKeySynchronizationService>()
-                .AddScoped<PublicKeyHolder>() // this type no needed in reporter
+                .AddScoped<IReportBuilder, ReportBuilder>()
                 
-                // report processors
+                .AddScoped<PublicKeyHolder>() // this type no needed in reporter
+
+                // processors
                 .AddScoped<IConsumeAsync<DomainProfile>, DomainReportProcessor>()
                 .AddScoped<IConsumeAsync<HostProfile>, HostReportProcessor>()
                 .AddScoped<IConsumeAsync<EmailProfile>, EmailReportProcessor>()

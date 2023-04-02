@@ -1,15 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
-using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Contract.Profiles.Enums;
-using Platform.Cryptography;
-using Platform.Geolocation.IpResolver;
 using Platform.Host;
 using Platform.Services.Collector;
-using Platform.Tools.Extensions;
 
 namespace Platform.Collector.Facebook;
 
@@ -19,15 +15,7 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
-                .AddPublisher(configuration)
-                .AddSubscription(configuration, ExchangeTypes.Facebook)
-                .AddPublicIpResolver()
-                .AddTools(configuration)
-                .AddCollectorInfo(ProcessingTypes.Facebook)
-                
-                .AddAesCryptographicServices()
-                .AddScoped<PublicKeyHolder>()
-                
+                .AddSubscriptions(configuration, ProcessingTypes.Facebook, ExchangeTypes.Facebook)
                 .AddScoped<IConsumeAsync<FacebookProfile>, FacebookScanner>();
         });
 }

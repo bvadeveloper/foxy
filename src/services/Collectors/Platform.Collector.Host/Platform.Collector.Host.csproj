@@ -9,7 +9,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\packages\Bootstrap\Platform.Host\Platform.Host.csproj" />
         <ProjectReference Include="..\..\..\packages\Services\Platform.Services.Collector\Platform.Services.Collector.csproj" />
-        <ProjectReference Include="..\..\..\packages\Tools\Platform.Tools\Platform.Tools.csproj" />
+
     </ItemGroup>
 
     <ItemGroup>

@@ -1,20 +1,15 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Platform.Primitives;
 using Platform.Telegram.Bot.Configuration;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
-namespace Platform.Telegram.Bot;
+namespace Platform.Telegram.Bot.Extensions;
 
-public static class Extensions
+internal static class BootstrapExtensions
 {
-    internal static IServiceCollection AddTelegramBot(this IServiceCollection services,
+    internal static IServiceCollection AddTelegram(this IServiceCollection services,
         IConfiguration configuration)
     {
         services.Configure<BotConfiguration>(options =>
@@ -39,30 +34,4 @@ public static class Extensions
 
         return services;
     }
-
-    internal static SessionContext AddChatId(this SessionContext context, long id)
-    {
-        context.ChatId = id.ToString();
-        return context;
-    }
-
-    internal static string MakeUserKey(User? user) => $"{user.FirstName}:{user.Id}";
-
-    internal static async Task Say(this ITelegramBotClient botClient, Chat chat, string message,
-        CancellationToken token)
-    {
-        await botClient.SendChatActionAsync(chat, ChatAction.Typing, cancellationToken: token);
-        await botClient.SendTextMessageAsync(chat, message, cancellationToken: token);
-    }
-
-    internal static bool IsAny(this string[]? values) =>
-        values switch
-        {
-            null => false,
-            _ => values.Length switch
-            {
-                0 => false,
-                _ => true
-            }
-        };
 }

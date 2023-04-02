@@ -6,7 +6,7 @@ namespace Platform.Primitives
 
         public string ChatId { get; set; }
 
-        public static SessionContext Init() => new() { TraceId = Guid.NewGuid().ToString() };
+        public static SessionContext Init() => new() { TraceId = Guid.NewGuid().ToString("N")};
 
         public override string ToString() => $"{TraceId}:{ChatId}";
     }

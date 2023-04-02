@@ -10,9 +10,9 @@ using Platform.Bus.Publisher;
 using Platform.Limiter.Redis.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Primitives;
+using Platform.Telegram.Bot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
-using static Platform.Telegram.Bot.Extensions;
 
 namespace Platform.Telegram.Bot;
 
@@ -66,7 +66,7 @@ public class PollingMessageService : BackgroundService
                     
                     foreach (var profile in parseResult.Profiles)
                     {
-                        if (await _requestLimiter.Acquire(MakeUserKey(message.From)))
+                        if (await _requestLimiter.Acquire(message.From.MakeUserKey()))
                         {
                             await _botClient.Say(message.Chat, "Request limit reached, please try again in a couple of minutes", cancellationToken);
                             break;

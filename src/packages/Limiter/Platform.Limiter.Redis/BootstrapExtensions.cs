@@ -6,7 +6,7 @@ using Platform.Limiter.Redis.Models;
 
 namespace Platform.Limiter.Redis
 {
-    public static class ServiceCollectionExtensions
+    public static class BootstrapExtensions
     {
         public static IServiceCollection AddRequestLimiter(this IServiceCollection services, IConfiguration configuration) =>
             services

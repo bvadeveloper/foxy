@@ -46,7 +46,7 @@ public class CollectorSubscriptionService : BackgroundService
 
         while (true)
         {
-            _logger.Trace($"Send heartbeat '{_collectorInfo.ProcessingTypes}' '{_collectorInfo.RouteInfo}'");
+            _logger.Trace($"Send heartbeat '{_collectorInfo.ProcessingTypes}' '{_collectorInfo.Identifier}'");
             if (cancellationToken.IsCancellationRequested) break;
 
             await _busPublisher.PublishToSyncExchange(_collectorInfo, ipAddress, publicKey);

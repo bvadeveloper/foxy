@@ -30,17 +30,17 @@ internal class SynchronizationProcessor : IConsumeAsync<SynchronizationProfile>
     {
         try
         {
-            _logger.Trace($"Sync request from '{profile.CollectorInfo.ProcessingTypes}' '{profile.CollectorInfo.RouteInfo}'");
+            _logger.Trace($"Sync request from '{profile.CollectorInfo.ProcessingTypes}' '{profile.CollectorInfo.Identifier}'");
             var location = await _hostGeolocation.FindCountryCode(new IPAddress(profile.IpAddress));
             var cacheKey = MakeKey(profile.CollectorInfo, location);
 
             if (!await _cacheDataService.KeyExists(cacheKey))
             {
-                var cacheValue = $"{profile.PublicKey.ToBase64String()}:{profile.CollectorInfo.RouteInfo}";
+                var cacheValue = $"{profile.PublicKey.ToBase64String()}:{profile.CollectorInfo.Identifier}";
                 await _cacheDataService.SetValue(cacheKey, cacheValue, _ttl, true);
 
 #if DEBUG
-                await _cacheDataService.SetValue(profile.CollectorInfo.RouteInfo, profile.CollectorInfo.Version, _ttl, true);
+                await _cacheDataService.SetValue(profile.CollectorInfo.Identifier, profile.CollectorInfo.Version, _ttl, true);
 #endif
             }
         }

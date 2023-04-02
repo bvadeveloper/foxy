@@ -17,6 +17,7 @@
         <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Subscriber\Platform.Bus.Subscriber.csproj" />
         <ProjectReference Include="..\..\..\packages\Cryptography\Platform.Cryptography\Platform.Cryptography.csproj" />
         <ProjectReference Include="..\..\Caching\src\Platform.Caching.Abstractions\Platform.Caching.Abstractions.csproj" />
+        <ProjectReference Include="..\..\Caching\src\Platform.Caching.Redis\Platform.Caching.Redis.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
-using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
-using Platform.Caching.Redis;
+using Platform.Bus.Subscriber.EventProcessors;
 using Platform.Contract.Profiles;
 using Platform.Cryptography;
 using Platform.Geolocation.HostGeolocation;
@@ -21,16 +20,22 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
-                .AddPublisher(configuration)
-                .AddProcessorSubscription(configuration)
-                .AddExchanges(ExchangeTypes.Coordinator, ExchangeTypes.Synchronization)
-                .AddRedis(configuration)
+
+                // bus
+                .AddSubscriptions(configuration, ExchangeTypes.Coordinator, ExchangeTypes.Synchronization)
+                .AddScoped<IEventProcessor, EventProcessor>()
+                
+                // services
                 .AddHostGeolocation()
+
+                // crypto
                 .AddAesCryptographicServices()
+                .AddHostedService<CryptographicKeySynchronizationService>()
+
+                // processors
                 .AddScoped<IConsumeAsync<CoordinatorProfile>, CoordinatorProcessor>()
                 .AddScoped<IConsumeAsync<SynchronizationProfile>, SynchronizationProcessor>()
                 .AddScoped<ICollectorInfoRepository, CollectorInfoRepository>()
-                .AddHostedService<CryptographicKeySynchronizationService>()
 
                 // strategies
                 .AddScoped<IProcessingStrategy, DomainProcessingStrategy>()
