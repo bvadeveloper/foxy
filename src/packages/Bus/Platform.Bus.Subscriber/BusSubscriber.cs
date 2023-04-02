@@ -9,7 +9,7 @@ using RabbitMQ.Client.Events;
 
 namespace Platform.Bus.Subscriber;
 
-public class Subscriber : IBusSubscriber
+public class BusSubscriber : IBusSubscriber
 {
     private readonly IModel _channel;
     private readonly IConnection _connection;
@@ -20,12 +20,12 @@ public class Subscriber : IBusSubscriber
 
     private readonly string _queueName;
 
-    public Subscriber(
+    public BusSubscriber(
         IConnection connection,
         IModel channel,
         ExchangeCollection exchangeCollection,
         IEventProcessor eventProcessor,
-        ILogger<Subscriber> logger)
+        ILogger<BusSubscriber> logger)
     {
         _connection = connection;
         _channel = channel;

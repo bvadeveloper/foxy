@@ -8,6 +8,6 @@ public static class BootstrapExtensions
     public static IServiceCollection AddPublisher(this IServiceCollection services, IConfiguration configuration) =>
         services
             .AddBusConfiguration(configuration)
-            .AddScoped<IBusPublisher, Publisher>()
+            .AddScoped<IBusPublisher, BusPublisher>()
             .AddBus();
 }

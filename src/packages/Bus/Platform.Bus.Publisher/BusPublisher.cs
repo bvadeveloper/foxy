@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Platform.Bus.Constants;
 using Platform.Contract.Profiles.Extensions;
 using Platform.Cryptography;
 using Platform.Logging.Extensions;
@@ -11,7 +12,7 @@ using RabbitMQ.Client;
 
 namespace Platform.Bus.Publisher
 {
-    public class Publisher : IBusPublisher
+    public class BusPublisher : IBusPublisher
     {
         private readonly IModel _channel;
         private readonly ICryptographicService _cryptographicService;
@@ -19,7 +20,7 @@ namespace Platform.Bus.Publisher
 
         private readonly Dictionary<string, object> _defaultHeaders;
 
-        public Publisher(IModel channel, SessionContext sessionContext, ICryptographicService cryptographicService, ILogger<Publisher> logger)
+        public BusPublisher(IModel channel, SessionContext sessionContext, ICryptographicService cryptographicService, ILogger<BusPublisher> logger)
         {
             _channel = channel;
             _cryptographicService = cryptographicService;

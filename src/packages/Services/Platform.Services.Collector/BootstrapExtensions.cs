@@ -27,14 +27,21 @@ public static class BootstrapExtensions
     public static IServiceCollection AddSubscriptions(this IServiceCollection services, IConfiguration configuration, ProcessingTypes processingTypes,
         ExchangeTypes exchangeType) =>
         services
+
+            // services
             .AddTools(configuration)
             .AddPublicIpResolver()
+
+            // crypto
             .AddAesCryptographicServices()
             .AddScoped<PublicKeyHolder>()
             .AddCollectorInfo(processingTypes)
+
+            // bus
             .AddPublisher(configuration)
+            .AddScoped<ICollectorPublisher, CollectorPublisher>()
             .AddHostedService<CollectorSubscriptionService>()
-            .AddScoped<IBusSubscriber, Subscriber>()
+            .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddScoped<IEventProcessor, DecryptEventProcessor>()
             .AddExchanges(new[] { exchangeType }, ProfileExtensions.MakeIdentifier());
 

@@ -1,4 +1,4 @@
-namespace Platform.Bus;
+namespace Platform.Bus.Constants;
 
 public static class HeaderConstants
 {

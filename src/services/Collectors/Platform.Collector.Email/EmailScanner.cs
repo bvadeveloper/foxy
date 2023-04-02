@@ -8,6 +8,7 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
 using Platform.Cryptography;
+using Platform.Services.Collector;
 using Platform.Tools.Abstractions;
 using Platform.Tools.Models;
 
@@ -15,17 +16,15 @@ namespace Platform.Collector.Email
 {
     public class EmailScanner : IConsumeAsync<EmailProfile>
     {
+        private readonly ICollectorPublisher _collectorPublisher;
         private readonly IToolsHolder _toolsHolder;
-        private readonly IBusPublisher _publishClient;
-        private readonly PublicKeyHolder _keyHolder;
         private readonly ILogger _logger;
 
-        public EmailScanner(IToolsHolder toolsHolder, IBusPublisher publishClient, PublicKeyHolder keyHolder, ILogger<EmailScanner> logger)
+        public EmailScanner(IToolsHolder toolsHolder, ICollectorPublisher collectorPublisher, ILogger<EmailScanner> logger)
         {
+            _collectorPublisher = collectorPublisher;
             _toolsHolder = toolsHolder;
-            _publishClient = publishClient;
             _logger = logger;
-            _keyHolder = keyHolder;
         }
 
         public async ValueTask ConsumeAsync(EmailProfile profile)
@@ -45,7 +44,7 @@ namespace Platform.Collector.Email
                 .ToImmutableList();
 
             profile.ToolOutputs = reports;
-            await _publishClient.PublishToReportExchange(profile, _keyHolder.Value);
+            await _collectorPublisher.PublishToReport(profile);
         }
     }
 }

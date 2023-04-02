@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using Platform.Bus.Constants;
 
 namespace Platform.Bus.Subscriber;
 

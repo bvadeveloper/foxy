@@ -14,6 +14,6 @@ public static class BootstrapExtensions
             .AddRedis(configuration)
             .AddPublisher(configuration)
             .AddHostedService<ProcessorSubscriptionService>()
-            .AddScoped<IBusSubscriber, Subscriber>()
+            .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddExchanges(exchangeTypes);
 }
