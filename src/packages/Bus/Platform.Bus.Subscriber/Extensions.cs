@@ -11,8 +11,8 @@ internal static class Extensions
     internal static void AddContext(this SessionContext sessionContext, byte[] bytes)
     {
         var (traceId, chatId) = Encoding.UTF8.GetString(bytes).SplitValue();
-        sessionContext.TraceId = traceId;
-        sessionContext.ChatId = chatId;
+        sessionContext.CorrelationId = traceId;
+        sessionContext.SessionId = chatId;
     }
 
     internal static void AddPublicKey(this PublicKeyHolder keyHolder, byte[] publicKey) => keyHolder.Value = publicKey;

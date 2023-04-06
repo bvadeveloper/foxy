@@ -27,10 +27,10 @@ namespace Platform.Telegram.Bot
         }
 
 
-        public async ValueTask ConsumeAsync(ReportProfile profile)
+        public async Task ConsumeAsync(ReportProfile profile)
         {
-            await _botClient.SendChatActionAsync(_sessionContext.ChatId, ChatAction.Typing);
-            await SendFile(_sessionContext.ChatId, profile.FileReport.FileBody, profile.FileReport.FileName);
+            await _botClient.SendChatActionAsync(_sessionContext.SessionId, ChatAction.Typing);
+            await SendFile(_sessionContext.SessionId, profile.FileReport.FileBody, profile.FileReport.FileName);
             _logger.Trace($"The file with name '{profile.FileReport.FileName}' was sent.");
         }
 

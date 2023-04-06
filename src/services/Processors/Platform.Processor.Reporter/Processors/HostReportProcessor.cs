@@ -23,7 +23,7 @@ namespace Platform.Processor.Reporter.Processors
             _logger = logger;
         }
 
-        public async ValueTask ConsumeAsync(HostProfile profile) =>
+        public async Task ConsumeAsync(HostProfile profile) =>
             await PublishTelegramProfile(profile);
 
 

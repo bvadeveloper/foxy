@@ -24,7 +24,7 @@ namespace Platform.Collector.Host
             _logger = logger;
         }
 
-        public async ValueTask ConsumeAsync(HostProfile profile)
+        public async Task ConsumeAsync(HostProfile profile)
         {
             // var outputs = await _toolsHolder
             //     .FilterByTargetMarks(profile.Tags)

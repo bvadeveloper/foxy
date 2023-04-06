@@ -26,7 +26,7 @@ internal class SynchronizationProcessor : IConsumeAsync<SynchronizationProfile>
         _logger = logger;
     }
 
-    public async ValueTask ConsumeAsync(SynchronizationProfile profile)
+    public async Task ConsumeAsync(SynchronizationProfile profile)
     {
         try
         {

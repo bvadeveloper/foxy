@@ -11,7 +11,7 @@ public static class TelegramExtensions
 {
     internal static SessionContext AddChatId(this SessionContext context, long id)
     {
-        context.ChatId = id.ToString();
+        context.SessionId = id.ToString();
         return context;
     }
 

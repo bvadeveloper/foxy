@@ -34,7 +34,7 @@ namespace Platform.Collector.Domain
 
         }
 
-        public async ValueTask ConsumeAsync(DomainProfile profile)
+        public async Task ConsumeAsync(DomainProfile profile)
         {
             if (true) //(target.Tools.Any())
             {

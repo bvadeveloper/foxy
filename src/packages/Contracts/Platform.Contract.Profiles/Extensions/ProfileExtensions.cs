@@ -17,7 +17,5 @@ public static class ProfileExtensions
         return (item1, item2);
     }
 
-    public static T Random<T>(this IList<T> elements) => elements[new Random().Next(elements.Count)];
-
-    public static string MakeIdentifier() => Guid.NewGuid().ToString("N");
+    public static T Random<T>(this IList<T> values) => values[new Random().Next(values.Count)];
 }

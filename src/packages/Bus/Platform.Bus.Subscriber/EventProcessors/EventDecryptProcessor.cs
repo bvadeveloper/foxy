@@ -17,18 +17,18 @@ using RabbitMQ.Client.Events;
 
 namespace Platform.Bus.Subscriber.EventProcessors;
 
-public class DecryptEventProcessor : IEventProcessor
+public class EventDecryptProcessor : IEventProcessor
 {
     private readonly IModel _channel;
     private readonly ICryptographicService _cryptographicService;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger _logger;
 
-    public DecryptEventProcessor(
+    public EventDecryptProcessor(
         IModel channel,
         IServiceProvider serviceProvider,
         ICryptographicService cryptographicService,
-        ILogger<DecryptEventProcessor> logger)
+        ILogger<EventDecryptProcessor> logger)
     {
         _channel = channel;
         _serviceProvider = serviceProvider;
@@ -58,7 +58,7 @@ public class DecryptEventProcessor : IEventProcessor
                     var consumerInstance = scope.ServiceProvider.GetRequiredService(typeof(IConsumeAsync<>).MakeGenericType(profile.GetType()));
                     var methodInfo = consumerInstance.GetType().GetMethod(nameof(IConsumeAsync<IProfile>.ConsumeAsync));
 
-                    await (ValueTask)methodInfo.Invoke(consumerInstance, BindingFlags.Public, null, new[] { profile }, CultureInfo.InvariantCulture);
+                    await (Task)methodInfo.Invoke(consumerInstance, BindingFlags.Public, null, new[] { profile }, CultureInfo.InvariantCulture);
                     
                     _channel.BasicAck(arguments.DeliveryTag, false);
                     return;

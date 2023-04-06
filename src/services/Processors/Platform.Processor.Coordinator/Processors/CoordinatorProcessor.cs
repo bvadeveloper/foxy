@@ -11,5 +11,5 @@ public class CoordinatorProcessor : IConsumeAsync<CoordinatorProfile>
 
     public CoordinatorProcessor(IStrategyFactory strategyFactory) => _strategyFactory = strategyFactory;
 
-    public async ValueTask ConsumeAsync(CoordinatorProfile profile) => await _strategyFactory.Build(profile.ProcessingTypes).Run(profile);
+    public async Task ConsumeAsync(CoordinatorProfile profile) => await _strategyFactory.Build(profile.ProcessingTypes).Run(profile);
 }

@@ -2,26 +2,24 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Options;
 using Platform.Limiter.Redis.Abstractions;
-using Platform.Limiter.Redis.Models;
 
 namespace Platform.Limiter.Redis;
 
 internal class PermissionRepository : IPermissionRepository
 {
-    private readonly IEnumerable<PermissionModel> _limiterModels;
-    private readonly PermissionModel _defaultPermission;
+    private const string DefaultPermissionName = "default";
 
-    public PermissionRepository(IOptions<List<PermissionModel>> options)
+    private readonly IEnumerable<UserPermission> _userPermissions;
+    private readonly UserPermission _defaultPermission;
+
+    public PermissionRepository(IOptions<List<UserPermission>> options)
     {
-        _limiterModels = options.Value;
-        _defaultPermission = GetDefaultPermission();
+        _userPermissions = options.Value;
+        _defaultPermission = GetDefault();
     }
 
-    private PermissionModel GetDefaultPermission() =>
-        _limiterModels.First(m => m is { Hash: "default", Type: LimiterTypes.Default });
+    private UserPermission GetDefault() => _userPermissions.First(m => m is { Hash: DefaultPermissionName, Type: PermissionTypes.Default });
 
-    public PermissionModel FindPermission(string hash) =>
-        _limiterModels.FirstOrDefault(m =>
-            m.Hash == hash && m.Type is LimiterTypes.Admin or LimiterTypes.Advanced or LimiterTypes.Newcomer) ??
-        _defaultPermission;
+    public UserPermission Find(string value) =>
+        _userPermissions.FirstOrDefault(m => m.Hash == value && m.Type.HasFlag(PermissionTypes.NotDefault)) ?? _defaultPermission;
 }

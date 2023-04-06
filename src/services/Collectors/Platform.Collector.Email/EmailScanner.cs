@@ -27,7 +27,7 @@ namespace Platform.Collector.Email
             _logger = logger;
         }
 
-        public async ValueTask ConsumeAsync(EmailProfile profile)
+        public async Task ConsumeAsync(EmailProfile profile)
         {
             // var outputs = await _toolsHolder
             //     .FilterByTargetMarks(profile.Tags)

@@ -5,5 +5,5 @@ namespace Platform.Bus.Subscriber;
 
 public interface IConsumeAsync<in T>  where T : IProfile
 {
-    ValueTask ConsumeAsync(T profile);
+    Task ConsumeAsync(T profile);
 }

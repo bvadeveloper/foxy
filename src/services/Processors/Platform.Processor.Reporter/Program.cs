@@ -20,7 +20,7 @@ internal static class Program
 
                 // bus
                 .AddSubscriptions(configuration, ExchangeTypes.Report)
-                .AddScoped<IEventProcessor, DecryptEventProcessor>()
+                .AddScoped<IEventProcessor, EventDecryptProcessor>()
 
                 // services
                 .AddAesCryptographicServices()

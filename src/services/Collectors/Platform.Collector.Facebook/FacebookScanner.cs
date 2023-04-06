@@ -25,7 +25,7 @@ namespace Platform.Collector.Facebook
             _logger = logger;
         }
 
-        public async ValueTask ConsumeAsync(FacebookProfile profile)
+        public async Task ConsumeAsync(FacebookProfile profile)
         {
             // var outputs = await _toolsHolder
             //     .FilterByTargetMarks(profile.Tags)

@@ -7,9 +7,9 @@ using Platform.Bus.Subscriber;
 using Platform.Bus.Subscriber.EventProcessors;
 using Platform.Contract.Profiles;
 using Platform.Contract.Profiles.Enums;
-using Platform.Contract.Profiles.Extensions;
 using Platform.Cryptography;
 using Platform.Geolocation.IpResolver;
+using Platform.Primitives;
 using Platform.Tools.Extensions;
 
 namespace Platform.Services.Collector;
@@ -42,8 +42,8 @@ public static class BootstrapExtensions
             .AddScoped<ICollectorPublisher, CollectorPublisher>()
             .AddHostedService<CollectorSubscriptionService>()
             .AddScoped<IBusSubscriber, BusSubscriber>()
-            .AddScoped<IEventProcessor, DecryptEventProcessor>()
-            .AddExchanges(new[] { exchangeType }, ProfileExtensions.MakeIdentifier());
+            .AddScoped<IEventProcessor, EventDecryptProcessor>()
+            .AddExchanges(new[] { exchangeType }, new Ulid().ToString());
 
     private static IServiceCollection AddCollectorInfo(this IServiceCollection services, ProcessingTypes processingTypes) =>
         services.AddSingleton<CollectorInfo>(provider =>
