@@ -22,7 +22,7 @@ internal static class Program
             services
 
                 // bus
-                .AddSubscriptions(configuration, ExchangeTypes.Coordinator, ExchangeTypes.Synchronization)
+                .AddSubscriptions(configuration, ExchangeNames.Coordinator, ExchangeNames.Sync)
                 .AddScoped<IEventProcessor, EventProcessor>()
                 
                 // services

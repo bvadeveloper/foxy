@@ -15,7 +15,7 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
-                .AddSubscriptions(configuration, ProcessingTypes.Email, ExchangeTypes.Email)
+                .AddSubscriptions(configuration, ProcessingTypes.Email, ExchangeNames.Email)
                 .AddScoped<IConsumeAsync<EmailProfile>, EmailScanner>();
         });
 }

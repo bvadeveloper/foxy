@@ -25,7 +25,7 @@ public static class BootstrapExtensions
     /// <param name="exchangeType"></param>
     /// <returns></returns>
     public static IServiceCollection AddSubscriptions(this IServiceCollection services, IConfiguration configuration, ProcessingTypes processingTypes,
-        ExchangeTypes exchangeType) =>
+        string exchangeType) =>
         services
 
             // services
@@ -43,7 +43,7 @@ public static class BootstrapExtensions
             .AddHostedService<CollectorSubscriptionService>()
             .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddScoped<IEventProcessor, EventDecryptProcessor>()
-            .AddExchanges(new[] { exchangeType }, new Ulid().ToString());
+            .AddExchanges(new[] { exchangeType }, Ulid.NewUlid().ToString() );
 
     private static IServiceCollection AddCollectorInfo(this IServiceCollection services, ProcessingTypes processingTypes) =>
         services.AddSingleton<CollectorInfo>(provider =>

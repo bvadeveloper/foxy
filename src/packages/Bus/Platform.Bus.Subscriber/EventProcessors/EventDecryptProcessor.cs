@@ -6,7 +6,6 @@ using Force.Crc32;
 using MemoryPack;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Platform.Bus.Constants;
 using Platform.Contract.Profiles;
 using Platform.Contract.Profiles.Extensions;
 using Platform.Cryptography;
@@ -38,9 +37,9 @@ public class EventDecryptProcessor : IEventProcessor
 
     public async Task Process(object sender, BasicDeliverEventArgs arguments)
     {
-        if (arguments.TryGetHeader<byte[]>(HeaderConstants.Session, out var sessionBytes)
-            && arguments.TryGetHeader<byte[]>(HeaderConstants.Iv, out var iv) 
-            && arguments.TryGetHeader<byte[]>(HeaderConstants.Key, out var publicKeyAlice))
+        if (arguments.TryGetHeader<byte[]>(HeaderNames.Session, out var sessionBytes)
+            && arguments.TryGetHeader<byte[]>(HeaderNames.Iv, out var iv) 
+            && arguments.TryGetHeader<byte[]>(HeaderNames.Key, out var publicKeyAlice))
         {
             var payload = await _cryptographicService.Decrypt(arguments.Body.ToArray(), publicKeyAlice, iv);
 
@@ -72,7 +71,7 @@ public class EventDecryptProcessor : IEventProcessor
 
         // todo: do we need to re-process it? I guess not now (need notify to admin bot channel)
 
-        _logger.Error($"Something went wrong, the '{HeaderConstants.Session}' headers corrupted or CRC not valid '{arguments.RoutingKey}'.");
+        _logger.Error($"Something went wrong, the '{HeaderNames.Session}' headers corrupted or CRC not valid '{arguments.RoutingKey}'.");
         _channel.BasicAck(arguments.DeliveryTag, false);
     }
 }

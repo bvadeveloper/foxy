@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using Platform.Bus.Constants;
 
 namespace Platform.Bus;
 
@@ -8,8 +7,8 @@ namespace Platform.Bus;
 /// </summary>
 public record ExchangeCollection(ImmutableList<Exchange> Exchanges);
 
-public record Exchange(ExchangeTypes ExchangeTypes, string RoutingKey = BusConstants.DefaultRoute)
+public record Exchange(string ExchangeName, string RoutingKey = RoutNames.DefaultRoute)
 {
-    public static Exchange Default(ExchangeTypes type) => new(type);
-    public static Exchange Make(ExchangeTypes type, string route) => new(type, route);
+    public static Exchange Default(string name) => new(name);
+    public static Exchange Make(string name, string route) => new(name, route);
 }

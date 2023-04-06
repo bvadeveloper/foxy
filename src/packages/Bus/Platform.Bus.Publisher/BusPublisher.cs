@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Platform.Bus.Constants;
 using Platform.Contract.Profiles.Extensions;
 using Platform.Cryptography;
 using Platform.Logging.Extensions;
@@ -41,8 +40,8 @@ namespace Platform.Bus.Publisher
             var publicKeyAlice = _cryptographicService.GetPublicKey();
             var (encryptedData, iv) = await _cryptographicService.Encrypt(payload, publicKeyBob);
 
-            _defaultHeaders.Add(HeaderConstants.Iv, iv);
-            _defaultHeaders.Add(HeaderConstants.Key, publicKeyAlice);
+            _defaultHeaders.Add(HeaderNames.Iv, iv);
+            _defaultHeaders.Add(HeaderNames.Key, publicKeyAlice);
 
             Publish(encryptedData, exchange, _defaultHeaders);
         }
@@ -51,7 +50,7 @@ namespace Platform.Bus.Publisher
         {
             try
             {
-                var exchangeName = exchange.ExchangeTypes.ToLower();
+                var exchangeName = exchange.ExchangeName.ToLower();
 
                 var props = _channel.CreateBasicProperties();
                 props.DeliveryMode = 1;
@@ -71,6 +70,6 @@ namespace Platform.Bus.Publisher
         }
 
         private static Dictionary<string, object> MakeDefaultHeaders(SessionContext sessionContext) =>
-            new() { { HeaderConstants.Session, Encoding.UTF8.GetBytes(sessionContext.ToString()) } };
+            new() { { HeaderNames.Session, Encoding.UTF8.GetBytes(sessionContext.ToString()) } };
     }
 }

@@ -19,5 +19,5 @@ public class CollectorPublisher : ICollectorPublisher
         _logger = logger;
     }
 
-    public ValueTask PublishToReport(IProfile profile) => _publishClient.Publish(profile.ToBytes(), Exchange.Default(ExchangeTypes.Report), _keyHolder.Value);
+    public ValueTask PublishToReport(IProfile profile) => _publishClient.Publish(profile.ToBytes(), Exchange.Default(ExchangeNames.Report), _keyHolder.Value);
 }

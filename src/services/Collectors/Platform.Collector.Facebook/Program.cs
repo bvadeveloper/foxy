@@ -15,7 +15,7 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
-                .AddSubscriptions(configuration, ProcessingTypes.Facebook, ExchangeTypes.Facebook)
+                .AddSubscriptions(configuration, ProcessingTypes.Facebook, ExchangeNames.Facebook)
                 .AddScoped<IConsumeAsync<FacebookProfile>, FacebookScanner>();
         });
 }

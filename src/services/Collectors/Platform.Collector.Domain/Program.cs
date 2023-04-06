@@ -15,7 +15,7 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
-                .AddSubscriptions(configuration, ProcessingTypes.Domain, ExchangeTypes.Domain)
+                .AddSubscriptions(configuration, ProcessingTypes.Domain, ExchangeNames.Domain)
                 .AddScoped<IConsumeAsync<DomainProfile>, DomainScanner>();
         });
 }

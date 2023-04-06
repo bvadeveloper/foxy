@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Subscriber.EventProcessors;
-using Platform.Contract.Profiles.Extensions;
 using Platform.Logging.Extensions;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -49,12 +48,10 @@ public class BusSubscriber : IBusSubscriber
 
         _exchangeCollection.Exchanges.ForEach(value =>
         {
-            var exchangeName = value.ExchangeTypes.ToLower();
+            _channel.ExchangeDeclare(exchange: value.ExchangeName, type: ExchangeType.Topic);
+            _channel.QueueBind(queue: queueName, exchange: value.ExchangeName, routingKey: value.RoutingKey);
 
-            _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Topic);
-            _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: value.RoutingKey);
-
-            _logger.Info($"Subscribed to exchange '{exchangeName}' with routing key '{value.RoutingKey}'");
+            _logger.Info($"Subscribed to exchange '{value.ExchangeName}' with routing key '{value.RoutingKey}'");
         });
 
         _channel.BasicConsume(queueName, false, consumer);

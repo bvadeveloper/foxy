@@ -15,7 +15,7 @@ internal static class Program
         await Application.RunAsync(args, (services, configuration) =>
         {
             services
-                .AddSubscriptions(configuration, ProcessingTypes.Host, ExchangeTypes.Host)
+                .AddSubscriptions(configuration, ProcessingTypes.Host, ExchangeNames.Host)
                 .AddScoped<IConsumeAsync<HostProfile>, HostScanner>();
         });
 }

@@ -9,11 +9,11 @@ namespace Platform.Services.Processor;
 
 public static class BootstrapExtensions
 {
-    public static IServiceCollection AddSubscriptions(this IServiceCollection services, IConfiguration configuration, params ExchangeTypes[] exchangeTypes) =>
+    public static IServiceCollection AddSubscriptions(this IServiceCollection services, IConfiguration configuration, params string[] exchangeNames) =>
         services
             .AddRedis(configuration)
             .AddPublisher(configuration)
             .AddHostedService<ProcessorSubscriptionService>()
             .AddScoped<IBusSubscriber, BusSubscriber>()
-            .AddExchanges(exchangeTypes);
+            .AddExchanges(exchangeNames);
 }

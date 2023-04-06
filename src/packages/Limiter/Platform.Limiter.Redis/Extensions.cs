@@ -32,14 +32,14 @@ namespace Platform.Limiter.Redis
         /// <summary>
         /// Make hash by string
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        internal static string MakeHash(this string input)
+        internal static string MakeHash(this string value)
         {
             using var sha512 = SHA512.Create();
-            var bytes = Encoding.Default.GetBytes(input);
+            var bytes = Encoding.Default.GetBytes(value);
             var hashBytes = sha512.ComputeHash(bytes);
-            return Convert.ToBase64String(hashBytes);
+            return Convert.ToBase64String(hashBytes, Base64FormattingOptions.None);
         }
     }
 }

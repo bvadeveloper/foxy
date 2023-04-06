@@ -6,7 +6,7 @@ namespace Platform.Primitives
 
         public string SessionId { get; set; }
 
-        public static SessionContext Init() => new() { CorrelationId = new Ulid().ToString() };
+        public static SessionContext Init() => new() { CorrelationId = Ulid.NewUlid().ToString() };
 
         public override string ToString() => $"{CorrelationId}:{SessionId}";
     }

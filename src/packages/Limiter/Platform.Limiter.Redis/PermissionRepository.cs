@@ -21,5 +21,5 @@ internal class PermissionRepository : IPermissionRepository
     private UserPermission GetDefault() => _userPermissions.First(m => m is { Hash: DefaultPermissionName, Type: PermissionTypes.Default });
 
     public UserPermission Find(string value) =>
-        _userPermissions.FirstOrDefault(m => m.Hash == value && m.Type.HasFlag(PermissionTypes.NotDefault)) ?? _defaultPermission;
+        _userPermissions.FirstOrDefault(m => m.Hash == value && m.Type != PermissionTypes.Default) ?? _defaultPermission;
 }

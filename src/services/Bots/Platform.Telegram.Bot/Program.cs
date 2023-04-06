@@ -23,7 +23,7 @@ internal static class Program
             services
                 
                 // bus
-                .AddSubscriptions(configuration, ExchangeTypes.Telegram)
+                .AddSubscriptions(configuration, ExchangeNames.Telegram)
                 .AddScoped<IEventProcessor, EventProcessor>()
                 
                 // services

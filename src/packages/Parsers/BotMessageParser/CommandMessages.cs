@@ -21,5 +21,5 @@ internal static class CommandMessages
                                                              "  --facebook, -f \n" +
                                                              "  --instagram, -i \n";
     
-    internal const string DefaultMessage = "Suggestion for you mate try to use /help for more details.";
+    internal const string DefaultMessage = "Oops, the input is not recognized, try using /help for more details.";
 }
