@@ -11,10 +11,10 @@ namespace Platform.Processor.Coordinator.Strategies;
 
 public class FacebookProcessingStrategy : IProcessingStrategy
 {
-    private readonly IProcessorClient _processorClient;
+    private readonly ICollectorClient _processorClient;
     private readonly ILogger _logger;
 
-    public FacebookProcessingStrategy(IProcessorClient processorClient, ILogger<FacebookProcessingStrategy> logger)
+    public FacebookProcessingStrategy(ICollectorClient processorClient, ILogger<FacebookProcessingStrategy> logger)
     {
         _processorClient = processorClient;
         _logger = logger;

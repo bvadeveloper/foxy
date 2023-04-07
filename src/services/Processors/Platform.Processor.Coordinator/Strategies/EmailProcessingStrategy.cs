@@ -11,10 +11,10 @@ namespace Platform.Processor.Coordinator.Strategies;
 
 public class EmailProcessingStrategy : IProcessingStrategy
 {
-    private readonly IProcessorClient _processorClient;
+    private readonly ICollectorClient _processorClient;
     private readonly ILogger _logger;
 
-    public EmailProcessingStrategy(IProcessorClient processorClient, ILogger<EmailProcessingStrategy> logger)
+    public EmailProcessingStrategy(ICollectorClient processorClient, ILogger<EmailProcessingStrategy> logger)
     {
         _processorClient = processorClient;
         _logger = logger;

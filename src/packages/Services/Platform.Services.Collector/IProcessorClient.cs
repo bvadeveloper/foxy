@@ -3,7 +3,7 @@ using Platform.Contract.Profiles.Collectors;
 
 namespace Platform.Services.Collector;
 
-public interface ICollectorClient
+public interface IProcessorClient
 {
     ValueTask SendToReporter(IProfile profile);
     

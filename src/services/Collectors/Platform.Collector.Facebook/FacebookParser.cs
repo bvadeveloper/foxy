@@ -15,11 +15,11 @@ namespace Platform.Collector.Facebook
 {
     public class FacebookParser : IConsumeAsync<FacebookProfile>
     {
-        private readonly ICollectorClient _collectorClient;
+        private readonly IProcessorClient _collectorClient;
         private readonly IToolsHolder _toolsHolder;
         private readonly ILogger _logger;
 
-        public FacebookParser(IToolsHolder toolsHolder, ICollectorClient collectorClient, ILogger<FacebookParser> logger)
+        public FacebookParser(IToolsHolder toolsHolder, IProcessorClient collectorClient, ILogger<FacebookParser> logger)
         {
             _collectorClient = collectorClient;
             _toolsHolder = toolsHolder;

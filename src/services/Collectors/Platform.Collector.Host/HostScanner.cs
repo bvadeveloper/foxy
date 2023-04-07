@@ -14,11 +14,11 @@ namespace Platform.Collector.Host
 {
     public class HostScanner : IConsumeAsync<HostProfile>
     {
-        private readonly ICollectorClient _collectorClient;
+        private readonly IProcessorClient _collectorClient;
         private readonly IToolsHolder _toolsHolder;
         private readonly ILogger _logger;
 
-        public HostScanner(IToolsHolder toolsHolder, ICollectorClient collectorClient, ILogger<HostScanner> logger)
+        public HostScanner(IToolsHolder toolsHolder, IProcessorClient collectorClient, ILogger<HostScanner> logger)
         {
             _collectorClient = collectorClient;
             _toolsHolder = toolsHolder;

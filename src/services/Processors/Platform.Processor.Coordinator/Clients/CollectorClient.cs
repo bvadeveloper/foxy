@@ -8,13 +8,13 @@ using Platform.Processor.Coordinator.Repositories;
 
 namespace Platform.Processor.Coordinator.Clients;
 
-public class ProcessorClient : IProcessorClient
+public class CollectorClient : ICollectorClient
 {
     private readonly ICollectorInfoRepository _collectorInfoRepository;
     private readonly IBusPublisher _publishClient;
     private readonly ILogger _logger;
 
-    public ProcessorClient(IBusPublisher publishClient, ICollectorInfoRepository collectorInfoRepository, ILogger<ProcessorClient> logger)
+    public CollectorClient(IBusPublisher publishClient, ICollectorInfoRepository collectorInfoRepository, ILogger<CollectorClient> logger)
     {
         _collectorInfoRepository = collectorInfoRepository;
         _publishClient = publishClient;

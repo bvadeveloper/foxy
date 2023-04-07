@@ -20,7 +20,7 @@ public static class BootstrapExtensions
             .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddExchanges(exchangeNames)
 
-            .AddScoped<IProcessorClient, ProcessorClient>()
+            .AddScoped<ICollectorClient, CollectorClient>()
             .AddScoped<ICollectorInfoRepository, CollectorInfoRepository>();
 
 }

@@ -11,7 +11,7 @@ namespace Platform.Services.Collector;
 public class CollectorSubscriptionService : BackgroundService
 {
     private readonly IBusSubscriber _busSubscriber;
-    private readonly ICollectorClient _collectorClient;
+    private readonly IProcessorClient _collectorClient;
     private readonly IPublicIpResolver _hostLocation;
     private readonly ICryptographicService _cryptographicService;
     private readonly CollectorInfo _collectorInfo;
@@ -24,7 +24,7 @@ public class CollectorSubscriptionService : BackgroundService
         IBusSubscriber busSubscriber,
         IPublicIpResolver hostLocation,
         ICryptographicService cryptographicService,
-        ICollectorClient collectorClient,
+        IProcessorClient collectorClient,
         CollectorInfo collectorInfo,
         ILogger<CollectorSubscriptionService> logger)
     {

@@ -3,7 +3,7 @@ using Platform.Contract.Profiles.Collectors;
 
 namespace Platform.Processor.Coordinator.Clients;
 
-public interface IProcessorClient
+public interface ICollectorClient
 {
     ValueTask SendToDomainScanner(DomainProfile profile);
     ValueTask SendToHostScanner(HostProfile profile);

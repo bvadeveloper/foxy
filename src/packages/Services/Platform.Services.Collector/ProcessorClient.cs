@@ -9,13 +9,13 @@ using Platform.Logging.Extensions;
 
 namespace Platform.Services.Collector;
 
-public class CollectorClient : ICollectorClient
+public class ProcessorClient : IProcessorClient
 {
     private readonly IBusPublisher _publishClient;
     private readonly PublicKeyHolder _keyHolder;
     private readonly ILogger _logger;
 
-    public CollectorClient(IBusPublisher publishClient, PublicKeyHolder keyHolder, ILogger<CollectorClient> logger)
+    public ProcessorClient(IBusPublisher publishClient, PublicKeyHolder keyHolder, ILogger<ProcessorClient> logger)
     {
         _publishClient = publishClient;
         _keyHolder = keyHolder;

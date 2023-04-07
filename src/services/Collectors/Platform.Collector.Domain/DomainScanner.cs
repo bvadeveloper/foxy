@@ -20,13 +20,13 @@ namespace Platform.Collector.Domain
 {
     public class DomainScanner : IConsumeAsync<DomainProfile>
     {
-        private readonly ICollectorClient _collectorClient;
+        private readonly IProcessorClient _collectorClient;
         private readonly IToolsHolder _toolsHolder;
         private readonly ILogger _logger;
 
         public DomainScanner(
             IToolsHolder toolsHolder,
-            ICollectorClient collectorClient,
+            IProcessorClient collectorClient,
             ILogger<DomainScanner> logger)
         {
             _collectorClient = collectorClient;

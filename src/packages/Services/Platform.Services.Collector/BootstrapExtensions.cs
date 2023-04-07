@@ -40,7 +40,7 @@ public static class BootstrapExtensions
 
             // bus
             .AddPublisher(configuration)
-            .AddScoped<ICollectorClient, CollectorClient>()
+            .AddScoped<IProcessorClient, ProcessorClient>()
             .AddHostedService<CollectorSubscriptionService>()
             .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddScoped<IEventProcessor, EventDecryptProcessor>()

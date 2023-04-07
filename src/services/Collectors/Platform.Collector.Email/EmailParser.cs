@@ -17,11 +17,11 @@ namespace Platform.Collector.Email
 {
     public class EmailParser : IConsumeAsync<EmailProfile>
     {
-        private readonly ICollectorClient _collectorClient;
+        private readonly IProcessorClient _collectorClient;
         private readonly IToolsHolder _toolsHolder;
         private readonly ILogger _logger;
 
-        public EmailParser(IToolsHolder toolsHolder, ICollectorClient collectorClient, ILogger<EmailParser> logger)
+        public EmailParser(IToolsHolder toolsHolder, IProcessorClient collectorClient, ILogger<EmailParser> logger)
         {
             _collectorClient = collectorClient;
             _toolsHolder = toolsHolder;

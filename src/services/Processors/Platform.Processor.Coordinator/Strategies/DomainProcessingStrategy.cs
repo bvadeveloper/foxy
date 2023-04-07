@@ -12,11 +12,11 @@ namespace Platform.Processor.Coordinator.Strategies;
 
 public class DomainProcessingStrategy : IProcessingStrategy
 {
-    private readonly IProcessorClient _processorClient;
+    private readonly ICollectorClient _processorClient;
     private readonly IHostGeolocation _geolocation;
     private readonly ILogger _logger;
 
-    public DomainProcessingStrategy(IHostGeolocation geolocation, IProcessorClient processorClient, ILogger<DomainProcessingStrategy> logger)
+    public DomainProcessingStrategy(IHostGeolocation geolocation, ICollectorClient processorClient, ILogger<DomainProcessingStrategy> logger)
     {
         _processorClient = processorClient;
         _geolocation = geolocation;
