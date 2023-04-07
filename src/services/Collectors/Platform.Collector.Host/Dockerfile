@@ -1,7 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /sdk
 
-ARG PROJECT_PATH="services/Scanners/Platform.Scanners.Host/Platform.Scanners.Host.csproj"
+ARG PROJECT_PATH="services/Collectors/Platform.Collector.Host/Platform.Collector.Host.csproj"
 
 COPY . .
 RUN dotnet restore $PROJECT_PATH
@@ -20,4 +20,4 @@ COPY --from=publish /app/publish .
 # expose 80 port for healthchecks
 EXPOSE 80
 
-ENTRYPOINT ["dotnet", "Platform.Scanners.Host.dll"]
+ENTRYPOINT ["dotnet", "Platform.Collector.Host.dll"]

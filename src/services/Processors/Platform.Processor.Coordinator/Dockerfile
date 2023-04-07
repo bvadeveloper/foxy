@@ -1,7 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /sdk
 
-ARG PROJECT_PATH="services/Processors/Platform.Processor.GeoCoordinator/Platform.Processor.GeoCoordinator.csproj"
+ARG PROJECT_PATH="services/Processors/Platform.Processor.Coordinator/Platform.Processor.Coordinator.csproj"
 
 COPY . .
 RUN dotnet restore $PROJECT_PATH
@@ -23,4 +23,4 @@ RUN apt-get update && apt-get install curl -y
 # expose 80 port for healthchecks
 EXPOSE 80
 
-ENTRYPOINT ["dotnet", "Platform.Processor.GeoCoordinator.dll"]
+ENTRYPOINT ["dotnet", "Platform.Processor.Coordinator.dll"]

@@ -5,6 +5,9 @@ rabbit_image_ver = 3.8
 docker-up: toolkit-build
 	docker compose up -d --build
 
+docker-up-logs: toolkit-build
+	docker compose up --build
+
 docker-down:
 	docker compose down
 

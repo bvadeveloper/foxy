@@ -13,12 +13,5 @@
     <ItemGroup>
         <ProjectReference Include="..\Platform.Geolocation\Platform.Geolocation.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="..\..\..\..\country.mmdb">
-        <Link>country.mmdb</Link>
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
     
 </Project>
