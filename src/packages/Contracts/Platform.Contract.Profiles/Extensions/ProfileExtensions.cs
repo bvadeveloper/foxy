@@ -17,5 +17,5 @@ public static class ProfileExtensions
         return (item1, item2);
     }
 
-    public static T Random<T>(this IList<T> values) => values[new Random().Next(values.Count)];
+    public static T RandomAny<T>(this IList<T> values) => values[new Random().Next(values.Count)];
 }

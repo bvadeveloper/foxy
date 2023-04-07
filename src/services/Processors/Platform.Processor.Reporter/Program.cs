@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
 using Platform.Bus.Subscriber;
 using Platform.Bus.Subscriber.EventProcessors;
-using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Collectors;
 using Platform.Cryptography;
 using Platform.Host;
 using Platform.Processor.Reporter.Processors;

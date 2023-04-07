@@ -15,8 +15,7 @@ public class BusSubscriber : IBusSubscriber
     private readonly ExchangeCollection _exchangeCollection;
     private readonly IEventProcessor _eventProcessor;
     private readonly ILogger _logger;
-
-
+    
     private readonly string _queueName;
 
     public BusSubscriber(

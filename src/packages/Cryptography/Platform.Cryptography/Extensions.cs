@@ -15,7 +15,7 @@ public static class BootstrapExtensions
 
 public static class Extensions
 {
-    public static string ToBase64String(this byte[] value) => Convert.ToBase64String(value, Base64FormattingOptions.None);
+    public static string ToBase64(this byte[] value) => Convert.ToBase64String(value, Base64FormattingOptions.None);
 
     public static byte[] ToBytesFromBase64(this string base64String)
     {

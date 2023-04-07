@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Processors;
 using Platform.Logging.Extensions;
 using Platform.Primitives;
 using Telegram.Bot;

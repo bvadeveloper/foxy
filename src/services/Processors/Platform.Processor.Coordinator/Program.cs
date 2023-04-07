@@ -4,11 +4,12 @@ using Platform.Bus;
 using Platform.Bus.Subscriber;
 using Platform.Bus.Subscriber.EventProcessors;
 using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Processors;
 using Platform.Cryptography;
 using Platform.Geolocation.HostGeolocation;
 using Platform.Host;
 using Platform.Processor.Coordinator.Processors;
-using Platform.Processor.Coordinator.Repository;
+using Platform.Processor.Coordinator.Repositories;
 using Platform.Processor.Coordinator.Strategies;
 using Platform.Services.Processor;
 

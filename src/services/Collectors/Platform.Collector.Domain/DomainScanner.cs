@@ -9,6 +9,7 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Enums;
 using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Collectors;
 using Platform.Cryptography;
 using Platform.Services.Collector;
 using Platform.Tools;
@@ -19,16 +20,16 @@ namespace Platform.Collector.Domain
 {
     public class DomainScanner : IConsumeAsync<DomainProfile>
     {
-        private readonly ICollectorPublisher _collectorPublisher;
+        private readonly ICollectorClient _collectorClient;
         private readonly IToolsHolder _toolsHolder;
         private readonly ILogger _logger;
 
         public DomainScanner(
             IToolsHolder toolsHolder,
-            ICollectorPublisher collectorPublisher,
+            ICollectorClient collectorClient,
             ILogger<DomainScanner> logger)
         {
-            _collectorPublisher = collectorPublisher;
+            _collectorClient = collectorClient;
             _toolsHolder = toolsHolder;
             _logger = logger;
 
@@ -93,7 +94,7 @@ namespace Platform.Collector.Domain
                 .ToImmutableList();
 
             profile.ToolOutputs = reports;
-            await _collectorPublisher.PublishToReport(profile);
+            await _collectorClient.SendToReporter(profile);
         }
 
         private async Task<(OutputModel[], Dictionary<TargetType, List<string>>)> CollectTargetTags(string target)

@@ -13,11 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Publisher\Platform.Bus.Publisher.csproj" />
-        <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Subscriber\Platform.Bus.Subscriber.csproj" />
         <ProjectReference Include="..\..\..\packages\Cryptography\Platform.Cryptography\Platform.Cryptography.csproj" />
+        <ProjectReference Include="..\..\Bus\Platform.Bus\Platform.Bus.csproj" />
         <ProjectReference Include="..\..\Caching\src\Platform.Caching.Abstractions\Platform.Caching.Abstractions.csproj" />
-        <ProjectReference Include="..\..\Caching\src\Platform.Caching.Redis\Platform.Caching.Redis.csproj" />
     </ItemGroup>
 
 </Project>

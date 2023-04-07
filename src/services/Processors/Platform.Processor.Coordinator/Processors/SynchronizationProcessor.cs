@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Subscriber;
 using Platform.Caching.Abstractions;
-using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Collectors;
+using Platform.Contract.Profiles.Processors;
 using Platform.Cryptography;
 using Platform.Geolocation.HostGeolocation;
 using Platform.Logging.Extensions;
@@ -36,7 +37,7 @@ internal class SynchronizationProcessor : IConsumeAsync<SynchronizationProfile>
 
             if (!await _cacheDataService.KeyExists(cacheKey))
             {
-                var cacheValue = $"{profile.PublicKey.ToBase64String()}:{profile.CollectorInfo.Identifier}";
+                var cacheValue = $"{profile.PublicKey.ToBase64()}:{profile.CollectorInfo.Identifier}";
                 await _cacheDataService.SetValue(cacheKey, cacheValue, _ttl, true);
 
 #if DEBUG

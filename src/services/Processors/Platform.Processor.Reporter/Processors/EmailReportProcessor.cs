@@ -1,25 +1,25 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Platform.Bus;
-using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
-using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Collectors;
+using Platform.Contract.Profiles.Processors;
+using Platform.Processor.Reporter.Clients;
 
 namespace Platform.Processor.Reporter.Processors
 {
     public class EmailReportProcessor : IConsumeAsync<EmailProfile>
     {
-        private readonly IBusPublisher _publisher;
+        private readonly ITelegramClient _telegramClient;
         private readonly IReportBuilder _reportBuilder;
         private readonly ILogger _logger;
 
         public EmailReportProcessor(
-            IBusPublisher publisher,
+            ITelegramClient telegramClient,
             IReportBuilder reportBuilder,
             ILogger<EmailReportProcessor> logger)
         {
             _reportBuilder = reportBuilder;
-            _publisher = publisher;
+            _telegramClient = telegramClient;
             _logger = logger;
         }
 
@@ -29,11 +29,11 @@ namespace Platform.Processor.Reporter.Processors
 
         private async Task PublishTelegramProfile(EmailProfile profile)
         {
-            var domainReport = new ReportProfile(profile.TargetName);
-            var (fileName, fileBody) = await _reportBuilder.BuildTextFileReport(profile.TargetName, profile.ToolOutputs);
+            var domainReport = new ReportProfile(profile.Target);
+            var (fileName, fileBody) = await _reportBuilder.BuildTextFileReport(profile.Target, profile.ToolOutputs);
             domainReport.FileReport = new FileReport(fileName, fileBody);
 
-            await _publisher.PublishToTelegramExchange(domainReport);
+            await _telegramClient.SendToTelegram(domainReport);
         }
     }
 }

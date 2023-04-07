@@ -19,9 +19,9 @@ public class AesCryptographicService : ICryptographicService
 
     private static byte[] PrivateKey => Ecdh.ExportPkcs8PrivateKey();
 
-    private static string PublicKeyBase64 => PublicKey.ToBase64String();
+    private static string PublicKeyBase64 => PublicKey.ToBase64();
 
-    private static string PrivateKeyBase64 => PrivateKey.ToBase64String();
+    private static string PrivateKeyBase64 => PrivateKey.ToBase64();
 
 
     public async ValueTask<(byte[] encryptedData, byte[] iv)> Encrypt(byte[] data, byte[] publicKey)

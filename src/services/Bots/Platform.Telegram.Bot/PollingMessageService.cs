@@ -1,16 +1,15 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BotMessageParser;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Platform.Bus;
-using Platform.Bus.Publisher;
 using Platform.Limiter.Redis.Abstractions;
 using Platform.Logging.Extensions;
 using Platform.Primitives;
+using Platform.Telegram.Bot.Clients;
 using Platform.Telegram.Bot.Extensions;
+using Platform.Telegram.Bot.Parsers;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 
@@ -62,7 +61,7 @@ public class PollingMessageService : BackgroundService
                 {
                     using var scope = _serviceProvider.CreateScope();
                     scope.ServiceProvider.GetRequiredService<SessionContext>().AddChatId(message.Chat.Id);
-                    var publisher = scope.ServiceProvider.GetRequiredService<IBusPublisher>();
+                    var coordinatorClient = scope.ServiceProvider.GetRequiredService<ICoordinatorClient>();
                     
                     foreach (var profile in parseResult.Profiles)
                     {
@@ -72,8 +71,8 @@ public class PollingMessageService : BackgroundService
                             break;
                         }
 
-                        await publisher.PublishToCoordinatorExchange(profile);
-                        await _botClient.Say(message.Chat, $"{profile.TargetNames} - wait for a while foxy sniffing out this target", cancellationToken);
+                        await coordinatorClient.SendToCoordinator(profile);
+                        await _botClient.Say(message.Chat, $"{profile.Target} - wait for a while foxy sniffing out this target", cancellationToken);
                     }
                 }
                 else

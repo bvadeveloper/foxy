@@ -12,11 +12,11 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\packages\Bootstrap\Platform.Host\Platform.Host.csproj" />
+        <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Publisher\Platform.Bus.Publisher.csproj" />
+        <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Subscriber\Platform.Bus.Subscriber.csproj" />
         <ProjectReference Include="..\..\..\packages\Limiter\Platform.Limiter.Redis\Platform.Limiter.Redis.csproj" />
         <ProjectReference Include="..\..\..\packages\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
-        <ProjectReference Include="..\..\..\packages\Parsers\BotMessageParser\BotMessageParser.csproj" />
         <ProjectReference Include="..\..\..\packages\Primitives\Platform.Primitives\Platform.Primitives.csproj" />
-        <ProjectReference Include="..\..\..\packages\Services\Platform.Services.Processor\Platform.Services.Processor.csproj" />
         <ProjectReference Include="..\..\..\packages\Validation\Platform.Validation.Fluent\Platform.Validation.Fluent.csproj" />
     </ItemGroup>
 

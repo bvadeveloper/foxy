@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Platform.Bus;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Collectors;
 using Platform.Contract.Profiles.Enums;
 using Platform.Host;
 using Platform.Services.Collector;
@@ -16,6 +17,6 @@ internal static class Program
         {
             services
                 .AddSubscriptions(configuration, ProcessingTypes.Facebook, ExchangeNames.Facebook)
-                .AddScoped<IConsumeAsync<FacebookProfile>, FacebookScanner>();
+                .AddScoped<IConsumeAsync<FacebookProfile>, FacebookParser>();
         });
 }

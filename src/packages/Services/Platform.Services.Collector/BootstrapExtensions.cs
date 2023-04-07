@@ -6,6 +6,7 @@ using Platform.Bus.Publisher;
 using Platform.Bus.Subscriber;
 using Platform.Bus.Subscriber.EventProcessors;
 using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Collectors;
 using Platform.Contract.Profiles.Enums;
 using Platform.Cryptography;
 using Platform.Geolocation.IpResolver;
@@ -39,7 +40,7 @@ public static class BootstrapExtensions
 
             // bus
             .AddPublisher(configuration)
-            .AddScoped<ICollectorPublisher, CollectorPublisher>()
+            .AddScoped<ICollectorClient, CollectorClient>()
             .AddHostedService<CollectorSubscriptionService>()
             .AddScoped<IBusSubscriber, BusSubscriber>()
             .AddScoped<IEventProcessor, EventDecryptProcessor>()

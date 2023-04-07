@@ -15,6 +15,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\packages\Bootstrap\Platform.Host\Platform.Host.csproj" />
+        <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Publisher\Platform.Bus.Publisher.csproj" />
+        <ProjectReference Include="..\..\..\packages\Bus\Platform.Bus.Subscriber\Platform.Bus.Subscriber.csproj" />
+        <ProjectReference Include="..\..\..\packages\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj" />
         <ProjectReference Include="..\..\..\packages\Geolocation\Platform.Geolocation.HostGeolocation\Platform.Geolocation.HostGeolocation.csproj" />
         <ProjectReference Include="..\..\..\packages\Services\Platform.Services.Processor\Platform.Services.Processor.csproj" />
     </ItemGroup>

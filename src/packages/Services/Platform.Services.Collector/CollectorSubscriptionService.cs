@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Platform.Bus;
-using Platform.Bus.Publisher;
-using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Collectors;
 using Platform.Cryptography;
 using Platform.Geolocation.IpResolver;
 using Platform.Logging.Extensions;
@@ -12,7 +11,7 @@ namespace Platform.Services.Collector;
 public class CollectorSubscriptionService : BackgroundService
 {
     private readonly IBusSubscriber _busSubscriber;
-    private readonly IBusPublisher _busPublisher;
+    private readonly ICollectorClient _collectorClient;
     private readonly IPublicIpResolver _hostLocation;
     private readonly ICryptographicService _cryptographicService;
     private readonly CollectorInfo _collectorInfo;
@@ -25,12 +24,12 @@ public class CollectorSubscriptionService : BackgroundService
         IBusSubscriber busSubscriber,
         IPublicIpResolver hostLocation,
         ICryptographicService cryptographicService,
-        IBusPublisher busPublisher,
+        ICollectorClient collectorClient,
         CollectorInfo collectorInfo,
         ILogger<CollectorSubscriptionService> logger)
     {
         _busSubscriber = busSubscriber;
-        _busPublisher = busPublisher;
+        _collectorClient = collectorClient;
         _hostLocation = hostLocation;
         _cryptographicService = cryptographicService;
         _collectorInfo = collectorInfo;
@@ -49,7 +48,7 @@ public class CollectorSubscriptionService : BackgroundService
             _logger.Trace($"Send heartbeat '{_collectorInfo.ProcessingTypes}' '{_collectorInfo.Identifier}'");
             if (cancellationToken.IsCancellationRequested) break;
 
-            await _busPublisher.PublishToSyncExchange(_collectorInfo, ipAddress, publicKey);
+            await _collectorClient.SendToCoordinatorSync(_collectorInfo, ipAddress, publicKey);
             await Task.Delay(_heartbeatInterval, cancellationToken);
         }
     }

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Platform.Bus.Subscriber;
-using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Processors;
 using Platform.Processor.Coordinator.Strategies;
 
 namespace Platform.Processor.Coordinator.Processors;
@@ -11,5 +11,5 @@ public class CoordinatorProcessor : IConsumeAsync<CoordinatorProfile>
 
     public CoordinatorProcessor(IStrategyFactory strategyFactory) => _strategyFactory = strategyFactory;
 
-    public async Task ConsumeAsync(CoordinatorProfile profile) => await _strategyFactory.Build(profile.ProcessingTypes).Run(profile);
+    public async Task ConsumeAsync(CoordinatorProfile profile) => await _strategyFactory.Build(profile.ProcessingType).Run(profile);
 }

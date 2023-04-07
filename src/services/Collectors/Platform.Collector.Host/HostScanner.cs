@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus.Subscriber;
 using Platform.Contract.Profiles;
+using Platform.Contract.Profiles.Collectors;
 using Platform.Services.Collector;
 using Platform.Tools.Abstractions;
 using Platform.Tools.Models;
@@ -13,13 +14,13 @@ namespace Platform.Collector.Host
 {
     public class HostScanner : IConsumeAsync<HostProfile>
     {
-        private readonly ICollectorPublisher _collectorPublisher;
+        private readonly ICollectorClient _collectorClient;
         private readonly IToolsHolder _toolsHolder;
         private readonly ILogger _logger;
 
-        public HostScanner(IToolsHolder toolsHolder, ICollectorPublisher collectorPublisher, ILogger<HostScanner> logger)
+        public HostScanner(IToolsHolder toolsHolder, ICollectorClient collectorClient, ILogger<HostScanner> logger)
         {
-            _collectorPublisher = collectorPublisher;
+            _collectorClient = collectorClient;
             _toolsHolder = toolsHolder;
             _logger = logger;
         }
@@ -42,7 +43,7 @@ namespace Platform.Collector.Host
 
             profile.ToolOutputs = reports;
 
-            await _collectorPublisher.PublishToReport(profile);
+            await _collectorClient.SendToReporter(profile);
         }
     }
 }
