@@ -176,5 +176,33 @@ namespace Platform.Caching.Redis
                 : CommandFlags.FireAndForget;
 
         #endregion
+
+        #region Scan Operations
+
+        /// <summary>
+        /// Pattern ("value*", 1)
+        /// </summary>
+        /// <param name="match">"value*"</param>
+        /// <param name="count">int</param>
+        /// <returns></returns>
+        public async Task<List<string>> KeyScan(string match, int count)
+        {
+            var schemas = new List<string>();
+            var nextCursor = 0;
+            do
+            {
+                var redisResult = await Database.ExecuteAsync("SCAN", nextCursor.ToString(), "MATCH", match, "COUNT", count.ToString());
+                var innerResult = (RedisResult[])redisResult;
+
+                nextCursor = int.Parse((string)innerResult[0]);
+
+                var resultLines = ((string[])innerResult[1]).ToList();
+                schemas.AddRange(resultLines);
+            } while (nextCursor != 0);
+
+            return schemas;
+        }
+
+        #endregion
     }
 }

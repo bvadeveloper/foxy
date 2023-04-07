@@ -1,39 +1,74 @@
-using System.Reflection;
+using System;
 using System.Threading;
-using System.Threading.Tasks;
-using EasyNetQ;
-using EasyNetQ.AutoSubscribe;
-using Platform.Bus.Subscriber.Abstractions;
+using Microsoft.Extensions.Logging;
+using Platform.Bus.Subscriber.EventProcessors;
+using Platform.Logging.Extensions;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
-namespace Platform.Bus.Subscriber
+namespace Platform.Bus.Subscriber;
+
+public class BusSubscriber : IBusSubscriber
 {
-    public class BusSubscriber : IBusSubscriber
+    private readonly IModel _channel;
+    private readonly IConnection _connection;
+    private readonly ExchangeCollection _exchangeCollection;
+    private readonly IEventProcessor _eventProcessor;
+    private readonly ILogger _logger;
+    
+    private readonly string _queueName;
+
+    public BusSubscriber(
+        IConnection connection,
+        IModel channel,
+        ExchangeCollection exchangeCollection,
+        IEventProcessor eventProcessor,
+        ILogger<BusSubscriber> logger)
     {
-        private readonly IBus _bus;
-        private readonly IAutoSubscriberMessageDispatcher _messageDispatcher;
+        _connection = connection;
+        _channel = channel;
+        _exchangeCollection = exchangeCollection;
+        _eventProcessor = eventProcessor;
+        _logger = logger;
 
-        public BusSubscriber(IBus bus, IAutoSubscriberMessageDispatcher messageDispatcher)
+        _queueName = MakeQueueName();
+    }
+
+
+    /// <summary>
+    /// https://www.rabbitmq.com/tutorials/tutorial-five-dotnet.html
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    public void Subscribe(CancellationToken cancellationToken)
+    {
+        var queueName = _channel.QueueDeclare(_queueName);
+        var consumer = new AsyncEventingBasicConsumer(_channel);
+        consumer.Received += _eventProcessor.Process;
+
+        _exchangeCollection.Exchanges.ForEach(value =>
         {
-            _bus = bus;
-            _messageDispatcher = messageDispatcher;
-        }
+            _channel.ExchangeDeclare(exchange: value.ExchangeName, type: ExchangeType.Topic);
+            _channel.QueueBind(queue: queueName, exchange: value.ExchangeName, routingKey: value.RoutingKey);
 
-        /// <summary>
-        /// Subscribe to consumers from assembly
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        public async Task Subscribe(CancellationToken cancellationToken)
-        {
-            var subscriber = new AutoSubscriber(_bus, "_")
-            {
-                ConfigureSubscriptionConfiguration = s => s.WithAutoDelete(),
-                GenerateSubscriptionId = info => "_",
-                AutoSubscriberMessageDispatcher = _messageDispatcher
-            };
+            _logger.Info($"Subscribed to exchange '{value.ExchangeName}' with routing key '{value.RoutingKey}'");
+        });
 
-            await subscriber.SubscribeAsync(new[] { Assembly.GetEntryAssembly() }, cancellationToken);
-        }
+        _channel.BasicConsume(queueName, false, consumer);
+    }
 
-        public void Unsubscribe() => _bus.Dispose();
+    public void Unsubscribe(CancellationToken cancellationToken)
+    {
+        _channel.Close();
+        _connection.Close();
+    }
+
+    private static string MakeQueueName()
+    {
+        var assemblyNameSpan = AppDomain.CurrentDomain.FriendlyName.AsSpan();
+        var croppedName = assemblyNameSpan[(assemblyNameSpan.LastIndexOf('.') + 1)..];
+        var buffer = new Span<char>(new char[croppedName.Length]);
+        croppedName.ToLowerInvariant(buffer);
+
+        return buffer.ToString();
     }
 }

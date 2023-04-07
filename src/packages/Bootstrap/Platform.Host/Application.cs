@@ -1,54 +1,57 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Platform.Host.Versioning;
+using Platform.Logging.Host;
+using Platform.Primitives;
 
 namespace Platform.Host
 {
     public static class Application
     {
-        private static readonly Type[] DefaultStartups =
+        public static async Task RunAsync(string[] args, Action<IServiceCollection, ConfigurationManager> configureAction, Action<WebApplication>? applicationAction = default)
         {
-            typeof(Versioning.Startup),
-            typeof(Tracing.Startup),
-            typeof(Logging.Host.Startup),
-            typeof(Startup),
-        };
+            var builder = WebApplication.CreateBuilder(args);
+            builder.WebHost.UseKestrel();
+            builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
+            builder.Configuration
+                .SetBasePath(Directory.GetParent(Assembly.GetExecutingAssembly().Location)!.FullName)
+                .AddJsonFile("tools.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("limiter.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
 
-        public static void Run(string[] args, params Type[] startups)
-        {
-            using var host = CreateHostBuilder(args, startups).Build();
-            host.Run();
-        }
+            builder.Services
+#if DEBUG
+                .AddTransient<VersioningMiddleware>()
+#endif
+                .AddScoped(_ => new StrongBox<SessionContext?>(SessionContext.Init()))
+                .AddScoped<SessionContext>(provider =>
+                {
+                    var strongBox = provider.GetService<StrongBox<SessionContext?>>();
+                    return strongBox?.Value ?? SessionContext.Init();
+                })
+                .AddSerilogLogger()
+                .AddHealthChecks();
 
-        private static IHostBuilder CreateHostBuilder(string[] args, params Type[] startups)
-        {
-            return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(
-                    builder =>
-                    {
-                        builder.UseKestrel();
-                        builder.UseContentRoot(Directory.GetCurrentDirectory());
-                        builder.ConfigureAppConfiguration(
-                            configurationBuilder =>
-                            {
-                                configurationBuilder
-                                    .SetBasePath(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName)
-                                    .AddJsonFile("tools.json", optional: true, reloadOnChange: true)
-                                    .AddJsonFile("limiter.json", optional: true, reloadOnChange: true)
-                                    .AddEnvironmentVariables();
-                            });
-                        builder.UseCompositeStartup(DefaultStartups.Concat(startups).ToArray());
+            // invoke custom service registration
+            configureAction(builder.Services, builder.Configuration);
 
-                        // The UseCompositeStartup extension in the method webBuilder.Configure() sets incorrect application key relatively app's entry point
-                        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-3.1#application-key-name
-                        // We reinitialize the application key to the correct app entry point
-                        builder.UseSetting(WebHostDefaults.ApplicationKey, Assembly.GetEntryAssembly()?.GetName().Name);
-                    });
+
+            await using var app = builder.Build();
+            app.UseHealthChecks("/status");
+#if DEBUG
+            app.UseMiddleware<VersioningMiddleware>();
+#endif
+            // invoke custom application registrations
+            applicationAction?.Invoke(app);
+
+            await app.RunAsync();
         }
     }
 }

@@ -8,30 +8,31 @@ namespace Platform.Validation.Fluent.Rules
 {
     public static class DomainNameStaticValidator
     {
-        public static void Validate<T>(string input, ValidationContext<T> context)
+        public static void Validate<T>(string uri, ValidationContext<T> context)
         {
-            var validationContext = input.Validate();
-            foreach (var (property, message) in validationContext)
+            foreach (var (property, message) in uri.Validate())
+            {
                 context.AddFailure(property, message);
+            }
         }
 
-        private static Dictionary<string, string> Validate(this string input)
+        private static Dictionary<string, string> Validate(this string value)
         {
-            var validationContext = new Dictionary<string, string>();
+            var context = new Dictionary<string, string>();
 
-            if (string.IsNullOrEmpty(input))
+            if (string.IsNullOrEmpty(value))
             {
-                validationContext.Add("domain name", "domain name is required");
-                return validationContext;
+                context.Add("domain name", "domain name is required");
+                return context;
             }
 
-            var lowerCased = input.ToLowerInvariant();
+            var lowerCased = value.ToLowerInvariant();
             var split = lowerCased.Split('.');
 
             if (split.Length < 2)
             {
-                validationContext.Add(input, "sld and tld should be provided");
-                return validationContext;
+                context.Add(value, "sld and tld should be provided");
+                return context;
             }
 
             var sld = split[0];
@@ -39,42 +40,42 @@ namespace Platform.Validation.Fluent.Rules
 
             if (string.IsNullOrEmpty(tld))
             {
-                validationContext.Add(input, "tld is required");
-                return validationContext;
+                context.Add(value, "tld is required");
+                return context;
             }
 
             if (string.IsNullOrEmpty(sld))
             {
-                validationContext.Add(input, "sld is required");
-                return validationContext;
+                context.Add(value, "sld is required");
+                return context;
             }
-            
+
             // alphanumeric, hyphen, each label less than 64 chars
 
             foreach (var l in split)
             {
                 if (string.IsNullOrEmpty(l))
                 {
-                    validationContext.Add(input, "empty labels are not allowed");
-                    return validationContext;
+                    context.Add(value, "empty labels are not allowed");
+                    return context;
                 }
 
                 if (l.StartsWith("-"))
                 {
-                    validationContext.Add(input, "domain label can not start with hyphen");
-                    return validationContext;
+                    context.Add(value, "domain label can not start with hyphen");
+                    return context;
                 }
 
                 if (l.EndsWith("-"))
                 {
-                    validationContext.Add(input, "domain label can not end with hyphen");
-                    return validationContext;
+                    context.Add(value, "domain label can not end with hyphen");
+                    return context;
                 }
 
                 if (l.Length > 63)
                 {
-                    validationContext.Add(input, "each label should be less or equal 63 characters");
-                    return validationContext;
+                    context.Add(value, "each label should be less or equal 63 characters");
+                    return context;
                 }
 
                 foreach (var c in from c in l
@@ -83,12 +84,12 @@ namespace Platform.Validation.Fluent.Rules
                          where c is < '0' or > '9'
                          select c)
                 {
-                    validationContext.Add(input, $"invalid character in domain name: {c}");
-                    return validationContext;
+                    context.Add(value, $"invalid character in domain name: {c}");
+                    return context;
                 }
             }
 
-            var standardForm = input.DnsForm();
+            var standardForm = value.DnsForm();
             if (standardForm.StartsWith("xn--"))
             {
                 try
@@ -98,18 +99,18 @@ namespace Platform.Validation.Fluent.Rules
                 }
                 catch (Exception)
                 {
-                    validationContext.Add(input, "invalid idn name");
+                    context.Add(value, "invalid idn name");
                 }
             }
 
-            return validationContext;
+            return context;
         }
 
-        private static string DnsForm(this string input)
+        private static string DnsForm(this string value)
         {
-            if (string.IsNullOrEmpty(input)) return null!;
+            if (string.IsNullOrEmpty(value)) return null!;
 
-            var split = input.Split('.')
+            var split = value.Split('.')
                 .Where(x => !string.IsNullOrEmpty(x))
                 .Select(x => x.ToLowerInvariant())
                 .ToArray();

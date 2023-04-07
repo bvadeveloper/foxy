@@ -150,7 +150,13 @@ namespace Platform.Caching.Abstractions
         Task<bool> SetHashValue<T>(string key, string hashKey, T value, bool wait);
     }
 
+    public interface IScanKeys
+    {
+        Task<List<string>> KeyScan(string match, int count);
+    }
+
     public interface ICacheDataService :
+        IScanKeys,
         IReadCache,
         IWriteCache,
         IReadSetCache,

@@ -9,21 +9,21 @@
     },
     {
       "hash": "0000002",
-      "name": "alice",
+      "nickname": "alice",
       "description": "advanced user",
       "type": "advanced",
       "requestRate": "10"
     },
     {
       "hash": "0000003",
-      "name": "bob",
+      "nickname": "bob",
       "description": "new user",
       "type": "newcomer",
       "requestRate": "5"
     },
     {
       "hash": "default",
-      "name": "default",
+      "nickname": "default",
       "description": "new user",
       "type": "default",
       "requestRate": "2"

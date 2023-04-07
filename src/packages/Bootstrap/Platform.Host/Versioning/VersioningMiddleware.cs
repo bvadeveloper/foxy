@@ -12,7 +12,7 @@ namespace Platform.Host.Versioning
         {
             if (context.Request.Path.StartsWithSegments("/version"))
             {
-                await context.Response.WriteAsync($"version : {GetVersion()}");
+                await context.Response.WriteAsync($"version : {GetVersion()} {Assembly.GetEntryAssembly().FullName}");
             }
             else
             {

@@ -1,0 +1,24 @@
+{
+  "profiles": {
+    "Platform.Processor.Reporter": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5003",
+      "environmentVariables": {
+
+        "Bus:Host": "localhost",
+        "Bus:Port": "5672",
+        "Bus:UserName": "rmquser",
+        "Bus:Password": "rmquser",
+        "Bus:VirtualHost": "/",
+        "Bus:PrefetchCount": "1",
+        "Bus:Timeout": "60",
+
+        "RedisConnectionString": "localhost:6379",
+
+        "Logging:LogLevel:Microsoft": "Trace",
+        "Logging:LogLevel:System": "Trace",
+        "Logging:LogLevel:Default": "Trace"
+      }
+    }
+  }
+}

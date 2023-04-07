@@ -4,5 +4,5 @@ namespace Platform.Limiter.Redis.Abstractions;
 
 public interface IRequestLimiter
 {
-    Task<bool> Acquire(string input);
+    Task<bool> Acquire(string value);
 }

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <OutputType>Library</OutputType>
@@ -9,13 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+        <ProjectReference Include="..\..\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj" />
+        <ProjectReference Include="..\..\Cryptography\Platform.Cryptography\Platform.Cryptography.csproj" />
+        <ProjectReference Include="..\..\Logging\Platform.Logging.Extensions\Platform.Logging.Extensions.csproj" />
+        <ProjectReference Include="..\..\Primitives\Platform.Primitives\Platform.Primitives.csproj" />
+        <ProjectReference Include="..\Platform.Bus\Platform.Bus.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Platform.Bus.EasyNetQ\Platform.Bus.EasyNetQ.csproj" />
-    </ItemGroup>
-    
 </Project>

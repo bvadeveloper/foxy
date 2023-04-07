@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 using Platform.Caching.Redis.Internal;
 using Platform.Limiter.Redis.Abstractions;
-using Platform.Limiter.Redis.Extensions;
 using StackExchange.Redis;
-using static Platform.Limiter.Redis.Extensions.LimiterExtensions;
+using static Platform.Limiter.Redis.Extensions;
 
 namespace Platform.Limiter.Redis;
 
@@ -23,15 +22,15 @@ public class RequestLimiter : IRequestLimiter
         _permissionRepository = permissionRepository;
     }
 
-    public async Task<bool> Acquire(string input)
+    public async Task<bool> Acquire(string value)
     {
-        var hash = input.MakeHash();
-        var permissionModel = _permissionRepository.FindPermission(hash);
+        var hashString = value.MakeHash();
+        var permission = _permissionRepository.Find(hashString);
 
-        return await HasLimit(hash, DefaultTimeFrame, permissionModel.RequestRate);
+        return await HasLimit(hashString, DefaultTimeFrame, permission.RequestRate);
     }
 
-    private async Task<bool> HasLimit(string input, int timeFrame, int permitCount) =>
+    private async Task<bool> HasLimit(string hash, int timeFrame, int rateCount) =>
         ((int)await _redisConnection.Database.ScriptEvaluateAsync(SlidingScript,
-            new { key = new RedisKey(input), timeFrame, permitCount })) == 1;
+            new { key = new RedisKey(hash), timeFrame, permitCount = rateCount })) == 1;
 }

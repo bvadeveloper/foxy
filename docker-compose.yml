@@ -1,9 +1,12 @@
 version: "3.9"
 services:
+  
+  # Rabbit message broker
   rabbitmq:
     image: rabbitmq:3.8-management
     container_name: 'rabbitmq'
     hostname: 'rabbitmq'
+    restart: on-failure
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -13,16 +16,33 @@ services:
     networks:
       - bot_network
     environment:
-      - RABBITMQ_DEFAULT_USER=${RMQ_USER:?error}
-      - RABBITMQ_DEFAULT_PASS=${RMQ_PASS:?error}
+      - RABBITMQ_DEFAULT_USER=${RMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RMQ_PASS}
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      start_period: 20s
+      retries: 4
+  
+  # Redis
   redis:
     image: redis
     container_name: 'redis'
     hostname: 'redis'
     ports:
       - "6379:6379"
+    restart: on-failure
+    healthcheck:
+      test: redis-cli ping
+      interval: 60s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     networks:
       - bot_network
+  
+  # Telegram bot
   bot:
     build:
       context: ./src
@@ -30,78 +50,215 @@ services:
     image: vsp/telegram-bot:0.1
     container_name: 'telegram-bot'
     hostname: 'telegram-bot'
+    restart: on-failure
     ports:
       - "8080:80"
     networks:
       - bot_network
     environment:
-      - Telegram__ApiKey=${API_KEY:?error}
+      - Telegram__ApiKey=${API_KEY}
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
       - RedisConnectionString=redis:6379
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     links:
       - rabbitmq
-  collector:
+      - redis
+  
+  # Domain scanner
+  domain_scanner:
     build:
       context: ./src
-      dockerfile: ./services/Consumers/Platform.Consumer.Collector/Dockerfile
-    image: vsp/collector:0.1
-    container_name: 'collector'
-    hostname: 'collector'
+      dockerfile: ./services/Scanners/Platform.Scanners.Domain/Dockerfile
+    image: vsp/domain_scanner:0.1
+    container_name: 'domain_scanner'
+    hostname: 'domain_scanner'
+    restart: on-failure
     ports:
       - "8081:80"
     networks:
       - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
     depends_on:
-      - rabbitmq
-      - bot
+      rabbitmq:
+        condition: service_healthy
+      coordinator:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     links:
       - rabbitmq
-  scanner:
+  
+  # Host scanner
+  host_scanner:
     build:
       context: ./src
-      dockerfile: ./services/Consumers/Platform.Consumer.Scanner/Dockerfile
-    image: vsp/scanner:0.1
-    container_name: 'scanner'
-    hostname: 'scanner'
+      dockerfile: ./services/Scanners/Platform.Scanners.Host/Dockerfile
+    image: vsp/host_scanner:0.1
+    container_name: 'host_scanner'
+    hostname: 'host_scanner'
+    restart: on-failure
     ports:
       - "8082:80"
     networks:
       - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
     depends_on:
-      - rabbitmq
-      - bot
+      rabbitmq:
+        condition: service_healthy
+      coordinator:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     links:
       - rabbitmq
-  reporter:
+  
+  # Facebook scanner
+  facebook_scanner:
     build:
       context: ./src
-      dockerfile: ./services/Consumers/Platform.Consumer.Reporter/Dockerfile
-    image: vsp/reporter:0.1
-    container_name: 'reporter'
-    hostname: 'reporter'
+      dockerfile: ./services/Scanners/Platform.Scanners.Facebook/Dockerfile
+    image: vsp/facebook_scanner:0.1
+    container_name: 'facebook_scanner'
+    hostname: 'facebook_scanner'
+    restart: on-failure
     ports:
       - "8083:80"
     networks:
       - bot_network
     environment:
       - Bus__Host=rabbitmq
-      - Bus__UserName=${RMQ_USER:?error}
-      - Bus__Password=${RMQ_PASS:?error}
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
     depends_on:
+      rabbitmq:
+        condition: service_healthy
+      coordinator:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
+    links:
       - rabbitmq
-      - bot
+  
+  # Email checker
+  email_scanner:
+    build:
+      context: ./src
+      dockerfile: ./services/Scanners/Platform.Scanners.Email/Dockerfile
+    image: vsp/email_scanner:0.1
+    container_name: 'email_scanner'
+    hostname: 'email_scanner'
+    restart: on-failure
+    ports:
+      - "8084:80"
+    networks:
+      - bot_network
+    environment:
+      - Bus__Host=rabbitmq
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      coordinator:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
+    links:
+      - rabbitmq
+  
+  # Geo coordinator
+  coordinator:
+    build:
+      context: ./src
+      dockerfile: ./services/Processors/Platform.Processor.GeoCoordinator/Dockerfile
+    image: vsp/coordinator:0.1
+    container_name: 'coordinator'
+    hostname: 'coordinator'
+    restart: on-failure
+    ports:
+      - "8085:80"
+    networks:
+      - bot_network
+    environment:
+      - Bus__Host=rabbitmq
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      bot:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
+    links:
+      - rabbitmq
+  
+  # Report processor
+  reporter:
+    build:
+      context: ./src
+      dockerfile: ./services/Processors/Platform.Processor.Reporter/Dockerfile
+    image: vsp/reporter:0.1
+    container_name: 'reporter'
+    hostname: 'reporter'
+    restart: on-failure
+    ports:
+      - "8086:80"
+    networks:
+      - bot_network
+    environment:
+      - Bus__Host=rabbitmq
+      - Bus__UserName=${RMQ_USER}
+      - Bus__Password=${RMQ_PASS}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      coordinator:
+        condition: service_healthy
+    healthcheck:
+      test: curl -f http://localhost/status || exit 1
+      interval: 10s
+      timeout: 30s
+      start_period: 10s
+      retries: 4
     links:
       - rabbitmq
 
