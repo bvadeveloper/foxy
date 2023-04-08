@@ -20,7 +20,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=${RMQ_PASS}
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 30s
+      interval: 10s
       timeout: 30s
       start_period: 20s
       retries: 4
@@ -28,14 +28,16 @@ services:
   # Redis
   redis:
     image: redis
+    read_only: true
     container_name: 'redis'
     hostname: 'redis'
+    command: /bin/sh -c "redis-server --requirepass $REDIS_PASSWORD"
     ports:
       - "6379:6379"
     restart: on-failure
     healthcheck:
       test: redis-cli ping
-      interval: 60s
+      interval: 10s
       timeout: 30s
       start_period: 10s
       retries: 4
@@ -60,7 +62,7 @@ services:
       - Bus__Host=rabbitmq
       - Bus__UserName=${RMQ_USER}
       - Bus__Password=${RMQ_PASS}
-      - RedisConnectionString=redis:6379
+      - RedisConnectionString=redis:6379,password=${REDIS_PASSWORD}
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -200,7 +202,7 @@ services:
     links:
       - rabbitmq
   
-  # Geo coordinator
+  # Coordinator
   coordinator:
     build:
       context: ./src
@@ -217,11 +219,11 @@ services:
       - Bus__Host=rabbitmq
       - Bus__UserName=${RMQ_USER}
       - Bus__Password=${RMQ_PASS}
-      - RedisConnectionString=redis:6379
+      - RedisConnectionString=redis:6379,password=${REDIS_PASSWORD}
     depends_on:
       rabbitmq:
         condition: service_healthy
-      bot:
+      redis:
         condition: service_healthy
     healthcheck:
       test: curl -f http://localhost/status || exit 1
@@ -249,9 +251,11 @@ services:
       - Bus__Host=rabbitmq
       - Bus__UserName=${RMQ_USER}
       - Bus__Password=${RMQ_PASS}
-      - RedisConnectionString=redis:6379
+      - RedisConnectionString=redis:6379,password=${REDIS_PASSWORD}
     depends_on:
       rabbitmq:
+        condition: service_healthy
+      redis:
         condition: service_healthy
       coordinator:
         condition: service_healthy

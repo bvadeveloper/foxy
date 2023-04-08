@@ -11,13 +11,13 @@
         "Bus:VirtualHost": "/",
         "Bus:PrefetchCount": "1",
         "Bus:Timeout": "60",
-
+        
         "Telegram:ApiKey": "key",
 
-        "RedisConnectionString": "localhost:6379",
+        "RedisConnectionString": "localhost:6379,password=password_local",
 
-        "Logging:LogLevel:Microsoft": "Debug",
-        "Logging:LogLevel:System": "Debug",
+        "Logging:LogLevel:Microsoft": "Information",
+        "Logging:LogLevel:System": "Information",
         "Logging:LogLevel:Default": "Debug"
       }
     }

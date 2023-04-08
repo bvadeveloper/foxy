@@ -13,11 +13,11 @@
         "Bus:PrefetchCount": "1",
         "Bus:Timeout": "60",
 
-        "RedisConnectionString": "localhost:6379",
+        "RedisConnectionString": "localhost:6379,password=password_local",
 
-        "Logging:LogLevel:Microsoft": "Trace",
-        "Logging:LogLevel:System": "Trace",
-        "Logging:LogLevel:Default": "Trace"
+        "Logging:LogLevel:Microsoft": "Information",
+        "Logging:LogLevel:System": "Information",
+        "Logging:LogLevel:Default": "Debug"
       }
     }
   }

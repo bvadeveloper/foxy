@@ -17,8 +17,10 @@ services:
       - RABBITMQ_DEFAULT_PASS=rmquser
   redis:
     image: redis
+    read_only: true
     container_name: 'redis'
     hostname: 'redis'
+    command: /bin/sh -c "redis-server --requirepass password_local"
     ports:
       - "6379:6379"
     networks:
