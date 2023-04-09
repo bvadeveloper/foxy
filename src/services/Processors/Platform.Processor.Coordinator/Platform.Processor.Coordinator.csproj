@@ -24,6 +24,7 @@
         <ProjectReference Include="..\..\..\packages\Contracts\Platform.Contract.Profiles\Platform.Contract.Profiles.csproj" />
         <ProjectReference Include="..\..\..\packages\Geolocation\Platform.Geolocation.HostGeolocation\Platform.Geolocation.HostGeolocation.csproj" />
         <ProjectReference Include="..\..\..\packages\Services\Platform.Services.Processor\Platform.Services.Processor.csproj" />
+        <ProjectReference Include="..\..\..\packages\Tools\Platform.Tool.Cloudflare\Platform.Tool.Cloudflare.csproj" />
     </ItemGroup>
 
 </Project>

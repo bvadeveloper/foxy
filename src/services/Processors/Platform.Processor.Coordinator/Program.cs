@@ -12,6 +12,7 @@ using Platform.Processor.Coordinator.Processors;
 using Platform.Processor.Coordinator.Repositories;
 using Platform.Processor.Coordinator.Strategies;
 using Platform.Services.Processor;
+using Platform.Tool.Cloudflare;
 
 namespace Platform.Processor.Coordinator;
 
@@ -25,7 +26,7 @@ internal static class Program
                 // bus
                 .AddSubscriptions(configuration, ExchangeNames.Coordinator, ExchangeNames.Sync)
                 .AddScoped<IEventProcessor, EventProcessor>()
-                
+
                 // services
                 .AddHostGeolocation()
 
@@ -43,6 +44,9 @@ internal static class Program
                 .AddScoped<IProcessingStrategy, HostProcessingStrategy>()
                 .AddScoped<IProcessingStrategy, EmailProcessingStrategy>()
                 .AddScoped<IProcessingStrategy, FacebookProcessingStrategy>()
-                .AddScoped<IStrategyFactory, StrategyFactory>();
+                .AddScoped<IStrategyFactory, StrategyFactory>()
+
+                // tools
+                .AddScoped<ICloudflareResolver, CloudflareResolver>();
         });
 }

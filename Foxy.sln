@@ -124,6 +124,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Services.Processor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Services.Collector", "src\packages\Services\Platform.Services.Collector\Platform.Services.Collector.csproj", "{4BFCCC39-A463-4B9A-BCC0-3DB5AF302AE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Tool.Cloudflare", "src\packages\Tools\Platform.Tool.Cloudflare\Platform.Tool.Cloudflare.csproj", "{888BD9D4-A1FF-4249-9ABF-784B973D7475}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -254,6 +256,10 @@ Global
 		{4BFCCC39-A463-4B9A-BCC0-3DB5AF302AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BFCCC39-A463-4B9A-BCC0-3DB5AF302AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BFCCC39-A463-4B9A-BCC0-3DB5AF302AE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{888BD9D4-A1FF-4249-9ABF-784B973D7475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{888BD9D4-A1FF-4249-9ABF-784B973D7475}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{888BD9D4-A1FF-4249-9ABF-784B973D7475}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{888BD9D4-A1FF-4249-9ABF-784B973D7475}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{06AB5CCD-BDE9-44CC-8DE6-EFEAB92D4A48} = {D170892B-9BBB-4E43-AD65-34C765256436}
@@ -305,5 +311,6 @@ Global
 		{F89489D4-B1DD-4E3B-9D87-4952737C27D1} = {8BA651B0-7301-4D80-9DDE-F090A37A7088}
 		{4F35EF59-ECD2-40EB-8883-9D3129265D12} = {9E32F491-6C6C-43BE-AC6A-997C4609CA2B}
 		{4BFCCC39-A463-4B9A-BCC0-3DB5AF302AE1} = {9E32F491-6C6C-43BE-AC6A-997C4609CA2B}
+		{888BD9D4-A1FF-4249-9ABF-784B973D7475} = {315CE37C-58D8-4D45-B774-CA1F2287E119}
 	EndGlobalSection
 EndGlobal

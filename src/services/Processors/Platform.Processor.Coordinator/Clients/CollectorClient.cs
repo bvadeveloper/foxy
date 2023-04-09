@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Platform.Bus;
@@ -28,7 +29,7 @@ public class CollectorClient : ICollectorClient
     public async ValueTask SendToDomainScanner(DomainProfile profile)
     {
         var payload = profile.ToBytes();
-        var location = profile.IpLocations.Location;
+        var location = profile.IpLocations.First().Location;
         
         var (publicKey, route) = await _collectorInfoRepository.FindByCountryCodeOrAny(profile.ProcessingType, location);
         await _publishClient.Publish(payload, Exchange.Make(ExchangeNames.Domain, route), publicKey);
